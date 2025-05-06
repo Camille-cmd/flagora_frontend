@@ -23,6 +23,10 @@ export default {
                     700: "#E5E7EB"
                 }
             },
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+                rubik: ['Rubik', 'sans-serif'],
+            },
         },
     },
     plugins: [require("tailwindcss-animate")],

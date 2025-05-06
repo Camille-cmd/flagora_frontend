@@ -4,10 +4,10 @@ import {KeyRound, UserRoundPlus} from "lucide-react";
 export default function Home() {
     return (
 
-        <main className="flex-1 flex flex-col items-center justify-center p-2 text-center mt-32">
+        <main className="flex-1 flex flex-col items-center justify-center p-2 text-center mt-24">
             <div className="mb-8">
                 <div className="flex items-center justify-center mb-2">
-                    <h1 className="text-4xl font-bold ml-3 transition-colors duration-300">
+                    <h1 className="text-5xl font-bold ml-3 transition-colors duration-300 font-rubik">
                         Flagora
                     </h1>
                 </div>

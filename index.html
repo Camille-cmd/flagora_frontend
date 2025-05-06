@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flagora - Learn Flags and Capitals</title>
     <meta name="description" content="Learn flags and capitals of countries around the world" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>
       // On page load or when changing themes, best to add inline in `head` to avoid FOUC
       if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -15,7 +16,7 @@
       }
     </script>
   </head>
-  <body class="bg-primary dark:bg-secondary text-secondary dark:text-primary min-h-screen transition-colors duration-300">
+  <body class="bg-primary dark:bg-secondary text-secondary dark:text-primary transition-colors duration-300 font-sans">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
