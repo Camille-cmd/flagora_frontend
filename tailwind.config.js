@@ -11,8 +11,12 @@ export default {
                 primary: "#F5F5F5",
                 secondary: "#1E293B",
                 raspberry: {
+                    200: "#FEE2E2",
+                    300: "#FCA5A1",
+                    400: "#F87171",
                     600: "#A43D62",
-                    700: "#8B2F50"
+                    700: "#8B2F50",
+                    800: "#7B1E3D"
                 },
                 darkblue: {
                     600: "#1E293B",

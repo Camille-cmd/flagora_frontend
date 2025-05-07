@@ -1,7 +1,7 @@
 import {ThemeToggle} from "./ThemeToggle.tsx"
 import {Link, useLocation} from "react-router-dom"
 import {useEffect, useState} from "react";
-import {ChevronLeft} from "lucide-react";
+import {ChevronLeft, User} from "lucide-react";
 
 
 export function Header() {
@@ -20,7 +20,7 @@ export function Header() {
                         to="/"
                         className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"
                     >
-                        <ChevronLeft size={20} />
+                        <ChevronLeft size={20}/>
                     </Link>
                 ) : (
                     <div className="w-5"></div>
@@ -30,7 +30,16 @@ export function Header() {
                         Flagora
                     </h1>
                 </div>
-                <ThemeToggle/>
+                <div className="flex items-center space-x-4">
+                    <ThemeToggle/>
+                    {/* User account */}
+                    <Link
+                        to="/account"
+                        className="bg-primary dark:bg-secondary text-secondary dark:text-primary transition-colors duration-300"
+                    >
+                        <User size={20}/>
+                    </Link>
+                </div>
             </div>
         </header>
     )

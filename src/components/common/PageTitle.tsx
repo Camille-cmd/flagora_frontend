@@ -4,10 +4,8 @@ interface PageTitleProps {
 
 export function PageTitle({title}: PageTitleProps) {
     return (
-        <h1 className="text-4xl mb-8 font-rubik font-bold text-secondary dark:text-primary relative">
+        <h1 className="text-4xl mb-8 font-rubik font-bold text-secondary dark:text-primary relative underline decoration-4 decoration-yellow-400">
             {title}
-            {/* Decorative underline */}
-            <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-yellow-400 rounded-full"></span>
         </h1>
     )
 }

@@ -1,13 +1,22 @@
 import {Link} from "react-router-dom"
 import {Check} from "lucide-react"
 import Button from "../common/Button.tsx";
+import Card from "../common/Card/Card.tsx";
+import Input from "../common/Input.tsx";
+import {FormEvent} from "react";
 
 export default function Register() {
+    const handleRegister = (event: FormEvent) => {
+        event.preventDefault();
+        // Handle registration logic here
+        console.log("Register clicked");
+    }
+
     return (
         <main className="flex flex-col justify-center items-center px-4 mt-4 transition-colors duration-300">
 
             {/* Registration Form */}
-            <div className="lg:w-96 px-10 pb-8 pt-8 rounded-lg bg-whitelight-700 dark:bg-darkblue-700">
+            <Card className="lg:w-96" color1="yellow" color2="blue">
                 <h2 className="text-2xl lg:text-4xl text-center font-bold text-secondary dark:text-primary mb-6 font-rubik">Créer un compte</h2>
 
                 <form className="space-y-8">
@@ -15,10 +24,10 @@ export default function Register() {
                         <label htmlFor="email" className="block text-sm text-secondary dark:text-primary">
                             Email
                         </label>
-                        <input
+                        <Input
                             id="email"
                             type="email"
-                            className="w-full box-border p-2 rounded-lg border-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-darkblue-600 text-secondary dark:text-primary focus:ring-2 focus:ring-raspberry-600 focus:border-transparent outline-none transition-colors"
+                            className="w-full box-border p-2"
                             placeholder="votre@email.com"
                         />
                     </div>
@@ -28,10 +37,10 @@ export default function Register() {
                                className="block text-sm text-secondary dark:text-primary">
                             Nom d'utilisateur
                         </label>
-                        <input
+                        <Input
                             id="username"
                             type="text"
-                            className="w-full box-border p-2 rounded-lg border-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-darkblue-600 text-secondary dark:text-primary focus:ring-2 focus:ring-raspberry-600 focus:border-transparent outline-none transition-colors"
+                            className="w-full box-border p-2 "
                             placeholder="Votre nom d'utilisateur"
                         />
                     </div>
@@ -41,10 +50,10 @@ export default function Register() {
                                className="block text-sm text-secondary dark:text-primary">
                             Mot de passe
                         </label>
-                        <input
+                        <Input
                             id="password"
                             type="password"
-                            className="w-full box-border p-2 rounded-lg border-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-darkblue-600 text-secondary dark:text-primary focus:ring-2 focus:ring-raspberry-600 focus:border-transparent outline-none transition-colors"
+                            className="w-full box-border p-2"
                             placeholder="••••••••"
                         />
                     </div>
@@ -54,10 +63,10 @@ export default function Register() {
                                className="block text-sm text-secondary dark:text-primary">
                             Confirmer le mot de passe
                         </label>
-                        <input
+                        <Input
                             id="confirm-password"
                             type="password"
-                            className="w-full box-border p-2 rounded-lg border-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-darkblue-600 text-secondary dark:text-primary focus:ring-2 focus:ring-raspberry-600 focus:border-transparent outline-none transition-colors"
+                            className="w-full box-border p-2"
                             placeholder="••••••••"
                         />
                     </div>
@@ -89,7 +98,7 @@ export default function Register() {
                         buttonType="primary"
                         className="w-full px-5 py-2.5 mt-20"
                         text={"Créer mon compte"}
-                        onClick={() => console.log("Register clicked")}
+                        onClick={handleRegister}
                         aria-label="Register button"
                     />
                 </form>
@@ -100,7 +109,7 @@ export default function Register() {
                         Connectez-vous
                     </Link>
                 </p>
-            </div>
+            </Card>
         </main>
     )
 }

@@ -41,7 +41,6 @@ export function ThemeToggle() {
     }
 
     return (
-        <>
         <Button
             type="button"
             buttonType="secondary"
@@ -50,6 +49,5 @@ export function ThemeToggle() {
             onClick={toggleTheme}
             aria-label={"Toggle theme"}
         />
-            </>
     )
 }
