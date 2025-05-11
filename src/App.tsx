@@ -8,24 +8,27 @@ import {Header} from "./components/layout/Header.tsx";
 import Login from "./components/pages/Login.tsx";
 import UserAccount from "./components/pages/UserAccount.tsx";
 import ResetPassword from "./components/pages/ResetPassword.tsx";
+import {AuthProvider} from "./services/auth/AuthContext.tsx";
 
 function App() {
     return (
+        <AuthProvider>
 
-        <BrowserRouter>
-            <Header/>
+            <BrowserRouter>
+                <Header/>
 
-            <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register/>}/>
-                <Route path="/forgot-password" element={<ResetPassword/>}/>
-                <Route path="/mode-selection" element={<ModeSelection/>}/>
-                <Route path="/game" element={<Game/>}/>
-                 <Route path="account" element={<UserAccount/>}/>
-            </Routes>
+                <Routes>
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/register" element={<Register/>}/>
+                    <Route path="/forgot-password" element={<ResetPassword/>}/>
+                    <Route path="/mode-selection" element={<ModeSelection/>}/>
+                    <Route path="/game" element={<Game/>}/>
+                    <Route path="account" element={<UserAccount/>}/>
+                </Routes>
 
-        </BrowserRouter>
+            </BrowserRouter>
+        </AuthProvider>
 
     )
 }

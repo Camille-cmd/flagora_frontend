@@ -38,7 +38,7 @@ export default function Button({
     className = "",
     ...options
 }:ButtonProps): JSX.Element {
-    const baseStyles = `shadow-md hover:shadow-lg flex items-center justify-center space-x-2 rounded-lg focus:outline-none border-0 transition-colors ${buttonSizes[size]} ${buttonStyles[buttonType]}`;
+    const baseStyles = `shadow-none hover:shadow-lg flex items-center justify-center space-x-2 rounded-lg focus:outline-none border-0 transition-colors ${buttonSizes[size]} ${buttonStyles[buttonType]}`;
     const disabledStyles = disabled ? "opacity-50 cursor-not-allowed" : "";
     const loadingStyles = loading ? "cursor-wait" : "";
 

@@ -1,131 +1,173 @@
-import {FormEvent, useState} from "react"
-import {Eye, EyeOff, Lock, Mail, Save, User, UserCircle} from "lucide-react"
-import Alert from "../common/Alert.tsx"
-import {PageTitle} from "../common/PageTitle.tsx";
-import Button from "../common/Button.tsx";
+import {useState} from "react";
+import {Eye, EyeOff, Lock, Mail, Save, User, UserCircle} from "lucide-react";
+import {useAuthContext} from "../../services/auth/AuthContext";
+import {PageTitle} from "../common/PageTitle";
+import Card from "../common/Card/Card";
+import {CardHeader} from "../common/Card/CardHeader";
+import Alert from "../common/Alert";
+import Button from "../common/Button";
+import {ErrorMessage, Field, Form, Formik} from "formik";
+import * as Yup from "yup";
 import Input from "../common/Input.tsx";
-import Card from "../common/Card/Card.tsx";
-import {CardHeader} from "../common/Card/CardHeader.tsx";
 
 export default function UserAccount() {
-    const [showPassword, setShowPassword] = useState(false)
-    const [showNewPassword, setShowNewPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const {user} = useAuthContext();
+    const [showPassword, setShowPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [alertInfo, setAlertInfo] = useState<{ show: boolean; type: "success" | "error"; message: string }>({
         show: false,
         type: "success",
         message: "",
-    })
+    });
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault()
-        // Simulate successful update
+    // Validation schemas for Formik
+    const personalInfoSchema = Yup.object({
+        username: Yup.string().required("Nom d'utilisateur est requis"),
+    });
+
+    const passwordSchema = Yup.object({
+        currentPassword: Yup.string().required("Mot de passe actuel requis"),
+        newPassword: Yup.string()
+            .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+            .matches(/[A-Z]/, "Au moins une majuscule")
+            .matches(/\d/, "Au moins un chiffre")
+            .matches(/[^a-zA-Z\d]/, "Au moins un caractère spécial")
+            .required("Nouveau mot de passe requis"),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref("newPassword")], "Les mots de passe doivent correspondre")
+            .required("Confirmation du mot de passe requise"),
+    });
+
+    const handlePersonalInfoSubmit = (values: { username: string }) => {
         setAlertInfo({
             show: true,
             type: "success",
-            message: "Vos informations ont été mises à jour avec succès.",
-        })
-    }
+            message: "Vos informations personnelles ont été mises à jour avec succès.",
+        });
+        console.log("Personal info updated:", values);
+    };
+
+    const handlePasswordSubmit = (values: {
+        currentPassword: string;
+        newPassword: string;
+        confirmPassword: string
+    }) => {
+        setAlertInfo({
+            show: true,
+            type: "success",
+            message: "Votre mot de passe a été mis à jour avec succès.",
+        });
+        console.log("Password updated:", values);
+    };
 
     return (
         <main className="flex flex-col items-center justify-center p-6">
             <div className="w-full max-w-2xl">
-
                 {/* Page Title */}
                 <PageTitle title={"Mon Compte"}/>
                 <p className="text-gray-600 dark:text-gray-300 mb-8">
                     Gérez vos informations personnelles et votre mot de passe
                 </p>
 
-                {/* Alert for feedback */}
+                {/* Alert */}
                 {alertInfo.show && (
-                    <div className="mb-6">
-                        <Alert
-                            type={alertInfo.type}
-                            title={alertInfo.type === "success" ? "Succès!" : "Erreur"}
-                            message={alertInfo.message}
-                            timeout={2}
-                            onDismiss={() => setAlertInfo((prev) => ({...prev, show: false}))}
-                        />
-                    </div>
+                    <Alert
+                        type={alertInfo.type}
+                        title={alertInfo.type === "success" ? "Succès!" : "Erreur"}
+                        message={alertInfo.message}
+                        timeout={2}
+                        onDismiss={() => setAlertInfo((prev) => ({...prev, show: false}))}
+                    />
                 )}
 
-                {/* Account Settings Card */}
+                {/* Personal Information Form */}
                 <Card className="mb-8" color1="blue" color2="yellow">
-                    {/* En-tête de la carte */}
                     <CardHeader
                         className="mb-6"
                         title={"Informations Personnelles"}
                         icon={
                             <div className="p-3 bg-white dark:bg-blue-800 rounded-full shadow-md mr-4">
                                 <User className="w-6 h-6 text-blue-600 dark:text-blue-400"/>
-                            </div>}>
-                    </CardHeader>
-
-                    {/* Corps de la carte */}
-                    {/* Form for Personal Information */}
-                    <form onSubmit={handleSubmit} className="space-y-6">
-
-                        {/* Username Field */}
-                        <div className="space-y-2">
-                            <label htmlFor="username"
-                                   className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Nom d'utilisateur
-                            </label>
-                            <div className="relative">
-                                <Input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    defaultValue="JoueurPro123"  // TODO Replace with actual username
-                                    className="w-full p-3 pl-10"
-                                />
-
-                                <div className="absolute left-3 start-2 top-3.5 text-gray-400">
-                                    <UserCircle className="w-5 h-5"/>
-                                </div>
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Ce nom sera visible par les autres joueurs</p>
-                        </div>
+                        }
+                    />
+                    {user && (
+                        <Formik
+                            initialValues={{
+                                username: user.username ? user.username : "",
+                                email: user.email
+                        }}
+                            validationSchema={personalInfoSchema}
+                            onSubmit={handlePersonalInfoSubmit}
+                        >
+                            {(props) => (
+                                <Form className="space-y-6">
+                                    {/* Username Field */}
+                                    <div className="space-y-2">
+                                        <label htmlFor="username"
+                                               className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Nom d'utilisateur
+                                        </label>
+                                        <div className="relative">
+                                            <Field
+                                                type="text"
+                                                id="username"
+                                                name="username"
+                                                value={props.values.username || ""}
+                                                as={Input}
+                                                className="w-full p-3 pl-10"
+                                                aria-label="Nom d'utilisateur"
+                                            />
+                                            <div className="absolute left-3 top-3 text-gray-400">
+                                                <UserCircle className="w-5 h-5"/>
+                                            </div>
+                                        </div>
+                                        <ErrorMessage name="username" component="p" className="text-red-500 text-sm"/>
+                                    </div>
 
-                        {/* Email Field (Read-only) */}
-                        <div className="space-y-2">
-                            <label htmlFor="email"
-                                   className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Email
-                            </label>
-                            <div className="relative">
-                                <Input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    defaultValue="utilisateur@exemple.com"
-                                    readOnly
-                                    disabled={true}
-                                    className="w-full p-3 pl-10 "
-                                    icon={<Mail className="w-5 h-5"/>}
-                                    aria-label={"Email"}
-                                />
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Pour changer votre email, veuillez contacter le support
-                            </p>
-                        </div>
+                                    {/* Email Field (Read-only) */}
+                                    <div className="space-y-2">
+                                        <label htmlFor="email"
+                                               className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Email
+                                        </label>
+                                        <div className="relative">
+                                            <Field
+                                                type="email"
+                                                id="email"
+                                                name="email"
+                                                disabled={true}
+                                                readOnly
+                                                as={Input}
+                                                value={props.values.email}
+                                                className="w-full p-3 pl-10"
+                                            />
+                                            <div className="absolute left-3 top-3 text-gray-400">
+                                                <Mail className="w-5 h-5"/>
+                                            </div>
+                                        </div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            Pour changer votre email, veuillez contacter le support
+                                        </p>
+                                    </div>
 
-                        {/* Save Button for Personal Info */}
-                        <Button
-                            type={"submit"}
-                            buttonType={"info"}
-                            size={"small"}
-                            text={"Sauvegarder les modifications"}
-                            className={"w-full py-3 px-4 mt-4"}
-                            children={<Save className="w-5 h-5"/>}
-                            aria-label={"Sauvegarder les modifications"}
-                        />
-                    </form>
+                                    <Button
+                                        type="submit"
+                                        buttonType="info"
+                                        size={"small"}
+                                        text="Sauvegarder les modifications"
+                                        className="w-full py-3 px-4"
+                                        children={<Save className="w-5 h-5"/>}
+                                        aria-label="Sauvegarder les modifications"
+                                    />
+                                </Form>
+                            )}
+                        </Formik>
+                    )}
                 </Card>
 
-                {/* Password Change Card */}
+                {/* Password Change Form */}
                 <Card color1="pink" color2="blue">
                     <CardHeader
                         className="mb-6"
@@ -134,117 +176,132 @@ export default function UserAccount() {
                             <div className="p-3 bg-white dark:bg-raspberry-800 rounded-full shadow-md mr-4">
                                 <Lock className="w-6 h-6 text-raspberry-600 dark:text-raspberry-400"/>
                             </div>
-                        }>
-                    </CardHeader>
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Current Password Field */}
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="current-password"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                            >
-                                Mot de passe actuel
-                            </label>
-                            <div className="relative">
-                                <Input
-                                    type={showPassword ? "text" : "password"}
-                                    id="current-password"
-                                    name="current-password"
-                                    className="w-full p-3 pl-10 pr-10"
-                                    icon={<Lock className="w-5 h-5"/>}
-                                    placeholder={"Entrez votre mot de passe actuel"}
-                                    aria-label={"Mot de passe actuel"}
-                                />
-                                <Button
-                                    type={"button"}
-                                    buttonType={"custom"}
-                                    size={"small"}
-                                    className={"absolute right-3 top-2.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 bg-white dark:bg-darkblue-600"}
-                                    onClick={() => setShowPassword(!showNewPassword)}
-                                    children={showPassword ? <Eye className="w-5 h-5"/> :
-                                        <EyeOff className="w-5 h-5"/>}
-                                    aria-label={"Afficher/Masquer le mot de passe"}
-                                />
-                            </div>
-                        </div>
+                        }
+                    />
+                    <Formik
+                        initialValues={{
+                            currentPassword: "",
+                            newPassword: "",
+                            confirmPassword: "",
+                        }}
+                        validationSchema={passwordSchema}
+                        onSubmit={handlePasswordSubmit}
+                    >
+                        {() => (
+                            <Form className="space-y-6">
+                                {/* Current Password Field */}
+                                <div className="space-y-2">
+                                    <label htmlFor="currentPassword"
+                                           className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Mot de passe actuel
+                                    </label>
+                                    <div className="relative">
+                                        <Field
+                                            type={showPassword ? "text" : "password"}
+                                            id="currentPassword"
+                                            name="currentPassword"
+                                            as={Input}
+                                            className="w-full p-3 pl-10"
+                                            placeholder="Entrez votre mot de passe actuel"
+                                        />
+                                        <div className="absolute left-3 top-3 text-gray-400">
+                                            <Lock className="w-5 h-5"/>
+                                        </div>
+                                        <Button
+                                            type={"button"}
+                                            buttonType={"custom"}
+                                            size={"small"}
+                                            className={"absolute right-3 top-2.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 bg-white dark:bg-darkblue-600"}
+                                            onClick={() => setShowPassword(!showNewPassword)}
+                                            children={showPassword ? <Eye className="w-5 h-5"/> :
+                                                <EyeOff className="w-5 h-5"/>}
+                                            aria-label={"Afficher/Masquer le mot de passe"}
+                                        />
+                                    </div>
+                                    <ErrorMessage name="currentPassword"
+                                                  component="p"
+                                                  className="text-red-500 text-sm"/>
+                                </div>
 
-                        {/* New Password Field */}
-                        <div className="space-y-2">
-                            <label htmlFor="new-password"
-                                   className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Nouveau mot de passe
-                            </label>
-                            <div className="relative">
-                                <Input
-                                    className="w-full p-3 pl-10 pr-10"
-                                    id="new-password"
-                                    name="new-password"
-                                    type={showNewPassword ? "text" : "password"}
-                                    icon={<Lock className="w-5 h-5"/>}
-                                    placeholder={"Entrez votre nouveau mot de passe"}
-                                    aria-label={"Nouveau mot de passe"}
-                                />
-                                <Button
-                                    type={"button"}
-                                    buttonType={"custom"}
-                                    size={"small"}
-                                    className={"absolute right-3 top-2.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 bg-white dark:bg-darkblue-600"}
-                                    onClick={() => setShowNewPassword(!showNewPassword)}
-                                    children={showNewPassword ? <Eye className="w-5 h-5"/> :
-                                        <EyeOff className="w-5 h-5"/>}
-                                    aria-label={"Afficher/Masquer le mot de passe"}
-                                />
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre
-                            </p>
-                        </div>
+                                {/* New Password Field */}
+                                <div className="space-y-2">
+                                    <label htmlFor="newPassword"
+                                           className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Nouveau mot de passe
+                                    </label>
+                                    <div className="relative">
+                                        <Field
+                                            type={showNewPassword ? "text" : "password"}
+                                            id="newPassword"
+                                            name="newPassword"
+                                            as={Input}
+                                            className="w-full p-3 pl-10"
+                                            placeholder="Entrez votre nouveau mot de passe"
+                                        />
+                                        <div className="absolute left-3 top-3 text-gray-400">
+                                            <Lock className="w-5 h-5"/>
+                                        </div>
+                                        <Button
+                                            type={"button"}
+                                            buttonType={"custom"}
+                                            size={"small"}
+                                            className={"absolute right-3 top-2.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 bg-white dark:bg-darkblue-600"}
+                                            onClick={() => setShowNewPassword(!showNewPassword)}
+                                            children={showNewPassword ? <Eye className="w-5 h-5"/> :
+                                                <EyeOff className="w-5 h-5"/>}
+                                            aria-label={"Afficher/Masquer le mot de passe"}
+                                        />
+                                    </div>
+                                    <ErrorMessage name="newPassword" component="p" className="text-red-500 text-sm"/>
+                                </div>
 
-                        {/* Confirm Password Field */}
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="confirm-password"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                            >
-                                Confirmer le nouveau mot de passe
-                            </label>
-                            <div className="relative">
-                                <Input
-                                    className="w-full p-3 pl-10 pr-10"
-                                    type={showConfirmPassword ? "text" : "password"}
-                                    id="confirm-password"
-                                    name="confirm-password"
-                                    icon={<Lock className="w-5 h-5"/>}
-                                    placeholder={"Confirmez votre nouveau mot de passe"}
-                                    aria-label={"Confirmer le mot de passe"}
-                                />
-                                <Button
-                                    type={"button"}
-                                    buttonType={"custom"}
-                                    size={"small"}
-                                    className={"absolute right-3 top-2.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 bg-white dark:bg-darkblue-600"}
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    children={showConfirmPassword ? <Eye className="w-5 h-5"/> :
-                                        <EyeOff className="w-5 h-5"/>}
-                                    aria-label={"Afficher/Masquer le mot de passe"}
-                                />
-                            </div>
-                        </div>
+                                {/* Confirm Password Field */}
+                                <div className="space-y-2">
+                                    <label htmlFor="confirmPassword"
+                                           className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Confirmer le mot de passe
+                                    </label>
+                                    <div className="relative">
+                                        <Field
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            id="confirmPassword"
+                                            name="confirmPassword"
+                                            as={Input}
+                                            className="w-full p-3 pl-10 pr-10"
+                                            placeholder="Confirmez votre nouveau mot de passe"
+                                        />
+                                        <div className="absolute left-3 top-3 text-gray-400">
+                                            <Lock className="w-5 h-5"/>
+                                        </div>
+                                        <Button
+                                            type={"button"}
+                                            buttonType={"custom"}
+                                            size={"small"}
+                                            className={"absolute right-3 top-2.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 bg-white dark:bg-darkblue-600"}
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            children={showConfirmPassword ? <Eye className="w-5 h-5"/> :
+                                                <EyeOff className="w-5 h-5"/>}
+                                            aria-label={"Afficher/Masquer le mot de passe"}
+                                        />
+                                    </div>
+                                    <ErrorMessage name="confirmPassword"
+                                                  component="p"
+                                                  className="text-red-500 text-sm"/>
+                                </div>
 
-                        {/* Save Button for Password Change */}
-                        <Button
-                            type={"submit"}
-                            buttonType={"raspberry"}
-                            size={"small"}
-                            text={"Mettre à jour le mot de passe"}
-                            className={"w-full py-3 px-4"}
-                            children={<Lock className="w-5 h-5"/>}
-                            aria-label={"Mettre à jour le mot de passe"}
-                        />
-                    </form>
+                                <Button
+                                    type="submit"
+                                    buttonType="raspberry"
+                                    size={"small"}
+                                    text="Mettre à jour le mot de passe"
+                                    className="w-full py-3 px-4"
+                                    children={<Lock className="w-5 h-5"/>}
+                                />
+                            </Form>
+                        )}
+                    </Formik>
                 </Card>
-
             </div>
         </main>
-    )
+    );
 }

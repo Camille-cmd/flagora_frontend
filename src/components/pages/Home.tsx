@@ -1,7 +1,10 @@
 import {Link} from "react-router-dom"
 import {KeyRound, UserRoundPlus} from "lucide-react";
+import {useAuthContext} from "../../services/auth/AuthContext.tsx";
 
 export default function Home() {
+    const userInfo = useAuthContext();
+
     return (
 
         <main className="flex-1 flex flex-col items-center justify-center p-2 text-center mt-24">
@@ -24,21 +27,25 @@ export default function Home() {
                     Jouer
                 </Link>
 
-                <Link
-                    to="/login"
-                    className="w-full py-3  bg-darkblue-600 dark:bg-raspberry-700 hover:bg-darkblue-700 dark:hover:bg-raspberry-600 text-primary dark:text-gray-200 font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
-                >
-                    <span className="mr-2"><KeyRound/></span>
-                    Connexion
-                </Link>
+                {userInfo !== undefined &&
+                    <>
+                    <Link
+                        to="/login"
+                        className="w-full py-3  bg-darkblue-600 dark:bg-raspberry-700 hover:bg-darkblue-700 dark:hover:bg-raspberry-600 text-primary dark:text-gray-200 font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
+                    >
+                        <span className="mr-2"><KeyRound/></span>
+                        Connexion
+                    </Link>
 
-                <Link
-                    to="/register"
-                    className="w-full py-3 dark:bg-gray-700 dark:text-gray-400 border border-solid border-darkblue-600 text-secondary font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
-                >
-                    <span className="mr-2"><UserRoundPlus/></span>
-                    Créer un compte
-                </Link>
+                    <Link
+                        to="/register"
+                        className="w-full py-3 dark:bg-gray-700 dark:text-gray-400 border border-solid border-darkblue-600 text-secondary font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
+                    >
+                        <span className="mr-2"><UserRoundPlus/></span>
+                        Créer un compte
+                    </Link>
+                    </>
+                }
             </div>
 
         </main>

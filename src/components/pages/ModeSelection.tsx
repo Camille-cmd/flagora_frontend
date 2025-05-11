@@ -3,9 +3,10 @@ import {Flag, MapPin} from "lucide-react"
 import {PageTitle} from "../common/PageTitle.tsx"
 import Alert from "../common/Alert.tsx";
 import Card from "../common/Card/Card.tsx";
+import {useAuthContext} from "../../services/auth/AuthContext.tsx";
 
 export default function ModeSelection() {
-    const is_authenticated = false // Replace with actual authentication check
+    const {isAuthenticated} = useAuthContext();
 
     return (
         <main className="flex flex-col items-center justify-center p-6">
@@ -13,7 +14,7 @@ export default function ModeSelection() {
             <PageTitle title={"Sélectionnez un mode"}/>
 
             {/* Warning */}
-            {!is_authenticated && (
+            {!isAuthenticated && (
                 <div className="p-4 mb-10 w-full max-w-md">
                     <Alert
                         type="warning"

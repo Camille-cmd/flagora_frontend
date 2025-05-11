@@ -1,7 +1,6 @@
 import {AlertCircle, AlertTriangle, CheckCircle, Info, X} from "lucide-react"
 import {JSX, useEffect} from "react";
-
-type AlertType = "success" | "error" | "warning" | "info"
+import {AlertType} from "../../interfaces/alert.tsx";
 
 interface AlertProps {
     type: AlertType
@@ -83,11 +82,11 @@ export default function Alert({type, title, message, dismissible = false, onDism
             {/* Content container */}
             <div className="flex p-4">
                 {/* Icon */}
-                <div className={`flex-shrink-0 mr-3 ${styles.icon}`}>{alertIcons[type]}</div>
+                <div className={`flex-shrink-0 mr-3 ${title ? 'relative top-5' : ''} ${styles.icon}`}>{alertIcons[type]}</div>
 
                 {/* Text content */}
                 <div className="flex-1">
-                    <h3 className={`text-sm font-medium mb-1 ${styles.title}`}>{title}</h3>
+                    {title && <h3 className={`text-sm font-medium mb-1 ${styles.title}`}>{title}</h3>}
                     <div className={`text-sm ${styles.message}`}>{message}</div>
                 </div>
 
