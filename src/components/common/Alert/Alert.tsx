@@ -1,10 +1,10 @@
 import {AlertCircle, AlertTriangle, CheckCircle, Info, X} from "lucide-react"
 import {JSX, useEffect} from "react";
-import {AlertType} from "../../interfaces/alert.tsx";
+import {AlertType} from "../../../interfaces/alert.tsx";
 
 interface AlertProps {
     type: AlertType
-    title: string
+    title?: string
     message: string | JSX.Element
     dismissible?: boolean
     onDismiss?: () => void

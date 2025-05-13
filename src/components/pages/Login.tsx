@@ -1,23 +1,32 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import Button from "../common/Button.tsx";
 import Card from "../common/Card/Card.tsx";
 import Input from "../common/Input.tsx";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
-import Alert from "../common/Alert.tsx";
 import {AlertInfo} from "../../interfaces/alert.tsx";
-import {useAuthContext} from "../../services/auth/AuthContext.tsx";
+import {useAlert} from "../../contexts/AlertContext.tsx";
+import {AxiosError} from "axios";
+import {useAuthContext} from "../../contexts/AuthContext.tsx";
 
 const LoginSchema = Yup.object().shape({
-    email: Yup.string().email("Email invalide").required("Champ requis"),
-    password: Yup.string().required("Champ requis"),
+  email: Yup.string()
+    .required('Champ requis')
+    .test('email-or-username', 'Email invalide', function (value) {
+      if (!value) return true; // let .required handle empty case
+      if (value.includes('@')) {
+        return Yup.string().email().isValidSync(value);
+      }
+      return true; // accept as username
+    }),
+  password: Yup.string().required('Champ requis'),
 });
 
 export default function Login() {
     const {isAuthenticated, login} = useAuthContext();
     const navigate = useNavigate();
-    const [alertInfo, setAlertInfo] = useState<AlertInfo>();
+    const {setAlertInfo} = useAlert();
 
     // Redirect user to the main page if already logged-in
     useEffect(() => {
@@ -28,36 +37,26 @@ export default function Login() {
 
     const handleLogin = async (values: { email: string; password: string }) => {
         login(values.email, values.password)
-            .then(response => {
-                console.log("Login success:", response);
-                navigate("/mode-selection");
+            .then(() => {
+                console.log("Login successful");
+                navigate("/mode-selection")
             })
-            .catch(error => {
+            .catch((error: AxiosError) => {
                 console.error("Login failed:", error.response?.data || error.message);
                 setAlertInfo({
-                    show: true,
                     type: "error",
                     message: "Email ou mot de passe invalides.",
+                    title: "Erreur",
                 } as AlertInfo);
             });
     };
 
     return (
-        <main className="flex flex-col justify-center items-center px-4 mt-20 transition-colors duration-300">
+        <div className="flex flex-col justify-center items-center px-4 mt-20 transition-colors duration-300">
             <Card className="lg:w-96" color1="yellow" color2="blue">
                 <h2 className="text-2xl lg:text-4xl text-center font-bold text-secondary dark:text-primary mb-8 font-rubik">
                     Connexion
                 </h2>
-
-                {alertInfo?.show && (
-                    <Alert
-                        type={alertInfo.type}
-                        title={alertInfo.title}
-                        message={alertInfo.message}
-                        timeout={20}
-                        className={"mb-8"}
-                    />
-                )}
 
                 <Formik
                     initialValues={{email: "", password: ""}}
@@ -72,12 +71,12 @@ export default function Login() {
                                     htmlFor="email"
                                     className="block text-sm text-secondary dark:text-primary"
                                 >
-                                    Email
+                                    Email ou nom d'utilisateur
                                 </label>
                                 <Field
                                     id="email"
                                     name="email"
-                                    type="email"
+                                    type="text"
                                     placeholder="votre@email.com"
                                     aria-label="Email input"
                                     as={Input}
@@ -139,6 +138,6 @@ export default function Login() {
                     </Link>
                 </p>
             </Card>
-        </main>
+        </div>
     );
 }

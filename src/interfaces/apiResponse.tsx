@@ -7,7 +7,6 @@ export interface User {
 
 // Login response
 export interface LoginResponse {
-  user: User
   sessionId: string
 }
 

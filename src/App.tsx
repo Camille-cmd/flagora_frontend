@@ -8,11 +8,15 @@ import {Header} from "./components/layout/Header.tsx";
 import Login from "./components/pages/Login.tsx";
 import UserAccount from "./components/pages/UserAccount.tsx";
 import ResetPassword from "./components/pages/ResetPassword.tsx";
-import {AuthProvider} from "./services/auth/AuthContext.tsx";
+import ProtectedRoute from './components/common/ProtectedRoute.tsx';
+import {AlertProvider} from "./contexts/AlertContext.tsx";
+import {AuthProvider} from "./contexts/AuthContext.tsx";
 
 function App() {
+
     return (
         <AuthProvider>
+        <AlertProvider>
 
             <BrowserRouter>
                 <Header/>
@@ -24,12 +28,21 @@ function App() {
                     <Route path="/forgot-password" element={<ResetPassword/>}/>
                     <Route path="/mode-selection" element={<ModeSelection/>}/>
                     <Route path="/game" element={<Game/>}/>
-                    <Route path="account" element={<UserAccount/>}/>
+
+                    <Route
+                        path="account"
+                        element={
+                            <ProtectedRoute>
+                                <UserAccount/>
+                            </ProtectedRoute>
+                        }
+                    />
                 </Routes>
 
             </BrowserRouter>
-        </AuthProvider>
 
+        </AlertProvider>
+        </AuthProvider>
     )
 }
 

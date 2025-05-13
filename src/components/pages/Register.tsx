@@ -1,11 +1,13 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Check} from "lucide-react";
 import Button from "../common/Button.tsx";
 import Card from "../common/Card/Card.tsx";
 import Input from "../common/Input.tsx";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
-import {useAuthContext} from "../../services/auth/AuthContext.tsx";
+import {AlertInfo} from "../../interfaces/alert.tsx";
+import {useAlert} from "../../contexts/AlertContext.tsx";
+import {useAuthContext} from "../../contexts/AuthContext.tsx";
 
 const RegisterSchema = Yup.object().shape({
     email: Yup.string().email("Email invalide").required("Champ requis"),
@@ -26,15 +28,31 @@ const RegisterSchema = Yup.object().shape({
 
 export default function Register() {
     const {register} = useAuthContext();
-
+    const navigate = useNavigate();
+    const {setAlertInfo} = useAlert();
+    
     const handleRegister = (values: { email: string; username: string; password: string; confirmPassword: string }) => {
-        console.log("Register clicked with values:", values);
         register(values.email, values.username, values.password)
-            .then(response => {console.log("Register success:", response);})
+            .then(() => {
+                    navigate("/login", {replace: true});
+                    setAlertInfo({
+                        type: "success",
+                        message: "Votre compte a bien été créé. Vous pouvez maintenant vous connecter.",
+                    } as AlertInfo);
+                }
+            )
+            .catch(error => {
+                setAlertInfo(
+                    {
+                        type: "error",
+                        message: error.response?.data
+                    } as AlertInfo
+                )
+            })
     };
 
     return (
-        <main className="flex flex-col justify-center items-center px-4 mt-4 transition-colors duration-300">
+        <div className="flex flex-col justify-center items-center px-4 mt-4 transition-colors duration-300">
             <Card className="lg:w-96" color1="yellow" color2="blue">
                 <h2 className="text-2xl lg:text-4xl text-center font-bold text-secondary dark:text-primary mb-6 font-rubik">
                     Créer un compte
@@ -155,6 +173,6 @@ export default function Register() {
                     </Link>
                 </p>
             </Card>
-        </main>
+        </div>
     );
 }

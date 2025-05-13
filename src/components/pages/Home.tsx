@@ -1,9 +1,9 @@
 import {Link} from "react-router-dom"
 import {KeyRound, UserRoundPlus} from "lucide-react";
-import {useAuthContext} from "../../services/auth/AuthContext.tsx";
+import {useAuthContext} from "../../contexts/AuthContext.tsx";
 
 export default function Home() {
-    const userInfo = useAuthContext();
+    const {isAuthenticated} = useAuthContext();
 
     return (
 
@@ -27,7 +27,7 @@ export default function Home() {
                     Jouer
                 </Link>
 
-                {userInfo !== undefined &&
+                {!isAuthenticated &&
                     <>
                     <Link
                         to="/login"

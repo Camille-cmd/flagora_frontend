@@ -2,8 +2,8 @@ import {ThemeToggle} from "./ThemeToggle.tsx"
 import {Link, useLocation, useNavigate} from "react-router-dom"
 import {useEffect, useRef, useState} from "react"
 import {ChevronLeft, LogOut, Settings, User} from "lucide-react"
-import {useAuthContext} from "../../services/auth/AuthContext.tsx"
 import Button from "../common/Button.tsx";
+import {useAuthContext} from "../../contexts/AuthContext.tsx";
 
 export function Header() {
     const [showBackButton, setShowBackButton] = useState<boolean>(false)

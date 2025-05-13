@@ -1,33 +1,18 @@
 import {Flag, Send, Star} from "lucide-react"
-import Alert from "../common/Alert.tsx";
-import {useState} from "react";
 import Button from "../common/Button.tsx";
 import Card from "../common/Card/Card.tsx";
 import {CardHeader} from "../common/Card/CardHeader.tsx";
 import Input from "../common/Input.tsx";
 
 export default function FlagsGame() {
-    const [showAlert, setShowAlert] = useState(false)
+    // const {setAlertInfo} = useAlert();
 
     const handleSubmit = () => {
         // Handle form submission logic here
-        setShowAlert(true)
     }
 
     return (
-        <main className="flex flex-col items-center justify-center p-2">
-
-            {/* Alert display */}
-            {showAlert &&
-                <Alert
-                    type="error"
-                    title="Success!"
-                    message="Your changes have been saved successfully."
-                    timeout={1}
-                    onDismiss={() => setShowAlert(false)}
-                    className={"mb-6"}
-                />
-            }
+        <div className="flex flex-col items-center justify-center p-2">
 
             {/* Game - Quiz View (Flags) */}
             <div className="w-full max-w-xl">
@@ -94,6 +79,6 @@ export default function FlagsGame() {
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     )
 }

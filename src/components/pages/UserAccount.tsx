@@ -1,25 +1,23 @@
 import {useState} from "react";
 import {Eye, EyeOff, Lock, Mail, Save, User, UserCircle} from "lucide-react";
-import {useAuthContext} from "../../services/auth/AuthContext";
 import {PageTitle} from "../common/PageTitle";
 import Card from "../common/Card/Card";
 import {CardHeader} from "../common/Card/CardHeader";
-import Alert from "../common/Alert";
 import Button from "../common/Button";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import Input from "../common/Input.tsx";
+import {useAlert} from "../../contexts/AlertContext.tsx";
+import {AlertInfo} from "../../interfaces/alert.tsx";
+import {useAuthContext} from "../../contexts/AuthContext.tsx";
 
 export default function UserAccount() {
     const {user} = useAuthContext();
+    const {setAlertInfo} = useAlert();
+
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [alertInfo, setAlertInfo] = useState<{ show: boolean; type: "success" | "error"; message: string }>({
-        show: false,
-        type: "success",
-        message: "",
-    });
 
     // Validation schemas for Formik
     const personalInfoSchema = Yup.object({
@@ -41,10 +39,9 @@ export default function UserAccount() {
 
     const handlePersonalInfoSubmit = (values: { username: string }) => {
         setAlertInfo({
-            show: true,
             type: "success",
             message: "Vos informations personnelles ont été mises à jour avec succès.",
-        });
+        } as AlertInfo);
         console.log("Personal info updated:", values);
     };
 
@@ -54,10 +51,9 @@ export default function UserAccount() {
         confirmPassword: string
     }) => {
         setAlertInfo({
-            show: true,
             type: "success",
             message: "Votre mot de passe a été mis à jour avec succès.",
-        });
+        } as AlertInfo);
         console.log("Password updated:", values);
     };
 
@@ -69,17 +65,6 @@ export default function UserAccount() {
                 <p className="text-gray-600 dark:text-gray-300 mb-8">
                     Gérez vos informations personnelles et votre mot de passe
                 </p>
-
-                {/* Alert */}
-                {alertInfo.show && (
-                    <Alert
-                        type={alertInfo.type}
-                        title={alertInfo.type === "success" ? "Succès!" : "Erreur"}
-                        message={alertInfo.message}
-                        timeout={2}
-                        onDismiss={() => setAlertInfo((prev) => ({...prev, show: false}))}
-                    />
-                )}
 
                 {/* Personal Information Form */}
                 <Card className="mb-8" color1="blue" color2="yellow">

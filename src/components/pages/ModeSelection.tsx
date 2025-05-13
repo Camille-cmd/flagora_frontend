@@ -1,9 +1,9 @@
 import {Link} from "react-router-dom"
 import {Flag, MapPin} from "lucide-react"
 import {PageTitle} from "../common/PageTitle.tsx"
-import Alert from "../common/Alert.tsx";
 import Card from "../common/Card/Card.tsx";
-import {useAuthContext} from "../../services/auth/AuthContext.tsx";
+import Alert from "../common/Alert/Alert.tsx";
+import {useAuthContext} from "../../contexts/AuthContext.tsx";
 
 export default function ModeSelection() {
     const {isAuthenticated} = useAuthContext();

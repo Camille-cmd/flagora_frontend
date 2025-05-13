@@ -1,157 +1,110 @@
 import api from "../api/api.tsx"
-import type { User, LoginResponse, RegisterResponse, ProfileResponse } from "../../interfaces/apiResponse.tsx"
+import type {LoginResponse, User} from "../../interfaces/apiResponse.tsx"
+import axios from "axios";
 
-// Token storage key
-const TOKEN_KEY = "sessionid"
-const USER_KEY = "userdata"
 
-// Get the stored token
-export const getToken = (): string | null => {
-  return localStorage.getItem(TOKEN_KEY)
-}
+export default class AuthService {
+    public static tokenKey = 'sessionid';
 
-// Check if user is authenticated
-export const isAuthenticated = (): boolean => {
-  return !!getToken()
-}
+    static async login(email: string, password: string): Promise<User> {
+        try {
+            const response = await api.post<LoginResponse>('auth/login', {
+                email,
+                password,
+            });
+            const sessionId = response.data.sessionId;
+            localStorage.setItem(this.tokenKey, sessionId)
 
-// Store authentication data
-export const setAuthData = (sessionId: string, user: User): void => {
-  localStorage.setItem(TOKEN_KEY, sessionId)
-  localStorage.setItem(USER_KEY, JSON.stringify(user))
-}
+            // Get user info
+            return await this.getCurrentUser();
 
-// Clear authentication data
-export const clearAuthData = (): void => {
-  localStorage.removeItem(TOKEN_KEY)
-  localStorage.removeItem(USER_KEY)
-}
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error) && error.response) {
+                const message =
+                    error.response.data.message ??
+                    error.message ??
+                    'Login failed';
 
-/**
- * Hook for user login
- */
-export const useLogin = () => {
-  const login = async (email: string, password: string): Promise<LoginResponse> => {
-    return api.post<LoginResponse>("/auth/login", { email, password }).then((response) => {
-      setAuthData(response.data.sessionId, response.data.user)
-      return response.data as LoginResponse
-    })
-  }
+                throw new Error(message);
+            } else {
+                throw error;
+            }
+        }
+    }
 
-  return { login }
-}
+    static async getCurrentUser(): Promise<User> {
+        try {
+            const response = await api.get<User>('auth/me');
 
-/**
- * Hook for user registration
- */
-export const useRegister = () => {
-  const register = async (username: string, email: string, password: string): Promise<RegisterResponse> => {
-    return api.post<RegisterResponse>("/auth/register", { username, email, password }).then((response) => {
-      setAuthData(response.data.sessionId, response.data.user)
-      return response.data
-    })
-  }
+            console.log(response.data)
 
-  return { register }
-}
+            return {
+                id: response.data.id,
+                username: response.data.username,
+                email: response.data.email,
+            } as User;
 
-/**
- * Hook for user logout
- */
-export const useLogout = () => {
-  const logout = async (): Promise<void> => {
-    const token = getToken()
+        } catch (error: unknown) {
+            // TODO : dry
+            if (axios.isAxiosError(error) && error.response) {
+                const message =
+                    error.response.data.message ??
+                    error.message ??
+                    'Login failed';
 
-    // Only make the API call if we have a token
-    const logoutPromise = token ? api.get("/auth/logout", {}) : Promise.resolve()
+                throw new Error(message);
+            } else {
+                throw error;
+            }
+        }
+    }
 
-    return logoutPromise
-      .then(() => {
-        clearAuthData()
-      })
-      .catch((error) => {
-        // Even if the API call fails, we still want to clear local data
-        console.error("Logout error:", error)
-        clearAuthData()
-      })
-  }
+    static async register(username: string, email: string, password: string): Promise<User> {
+        try {
+            const response = await api.post<User>('auth/register', {
+                username,
+                email,
+                password,
+            });
 
-  return { logout }
-}
+            return {
+                id: response.data.id,
+                username: response.data.username,
+                email: response.data.email,
+            } as User;
 
-/**
- * Hook for password reset request
- */
-export const useRequestPasswordReset = () => {
-  const requestReset = async (email: string): Promise<void> => {
-    return api.post("/auth/reset-password", { email }).then(() => {
-      // Nothing to return, just a successful request
-    })
-  }
+        } catch (error: unknown) {
+            // TODO : dry
+            if (axios.isAxiosError(error) && error.response) {
+                const message =
+                    error.response.data.message ??
+                    error.message ??
+                    'Login failed';
 
-  return { requestReset }
-}
+                throw new Error(message);
+            } else {
+                throw error;
+            }
+        }
+    }
 
-/**
- * Hook for confirming password reset
- */
-export const useConfirmPasswordReset = () => {
-  const confirmReset = async (token: string, newPassword: string): Promise<void> => {
-    return api.post("/auth/reset-password/confirm", { token, password: newPassword }).then(() => {
-      // Nothing to return, just a successful request
-    })
-  }
+    static async logout(): Promise<void> {
+        try {
+            await api.get('auth/logout');
+            localStorage.removeItem(this.tokenKey);
+        } catch (error: unknown) {
+            // TODO : dry
+            if (axios.isAxiosError(error) && error.response) {
+                const message =
+                    error.response.data.message ??
+                    error.message ??
+                    'Login failed';
 
-  return { confirmReset }
-}
+                throw new Error(message);
+            } else {
+                throw error;
+            }
+        }
 
-/**
- * Hook for getting current user profile
- */
-export const useGetCurrentUser = () => {
-  const getCurrentUser = async (): Promise<User> => {
-    return api.get<ProfileResponse>("/auth/me").then((response) => {
-      // Update stored user data with latest from server
-      const userData = response.data.user
-      const token = getToken()
-      if (token) {
-        setAuthData(token, userData)
-      }
-      return userData
-    })
-  }
-
-  return { getCurrentUser }
-}
-
-/**
- * Hook for updating user profile
- */
-export const useUpdateProfile = () => {
-  const updateProfile = async (userData: Partial<User>): Promise<User> => {
-    return api.put<ProfileResponse>("/auth/profile", userData).then((response) => {
-      // Update stored user data
-      const updatedUser = response.data.user
-      const token = getToken()
-      if (token) {
-        setAuthData(token, updatedUser)
-      }
-      return updatedUser
-    })
-  }
-
-  return { updateProfile }
-}
-
-/**
- * Hook for changing password
- */
-export const useChangePassword = () => {
-  const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
-    return api.post("/auth/change-password", { currentPassword, newPassword }).then(() => {
-      // Nothing to return, just a successful request
-    })
-  }
-
-  return { changePassword }
+    }
 }
