@@ -58,7 +58,16 @@ const alertIcons = {
     info: <Info className="w-5 h-5"/>,
 }
 
-export default function Alert({type, title, message, dismissible = false, onDismiss, className = "", timeout}: AlertProps) {
+export default function Alert({
+  type,
+  title,
+  message,
+  dismissible = false,
+  onDismiss,
+  className = "",
+  timeout,
+}: AlertProps) {
+
     const styles = alertStyles[type]
 
     // Automatically dismiss the alert after `timeout` seconds, if provided
@@ -69,43 +78,42 @@ export default function Alert({type, title, message, dismissible = false, onDism
         }
     }, [timeout, onDismiss])
 
-
     return (
         <div
-            className={`relative overflow-hidden rounded-lg border shadow-sm transition-all ${styles.container} ${className}`}
+            className={`relative overflow-hidden rounded-lg border shadow-sm transition-all ${styles?.container} ${className}`}
             role="alert"
             aria-live={type === "error" ? "assertive" : "polite"}
         >
             {/* Left accent border */}
-            <div className={`absolute left-0 top-0 bottom-0 w-1 ${styles.accent}`}></div>
+            <div className={`absolute left-0 top-0 bottom-0 w-1 ${styles?.accent}`}></div>
 
             {/* Content container */}
             <div className="flex p-4">
                 {/* Icon */}
-                <div className={`flex-shrink-0 mr-3 ${title ? 'relative top-5' : ''} ${styles.icon}`}>{alertIcons[type]}</div>
+                <div className={`flex-shrink-0 mr-3 ${title ? 'relative top-5' : ''} ${styles?.icon}`}>{alertIcons[type]}</div>
 
                 {/* Text content */}
                 <div className="flex-1">
-                    {title && <h3 className={`text-sm font-medium mb-1 ${styles.title}`}>{title}</h3>}
-                    <div className={`text-sm ${styles.message}`}>{message}</div>
+                    {title && <h3 className={`text-sm font-medium mb-1 ${styles?.title}`}>{title}</h3>}
+                    <div className={`text-sm ${styles?.message}`}>{message}</div>
                 </div>
 
                 {/* Dismiss button */}
                 {dismissible && onDismiss && (
                     <button
                         type="button"
-                        className={`absolute top-2 right-2 p-1 border-0 inline-flex items-center justify-center ${styles.closeButton} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${styles.mainColor}-500`}
+                        className={`absolute top-2 right-2 p-1 border-0 inline-flex items-center justify-center ${styles?.closeButton} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${styles.mainColor}-500`}
                         onClick={onDismiss}
                         aria-label="Dismiss"
                     >
-                        <X className={`w-3 h-3 ${styles.icon}`}/>
+                        <X className={`w-3 h-3 ${styles?.icon}`}/>
                     </button>
                 )}
             </div>
 
             {/* Decorative element */}
             <div className="absolute bottom-0 right-0 w-16 h-16 rounded-full -mr-8 -mb-8 opacity-10">
-                <div className={`w-full h-full rounded-full ${styles.accent}`}></div>
+                <div className={`w-full h-full rounded-full ${styles?.accent}`}></div>
             </div>
         </div>
     )

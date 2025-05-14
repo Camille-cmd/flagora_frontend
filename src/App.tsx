@@ -11,6 +11,8 @@ import ResetPassword from "./components/pages/ResetPassword.tsx";
 import ProtectedRoute from './components/common/ProtectedRoute.tsx';
 import {AlertProvider} from "./contexts/AlertContext.tsx";
 import {AuthProvider} from "./contexts/AuthContext.tsx";
+import AlertPopup from "./components/common/Alert/AlertPopup.tsx";
+import ResetPasswordConfirm from "./components/pages/ResetPasswordConfirm.tsx";
 
 function App() {
 
@@ -21,11 +23,14 @@ function App() {
             <BrowserRouter>
                 <Header/>
 
+                <AlertPopup></AlertPopup>
+
                 <Routes>
                     <Route path="/" element={<Home/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/forgot-password" element={<ResetPassword/>}/>
+                    <Route path="/reset-password/:uid/:token" element={<ResetPasswordConfirm />} />
                     <Route path="/mode-selection" element={<ModeSelection/>}/>
                     <Route path="/game" element={<Game/>}/>
 

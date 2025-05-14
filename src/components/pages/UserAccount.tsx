@@ -9,10 +9,10 @@ import * as Yup from "yup";
 import Input from "../common/Input.tsx";
 import {useAlert} from "../../contexts/AlertContext.tsx";
 import {AlertInfo} from "../../interfaces/alert.tsx";
-import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useAuth} from "../../services/auth/useAuth.tsx";
 
 export default function UserAccount() {
-    const {user} = useAuthContext();
+    const {user} = useAuth();
     const {setAlertInfo} = useAlert();
 
     const [showPassword, setShowPassword] = useState(false);

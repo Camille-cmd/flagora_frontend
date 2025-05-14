@@ -7,13 +7,19 @@ import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import {AlertInfo} from "../../interfaces/alert.tsx";
 import {useAlert} from "../../contexts/AlertContext.tsx";
-import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useAuth} from "../../services/auth/useAuth.tsx";
+import {useEffect} from "react";
+import debounce from "lodash/debounce";
 
 const RegisterSchema = Yup.object().shape({
     email: Yup.string().email("Email invalide").required("Champ requis"),
     username: Yup.string()
-        .min(3, "Au moins 3 caractères")
-        .max(20, "Maximum 20 caractères")
+        .matches(
+            /^[\w.-]+$/,
+            "Caractères autorisés : lettres, chiffres, points (.), tirets (-), et underscores (_)"
+        )
+        .min(2, "Au moins 2 caractères") // Minimum 2 characters (not checked by backend)
+        .max(150, "Maximum 150 caractères")
         .required("Champ requis"),
     password: Yup.string()
         .min(8, "Au moins 8 caractères")
@@ -27,10 +33,10 @@ const RegisterSchema = Yup.object().shape({
 });
 
 export default function Register() {
-    const {register} = useAuthContext();
+    const {register, isAuthenticated, isUserNameAvailable} = useAuth();
     const navigate = useNavigate();
     const {setAlertInfo} = useAlert();
-    
+
     const handleRegister = (values: { email: string; username: string; password: string; confirmPassword: string }) => {
         register(values.email, values.username, values.password)
             .then(() => {
@@ -42,14 +48,68 @@ export default function Register() {
                 }
             )
             .catch(error => {
-                setAlertInfo(
-                    {
-                        type: "error",
-                        message: error.response?.data
-                    } as AlertInfo
-                )
+                const errorCode = error.message
+                switch (errorCode) {
+                    case "username_already_registered":
+                        setAlertInfo({
+                            type: "error",
+                            message: "Nom d'utilisateur déjà pris.",
+                            timeout: 10,
+                        } as AlertInfo);
+                        break;
+                    case "email_already_registered":
+                        setAlertInfo({
+                            type: "error",
+                            title: "Email déjà enregistré",
+                            message: (
+                                <>
+                                    Il semble que cet email soit déjà enregistré.{" "}
+                                    <Link to="/login" onClick={() => setAlertInfo(undefined)} className="text-red-500 hover:text-red-600">
+                                        Connectez-vous
+                                    </Link>.
+                                </>
+                            ),
+                            timeout: 10,
+                        } as AlertInfo);
+                        break;
+                    default:
+                        setAlertInfo({
+                            type: "error",
+                            message: error.message,
+                            timeout: 10,
+                        } as AlertInfo);
+                }
             })
     };
+
+    // Validate username availability
+    const validateUsernameAvailability = async (value: string): Promise<string | undefined> => {
+        if (!value || value.length < 2) return undefined; // Skip validation if empty or too short
+
+        const available = await isUserNameAvailable(value);
+        return available ? undefined : "Nom d'utilisateur déjà pris";
+    };
+
+    // Debounce it (1 second delay)
+    const debouncedValidateUsername = debounce(
+        (value: string, callback: (msg?: string) => void) => {
+            validateUsernameAvailability(value).then(callback);
+        },
+        500
+    );
+    // Wrapper function to use with Formik
+    const validateUsername = (value: string): Promise<string | undefined> => {
+        return new Promise((resolve) => {
+            debouncedValidateUsername(value, resolve);
+        });
+    };
+
+    // Redirect user to the main page if already logged-in
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/", {replace: true});
+        }
+    }, [isAuthenticated, navigate]);
 
     return (
         <div className="flex flex-col justify-center items-center px-4 mt-4 transition-colors duration-300">
@@ -68,7 +128,7 @@ export default function Register() {
                     validationSchema={RegisterSchema}
                     onSubmit={handleRegister}
                 >
-                    {() => (
+                    {({ isValid, dirty, isSubmitting }) => (
                         <Form className="space-y-8">
                             <div className="space-y-2">
                                 <label htmlFor="email" className="block text-sm text-secondary dark:text-primary">
@@ -90,15 +150,16 @@ export default function Register() {
                                        className="block text-sm text-secondary dark:text-primary">
                                     Nom d'utilisateur
                                 </label>
+                                <ErrorMessage name="username" component="p" className="text-red-500 text-sm"/>
                                 <Field
                                     id="username"
                                     name="username"
                                     type="text"
                                     placeholder="Votre nom d'utilisateur"
                                     as={Input}
+                                    validate={validateUsername}
                                     className="w-full box-border p-2"
                                 />
-                                <ErrorMessage name="username" component="p" className="text-red-500 text-sm"/>
                             </div>
 
                             <div className="space-y-2">
@@ -158,8 +219,10 @@ export default function Register() {
                             <Button
                                 type="submit"
                                 buttonType="primary"
-                                className="w-full px-5 py-2.5 mt-20"
+                                className="w-full px-5 py-2.5 mt-10"
                                 text="Créer mon compte"
+                                disabled={!isValid || !dirty || isSubmitting}
+                                loading={isSubmitting}
                                 aria-label="Register button"
                             />
                         </Form>

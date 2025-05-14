@@ -3,13 +3,13 @@ import {Link, useLocation, useNavigate} from "react-router-dom"
 import {useEffect, useRef, useState} from "react"
 import {ChevronLeft, LogOut, Settings, User} from "lucide-react"
 import Button from "../common/Button.tsx";
-import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useAuth} from "../../services/auth/useAuth.tsx";
 
 export function Header() {
     const [showBackButton, setShowBackButton] = useState<boolean>(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
     const location = useLocation()
-    const {user, logout, isAuthenticated} = useAuthContext()
+    const {user, logout, isAuthenticated} = useAuth()
     const dropdownRef = useRef<HTMLDivElement>(null)
     const navigate = useNavigate()
 

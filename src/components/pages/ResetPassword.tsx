@@ -1,30 +1,49 @@
-import {FormEvent, useState} from "react"
-import {Link} from "react-router-dom"
-import {ArrowLeft, KeyRound, Mail, Send} from "lucide-react"
-import Card from "../common/Card/Card.tsx"
-import {CardHeader} from "../common/Card/CardHeader.tsx"
-import Input from "../common/Input.tsx"
-import Button from "../common/Button.tsx"
+import {useState} from "react";
+import {Link} from "react-router-dom";
+import {ArrowLeft, KeyRound, Mail, Send} from "lucide-react";
+import {ErrorMessage, Field, Form, Formik} from "formik";
+import * as Yup from "yup";
+
+import Card from "../common/Card/Card.tsx";
+import {CardHeader} from "../common/Card/CardHeader.tsx";
+import Input from "../common/Input.tsx";
+import Button from "../common/Button.tsx";
+import {useAuth} from "../../services/auth/useAuth.tsx";
+import {AlertInfo} from "../../interfaces/alert.tsx";
+import {useAlert} from "../../contexts/AlertContext.tsx";
+
+const validationSchema = Yup.object({
+    email: Yup.string()
+        .email("Adresse email invalide")
+        .required("Champ requis"),
+});
 
 export default function ResetPassword() {
-    const [email, setEmail] = useState("")
-    const [submitted, setSubmitted] = useState(false)
+    const {resetPassword} = useAuth();
+    const {setAlertInfo} = useAlert();
 
+    const [submitted, setSubmitted] = useState(false);
+    const [submittedEmail, setSubmittedEmail] = useState("");
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault()
+    const handleSubmit = (values: { email: string }) => {
+        resetPassword(values.email)
+            .then(() => {
+                setSubmittedEmail(values.email);
+                setSubmitted(true);
 
-        console.log(e)
-
-        // API call
-        setEmail("test")
-        setSubmitted(true)
-    }
+                setAlertInfo(
+                    {
+                        type: "success",
+                        message: "Si votre adresse email est valide, vous recevrez un lien de réinitialisation de mot de passe.",
+                    } as AlertInfo
+                )
+            })
+            .catch(() => {});
+    };
 
     return (
         <main className="flex flex-col justify-center items-center px-4 mt-20">
             <Card className="lg:w-96" color1="blue" color2="raspberry">
-
                 <CardHeader
                     title="Réinitialiser le mot de passe"
                     className="text-center mb-6"
@@ -42,34 +61,47 @@ export default function ResetPassword() {
                                 Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
                             </p>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label htmlFor="email"
-                                           className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Email
-                                    </label>
-                                    <div className="relative">
-                                        <Input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            className="w-full p-3 pl-10 "
-                                            icon={<Mail className="w-5 h-5"/>}
-                                            placeholder="email@test.com"
-                                            aria-label={"Email"}
-                                        />
-                                    </div>
-                                </div>
+                            <Formik
+                                initialValues={{email: ""}}
+                                validationSchema={validationSchema}
+                                onSubmit={handleSubmit}
+                            >
+                                {({isValid, dirty, isSubmitting}) => (
+                                    <Form className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label
+                                                htmlFor="email"
+                                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                            >
+                                                Email
+                                            </label>
+                                            <div className="relative">
+                                                <Field
+                                                    name="email"
+                                                    type="email"
+                                                    as={Input}
+                                                    id="email"
+                                                    className="w-full p-3 pl-10"
+                                                    placeholder="email@test.com"
+                                                    icon={<Mail className="w-5 h-5"/>}
+                                                    aria-label="Email"
+                                                />
+                                            </div>
+                                            <ErrorMessage name="email" component="p" className="text-red-500 text-sm"/>
+                                        </div>
 
-                                <Button
-                                    type="submit"
-                                    buttonType="raspberry"
-                                    size="medium"
-                                    text="Envoyer le lien de réinitialisation"
-                                    className="w-full"
-                                    children={<Send className="w-5 h-5 ml-2"/>}
-                                />
-                            </form>
+                                        <Button
+                                            type="submit"
+                                            buttonType="raspberry"
+                                            size="medium"
+                                            text="Envoyer le lien de réinitialisation"
+                                            className="w-full"
+                                            disabled={!isValid || !dirty || isSubmitting}
+                                            children={<Send className="w-5 h-5 ml-2"/>}
+                                        />
+                                    </Form>
+                                )}
+                            </Formik>
                         </>
                     ) : (
                         <div className="text-center space-y-6">
@@ -82,14 +114,17 @@ export default function ResetPassword() {
                                     Vérifiez votre boîte de réception
                                 </h3>
                                 <p className="text-gray-600 dark:text-gray-300">
-                                    Nous avons envoyé un lien de réinitialisation à <span className="font-medium">{email}</span>
+                                    Nous avons envoyé un lien de réinitialisation à{" "}
+                                    <span className="font-medium">{submittedEmail}</span>
                                 </p>
                             </div>
 
                             <div className="pt-4">
                                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    Vous n'avez pas reçu l'email? Vérifiez votre dossier spam ou{" "}
-                                    <Link to="" onClick={() => setSubmitted(false)} className="text-raspberry-400 hover:text-raspberry-600">
+                                    Vous n'avez pas reçu l'email ? Vérifiez votre dossier spam ou{" "}
+                                    <Link to=""
+                                          onClick={() => setSubmitted(false)}
+                                          className="text-raspberry-400 hover:text-raspberry-600">
                                         essayez à nouveau
                                     </Link>
                                 </p>
@@ -109,5 +144,5 @@ export default function ResetPassword() {
                 </div>
             </Card>
         </main>
-    )
+    );
 }

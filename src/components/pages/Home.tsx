@@ -1,9 +1,9 @@
 import {Link} from "react-router-dom"
 import {KeyRound, UserRoundPlus} from "lucide-react";
-import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useAuth} from "../../services/auth/useAuth.tsx";
 
 export default function Home() {
-    const {isAuthenticated} = useAuthContext();
+    const {isAuthenticated} = useAuth();
 
     return (
 

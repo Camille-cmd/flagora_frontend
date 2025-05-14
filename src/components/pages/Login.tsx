@@ -8,23 +8,23 @@ import * as Yup from "yup";
 import {AlertInfo} from "../../interfaces/alert.tsx";
 import {useAlert} from "../../contexts/AlertContext.tsx";
 import {AxiosError} from "axios";
-import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useAuth} from "../../services/auth/useAuth.tsx";
 
 const LoginSchema = Yup.object().shape({
-  email: Yup.string()
-    .required('Champ requis')
-    .test('email-or-username', 'Email invalide', function (value) {
-      if (!value) return true; // let .required handle empty case
-      if (value.includes('@')) {
-        return Yup.string().email().isValidSync(value);
-      }
-      return true; // accept as username
-    }),
-  password: Yup.string().required('Champ requis'),
+    email: Yup.string()
+        .required('Champ requis')
+        .test('email-or-username', 'Email invalide', function (value) {
+            if (!value) return true; // let .required handle empty case
+            if (value.includes('@')) {
+                return Yup.string().email().isValidSync(value);
+            }
+            return true; // accept as username
+        }),
+    password: Yup.string().required('Champ requis'),
 });
 
 export default function Login() {
-    const {isAuthenticated, login} = useAuthContext();
+    const {isAuthenticated, login} = useAuth();
     const navigate = useNavigate();
     const {setAlertInfo} = useAlert();
 
@@ -36,23 +36,37 @@ export default function Login() {
     }, [isAuthenticated, navigate]);
 
     const handleLogin = async (values: { email: string; password: string }) => {
+        await new Promise(r => setTimeout(r, 500));  // Simulate a delay for the loading state
+        setAlertInfo(undefined) // Clear previous alerts
         login(values.email, values.password)
             .then(() => {
-                console.log("Login successful");
                 navigate("/mode-selection")
+                setAlertInfo(
+                    {
+                        type: "success",
+                        message: "Vous êtes connecté.",
+                    } as AlertInfo
+                )
             })
             .catch((error: AxiosError) => {
-                console.error("Login failed:", error.response?.data || error.message);
-                setAlertInfo({
-                    type: "error",
-                    message: "Email ou mot de passe invalides.",
-                    title: "Erreur",
-                } as AlertInfo);
+                if (error.message === "invalid_credentials") {
+                    setAlertInfo({
+                        type: "error",
+                        message: "Email ou mot de passe invalides.",
+                        timeout: 10,
+                    } as AlertInfo);
+                } else {
+                    setAlertInfo({
+                        type: "error",
+                        message: error.message || "Une erreur est survenue.",
+                        timeout: 10,
+                    } as AlertInfo);
+                }
             });
     };
 
     return (
-        <div className="flex flex-col justify-center items-center px-4 mt-20 transition-colors duration-300">
+        <div className="flex flex-col justify-center items-center px-4 mt-14 transition-colors duration-300">
             <Card className="lg:w-96" color1="yellow" color2="blue">
                 <h2 className="text-2xl lg:text-4xl text-center font-bold text-secondary dark:text-primary mb-8 font-rubik">
                     Connexion
@@ -63,7 +77,7 @@ export default function Login() {
                     validationSchema={LoginSchema}
                     onSubmit={handleLogin}
                 >
-                    {() => (
+                    {({ isValid, dirty, isSubmitting }) => (
                         <Form className="space-y-8">
                             {/* EMAIL */}
                             <div className="space-y-2">
@@ -125,6 +139,8 @@ export default function Login() {
                                 buttonType="primary"
                                 className="w-full px-5 py-2.5 mt-20"
                                 text="Se connecter"
+                                disabled={!isValid || !dirty || isSubmitting}
+                                loading={isSubmitting}
                                 aria-label="Login button"
                             />
                         </Form>

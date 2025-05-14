@@ -1,6 +1,5 @@
 import {JSX, ReactNode} from "react";
 import {DecorativeBubbles} from "../DecorativeBubbles.tsx";
-import AlertPopup from "../Alert/AlertPopup.tsx";
 
 interface CardProps {
     children: ReactNode; // Contient tous les sous-composants (CardHeader, CardBody, CardFooter, etc.)
@@ -20,7 +19,6 @@ export default function Card({children, className = "", color1, color2}: CardPro
             >
                 <DecorativeBubbles color1={color1} color2={color2}/>
                 <div className="relative p-8">
-                     <AlertPopup></AlertPopup>
                     {children}
                 </div>
             </div>

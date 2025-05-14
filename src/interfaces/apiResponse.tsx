@@ -20,3 +20,7 @@ export interface RegisterResponse {
 export interface ProfileResponse {
   user: User
 }
+
+export interface IsUserAvailableResponse {
+    available: boolean
+}

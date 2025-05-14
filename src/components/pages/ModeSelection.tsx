@@ -3,10 +3,10 @@ import {Flag, MapPin} from "lucide-react"
 import {PageTitle} from "../common/PageTitle.tsx"
 import Card from "../common/Card/Card.tsx";
 import Alert from "../common/Alert/Alert.tsx";
-import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useAuth} from "../../services/auth/useAuth.tsx";
 
 export default function ModeSelection() {
-    const {isAuthenticated} = useAuthContext();
+    const {isAuthenticated} = useAuth();
 
     return (
         <main className="flex flex-col items-center justify-center p-6">

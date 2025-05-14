@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useAuth} from "../../services/auth/useAuth.tsx";
 
 interface ProtectedRouteProps {
   isAuthenticated?: boolean;
@@ -20,7 +20,7 @@ export default function ProtectedRoute ({
   redirectPath = "/",
   children,
 }: ProtectedRouteProps) {
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     return <Navigate to={redirectPath} replace />;
   }
