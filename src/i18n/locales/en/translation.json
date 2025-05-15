@@ -1,0 +1,157 @@
+{
+  "home": {
+    "welcomeMessage": "Easy way to learn the flags and capitals of the world",
+    "play": "Play",
+    "connection": "Connection",
+    "createAccount": "Create an account"
+  },
+  "login": {
+    "title": "Login",
+    "submit": "Log in",
+    "submitAriaLabel": "Login button",
+    "accountMissing": "Don't have an account?",
+    "success": "You are now logged in.",
+    "createAccount": "Create one",
+    "email": {
+      "label": "Email",
+      "placeholder": "myemail@example.com",
+      "ariaLabel": "Email input field",
+      "validation": {
+        "required": "Email is required",
+        "invalid": "Invalid email"
+      }
+    },
+    "password": {
+      "label": "Password",
+      "ariaLabel": "Password input field",
+      "forgotPassword": "Forgot password?",
+      "validation": {
+        "required": "Password is required"
+      }
+    }
+  },
+  "register": {
+    "title": "Create an account",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Log in",
+    "submitAriaLabel": "Create account button",
+    "submit": "Create account",
+    "success": "Your account has been successfully created. You can now log in.",
+    "username_not_available": "This username is not available",
+    "email_already_registered": "This email is already registered",
+    "alreadyRegistered": "It looks like this email is already registered.",
+    "connect": "Log in",
+    "email": {
+      "validation": {
+        "required": "Email is required",
+        "invalid": "Invalid email"
+      }
+    },
+    "username": {
+      "label": "Username",
+      "placeholder": "Your username",
+      "ariaLabel": "Username input field",
+      "validation": {
+        "required": "Username is required",
+        "minLength": "At least 2 characters",
+        "maxLength": "Maximum 150 characters",
+        "pattern": "Allowed characters: letters, numbers, dots (.), dashes (-), and underscores (_)"
+      }
+    },
+    "password": {
+      "validation": {
+        "required": "Password is required"
+      }
+    },
+    "confirmPassword": {
+      "label": "Confirm password",
+      "ariaLabel": "Password confirmation input field",
+      "validation": {
+        "required": "Password confirmation is required",
+        "match": "Passwords do not match"
+      }
+    },
+    "passwordRules": {
+      "title": "Password rules",
+      "length": "At least 8 characters",
+      "minUppercase": "At least one uppercase letter",
+      "minNumber": "Password must contain at least one number"
+    }
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "description": "Enter your email address and we’ll send you a link to reset your password.",
+    "email": {
+      "label": "Email",
+      "placeholder": "email@test.com",
+      "ariaLabel": "Email",
+      "validation": {
+        "required": "This field is required",
+        "invalid": "Invalid email address"
+      }
+    },
+    "submit": {
+      "text": "Send reset link",
+      "ariaLabel": "Password reset button"
+    },
+    "success": {
+      "title": "Check your inbox",
+      "message": "We have sent a reset link to {{email}}",
+      "notReceived": "Didn't receive the email? Check your spam folder or",
+      "tryAgain": "try again"
+    },
+    "backToLogin": "Back to login",
+    "alert": {
+      "success": "If your email address is valid, you will receive a password reset link."
+    }
+  },
+  "resetPasswordConfirm": {
+    "title": "Reset Password",
+    "checkingLink": "Checking the link...",
+    "invalidLink": "The link is invalid or has expired.",
+    "labels": {
+      "password": "New Password",
+      "confirmPassword": "Confirm Password"
+    },
+    "placeholders": {
+      "password": "••••••••",
+      "confirmPassword": "••••••••"
+    },
+    "button": "Reset",
+    "validation": {
+      "password": {
+        "minLength": "At least 8 characters",
+        "uppercase": "At least one uppercase letter",
+        "number": "At least one number",
+        "specialChar": "At least one special character",
+        "required": "Required field"
+      },
+      "confirmPassword": {
+        "match": "Passwords do not match",
+        "required": "Required field"
+      }
+    },
+    "alerts": {
+      "invalidLink": "The reset link has expired or is invalid.",
+      "success": "Your password has been successfully reset.",
+      "error": "Unknown error during password reset."
+    }
+  },
+  "modeSelection": {
+    "title": "Select a Mode",
+    "guestWarning": {
+      "title": "Warning",
+      "message": "You are playing as a guest. <link>Create an account</link> to save your progress."
+    },
+    "cards": {
+      "flag": {
+        "title": "Flag",
+        "description": "Guess the flags accurately."
+      },
+      "cities": {
+        "title": "Cities",
+        "description": "Test your knowledge of cities."
+      }
+    }
+  }
+}

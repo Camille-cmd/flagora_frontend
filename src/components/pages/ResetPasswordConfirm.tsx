@@ -8,84 +8,80 @@ import {useAlert} from "../../contexts/AlertContext.tsx";
 import {AlertInfo} from "../../interfaces/alert.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import {useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
 
-const ResetSchema = Yup.object().shape({
-    password: Yup.string()
-        .min(8, "Au moins 8 caractères")
-        .matches(/[A-Z]/, "Au moins une lettre majuscule")
-        .matches(/\d/, "Au moins un chiffre")
-        .matches(/[^a-zA-Z\d]/, "Au moins un caractère spécial")
-        .required("Champ requis"),
-    confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password")], "Les mots de passe ne correspondent pas")
-        .required("Champ requis"),
-});
 export default function ResetPasswordConfirm() {
+    const {t} = useTranslation();
     const {resetPasswordValidate, resetPasswordConfirm} = useAuth();
     const navigate = useNavigate();
     const {setAlertInfo} = useAlert();
-
     const {uid, token} = useParams<{ uid: string; token: string }>();
     const [isTokenValid, setIsTokenValid] = useState<boolean | null>(null);
+
+    const ResetSchema = Yup.object().shape({
+        password: Yup.string()
+            .min(8, t("resetPasswordConfirm.validation.password.minLength"))
+            .matches(/[A-Z]/, t("resetPasswordConfirm.validation.password.uppercase"))
+            .matches(/\d/, t("resetPasswordConfirm.validation.password.number"))
+            .matches(/[^a-zA-Z\d]/, t("resetPasswordConfirm.validation.password.specialChar"))
+            .required(t("resetPasswordConfirm.validation.password.required")),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref("password")], t("resetPasswordConfirm.validation.confirmPassword.match"))
+            .required(t("resetPasswordConfirm.validation.confirmPassword.required"))
+    });
 
     const handleSubmit = async (values: { password: string; confirmPassword: string }) => {
         if (!uid || !token) {
             setAlertInfo({
                 type: "error",
-                message: "Lien de réinitialisation invalide.",
+                message: t("resetPasswordConfirm.alerts.invalidLink")
             } as AlertInfo);
             return;
         }
 
         resetPasswordConfirm(uid, token, values.password)
-            .then(
-                () => {
-                    navigate("/login", {replace: true});
-                    setAlertInfo({
-                        type: "success",
-                        message: "Votre mot de passe a été réinitialisé avec succès.",
-                    } as AlertInfo);
-                }
-            )
+            .then(() => {
+                navigate("/login", {replace: true});
+                setAlertInfo({
+                    type: "success",
+                    message: t("resetPasswordConfirm.alerts.success")
+                } as AlertInfo);
+            })
             .catch((error) => {
-                if (error.response.status === 400) {
+                if (error.response?.status === 400) {
                     setAlertInfo({
                         type: "error",
-                        message: "Le lien de réinitialisation a expiré ou est invalide.",
+                        message: t("resetPasswordConfirm.alerts.invalidLink")
                     } as AlertInfo);
                 } else {
                     setAlertInfo({
                         type: "error",
-                        message: "Erreur inconnue lors de la réinitialisation du mot de passe.",
+                        message: t("resetPasswordConfirm.alerts.error")
                     } as AlertInfo);
                 }
             });
     };
 
     useEffect(() => {
-        // Check if the token is valid before allowing the user to reset the password
         resetPasswordValidate(uid, token)
-
             .then(() => setIsTokenValid(true))
-
             .catch((error) => {
                 setIsTokenValid(false);
                 if (error.message === "invalid_token") {
                     setAlertInfo({
                         type: "error",
-                        message: "Le lien de réinitialisation a expiré ou est invalide.",
-                        timeout: 10,
+                        message: t("resetPasswordConfirm.alerts.invalidLink"),
+                        timeout: 10
                     } as AlertInfo);
                     navigate("/", {replace: true});
                 }
             });
     }, []);
 
-
     if (isTokenValid === false) {
         return (
             <div className="text-center mt-20 text-red-600">
-                Le lien est invalide ou a expiré.
+                {t("resetPasswordConfirm.invalidLink")}
             </div>
         );
     }
@@ -93,15 +89,16 @@ export default function ResetPasswordConfirm() {
     if (isTokenValid === null) {
         return (
             <div className="text-center mt-20 text-gray-500">
-                Vérification du lien en cours...
+                {t("resetPasswordConfirm.checkingLink")}
             </div>
         );
     }
+
     return (
         <div className="flex flex-col justify-center items-center px-4 mt-20">
             <Card className="lg:w-96" color1="raspberry" color2="blue">
                 <h2 className="text-2xl text-center font-bold mb-6 text-primary dark:text-white">
-                    Réinitialiser le mot de passe
+                    {t("resetPasswordConfirm.title")}
                 </h2>
 
                 <Formik
@@ -112,14 +109,13 @@ export default function ResetPasswordConfirm() {
                     {({isSubmitting}) => (
                         <Form className="space-y-6">
                             <div className="space-y-2">
-                                <label htmlFor="password"
-                                       className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Nouveau mot de passe
+                                <label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    {t("resetPasswordConfirm.labels.password")}
                                 </label>
                                 <Field
                                     name="password"
                                     type="password"
-                                    placeholder="••••••••"
+                                    placeholder={t("resetPasswordConfirm.placeholders.password")}
                                     as={Input}
                                     className="w-full"
                                 />
@@ -127,27 +123,24 @@ export default function ResetPasswordConfirm() {
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="confirmPassword"
-                                       className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Confirmer le mot de passe
+                                <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    {t("resetPasswordConfirm.labels.confirmPassword")}
                                 </label>
                                 <Field
                                     name="confirmPassword"
                                     type="password"
-                                    placeholder="••••••••"
+                                    placeholder={t("resetPasswordConfirm.placeholders.confirmPassword")}
                                     as={Input}
                                     className="w-full"
                                 />
-                                <ErrorMessage name="confirmPassword"
-                                              component="div"
-                                              className="text-red-500 text-sm"/>
+                                <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm"/>
                             </div>
 
                             <Button
                                 type="submit"
                                 buttonType="raspberry"
                                 className="w-full"
-                                text="Réinitialiser"
+                                text={t("resetPasswordConfirm.button")}
                                 disabled={isSubmitting}
                             />
                         </Form>

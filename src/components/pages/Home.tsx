@@ -1,9 +1,11 @@
 import {Link} from "react-router-dom"
 import {KeyRound, UserRoundPlus} from "lucide-react";
 import {useAuth} from "../../services/auth/useAuth.tsx";
+import {useTranslation} from "react-i18next";
 
 export default function Home() {
     const {isAuthenticated} = useAuth();
+    const {t} = useTranslation()
 
     return (
 
@@ -15,7 +17,7 @@ export default function Home() {
                     </h1>
                 </div>
                 <p className="text-lg mt-2 transition-colors duration-300">
-                    Apprenez les drapeaux et capitales du monde entier
+                    {t("home.welcomeMessage")}
                 </p>
             </div>
 
@@ -24,7 +26,7 @@ export default function Home() {
                     to="/mode-selection"
                     className="block w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-secondary dark:text-gray-200 font-medium rounded-lg text-center transition-colors no-underline"
                 >
-                    Jouer
+                    {t("home.play")}
                 </Link>
 
                 {!isAuthenticated &&
@@ -34,7 +36,7 @@ export default function Home() {
                         className="w-full py-3  bg-darkblue-600 dark:bg-raspberry-700 hover:bg-darkblue-700 dark:hover:bg-raspberry-600 text-primary dark:text-gray-200 font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
                     >
                         <span className="mr-2"><KeyRound/></span>
-                        Connexion
+                        {t("home.connection")}
                     </Link>
 
                     <Link
@@ -42,7 +44,7 @@ export default function Home() {
                         className="w-full py-3 dark:bg-gray-700 dark:text-gray-400 border border-solid border-darkblue-600 text-secondary font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
                     >
                         <span className="mr-2"><UserRoundPlus/></span>
-                        Créer un compte
+                        {t("home.createAccount")}
                     </Link>
                     </>
                 }

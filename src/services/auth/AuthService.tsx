@@ -1,6 +1,7 @@
 import api from "../api/api.tsx"
 import {IsUserAvailableResponse, LoginResponse, User} from "../../interfaces/apiResponse.tsx"
 import axios from "axios";
+import i18n from "../../i18n/i18n.tsx";
 
 
 export default class AuthService {
@@ -24,17 +25,10 @@ export default class AuthService {
 
         } catch (error: unknown) {
             if (axios.isAxiosError(error) && error.response) {
-                if (error.response?.data.code === "invalid_credentials") {
-                    throw new Error("invalid_credentials");
-                }
-                const message =
-                    error.response.data.message ??
-                    error.message ??
-                    'Login failed';
-
-                throw new Error(message);
+                throw new Error(error.response.data.error ?? error.response.data.code ?? 'Login failed');
             } else {
-                throw error;
+                console.error(error)
+                throw new Error('Login failed');
             }
         }
     }
@@ -44,12 +38,24 @@ export default class AuthService {
             throw new Error("No sessionId found");
         }
         try {
-            const response = await api.get<User>('auth/me');
+            const response = await api.get<User>('user/me');
+
+            // Set the correct language if it is different from the one detected by i18n
+            const current_lang = i18n.language
+            const lang = response.data.language;
+            if (response.data.language !== current_lang) {
+                i18n.changeLanguage(response.data.language)
+                    .then(() => {
+                        i18n.changeLanguage(lang)
+                    })
+            }
 
             return {
                 id: response.data.id,
                 username: response.data.username,
                 email: response.data.email,
+                isEmailVerified: response.data.isEmailVerified,
+                language: response.data.language
             } as User;
 
         } catch (error: unknown) {

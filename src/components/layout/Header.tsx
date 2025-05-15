@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react"
 import {ChevronLeft, LogOut, Settings, User} from "lucide-react"
 import Button from "../common/Button.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
+import LanguageDropdown from "./LanguageDropdown.tsx";
 
 export function Header() {
     const [showBackButton, setShowBackButton] = useState<boolean>(false)
@@ -61,6 +62,8 @@ export function Header() {
                 </div>
                 <div className="flex items-center space-x-4">
                     <ThemeToggle/>
+
+                    <LanguageDropdown />
 
                     {/* User account dropdown */}
                     {isAuthenticated && (

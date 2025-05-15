@@ -3,6 +3,8 @@ export interface User {
   id: string
   username: string
   email: string
+  language: string
+  isEmailVerified: boolean
 }
 
 // Login response
