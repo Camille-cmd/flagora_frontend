@@ -25,11 +25,12 @@ export default function Login() {
     const {t} = useTranslation()
 
     const LoginValidationSchema = Yup.object().shape({
+        // the "email" field can be either an email or a username
         email: Yup.string()
-            .required(t("login.email.required"))
+            .required(t("login.email.validation.required"))
             .test(
                 'email-or-username',
-                t("login.validation.invalid"),
+                t("login.email.validation.invalid"),
                 function (value) {
                     if (!value) return true; // let .required handle an empty case
                     if (value.includes('@')) {
@@ -37,7 +38,7 @@ export default function Login() {
                     }
                     return true; // accept as username
                 }),
-        password: Yup.string().required(t("login.password.required")),
+        password: Yup.string().required(t("register.password.validation.required")),
     });
 
     useEffect(() => {
@@ -58,12 +59,12 @@ export default function Login() {
         login(values.email, values.password)
             .then(() => {
                 navigate("/mode-selection")
-                setAlertInfo({type: "success", message: t("login.success")} as AlertInfo)
+                setAlertInfo({type: "success", message: t("login.alerts.success")} as AlertInfo)
             })
             .catch((error: AxiosError) => {
                 setAlertInfo({
                     type: "error",
-                    message: error.message || t("errors.generic"),
+                    message: error.message,
                     timeout: 10,
                 } as AlertInfo);
 
@@ -115,7 +116,7 @@ export default function Login() {
                                         htmlFor="password"
                                         className="block text-sm text-secondary dark:text-primary"
                                     >
-                                        {t("login.password.label")}
+                                        {t("register.password.label")}
                                     </label>
                                     <Link
                                         to="/forgot-password"
@@ -129,7 +130,7 @@ export default function Login() {
                                     name="password"
                                     type="password"
                                     placeholder="••••••••"
-                                    aria-label={t("login.password.ariaLabel")}
+                                    aria-label={t("register.password.ariaLabel")}
                                     as={Input}
                                     className="w-full p-2"
                                 />
@@ -144,10 +145,10 @@ export default function Login() {
                                 type="submit"
                                 buttonType="primary"
                                 className="w-full px-5 py-2.5 mt-20"
-                                text={t("login.submit")}
+                                text={t("login.submit.text")}
                                 disabled={!isValid || !dirty || isSubmitting}
                                 loading={isSubmitting}
-                                aria-label={t("login.submitAriaLabel")}
+                                aria-label={t("login.submit.ariaLabel")}
                             />
                         </Form>
                     )}

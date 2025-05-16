@@ -13,6 +13,7 @@ import {AlertProvider} from "./contexts/AlertContext.tsx";
 import {AuthProvider} from "./contexts/AuthContext.tsx";
 import AlertPopup from "./components/common/Alert/AlertPopup.tsx";
 import ResetPasswordConfirm from "./components/pages/ResetPasswordConfirm.tsx";
+import EmailConfirm from "./components/pages/EmailConfirm.tsx";
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/forgot-password" element={<ResetPassword/>}/>
                     <Route path="/reset-password/:uid/:token" element={<ResetPasswordConfirm />} />
+                    <Route path="/email-confirmation/:uid/:token" element={<EmailConfirm />} />
                     <Route path="/mode-selection" element={<ModeSelection/>}/>
                     <Route path="/game" element={<Game/>}/>
 

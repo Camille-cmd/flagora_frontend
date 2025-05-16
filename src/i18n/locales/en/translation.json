@@ -1,47 +1,75 @@
 {
+  "backToLogin": "Back to login",
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "resetPasswordFailed": "Password reset failed. Please try again.",
+    "resetPasswordValidateFailed": "Password reset validation failed. Please try again.",
+    "resetPasswordConfirmFailed": "Password reset confirmation failed. Please try again.",
+    "registerFailed": "Registration failed. Please try again.",
+    "loginFailed": "Login failed. Please try again."
+  },
+  "passwordRules": {
+    "length": "At least 8 characters",
+    "uppercase": "At least one uppercase letter",
+    "number": "At least one number"
+  },
+  "header": {
+    "userMenu": {
+      "dropdown": {
+        "ariaLabel": "User menu dropdown"
+      },
+      "myAccount": "My account",
+      "EmailNotVerifiedAriaLabel": "Email not verified",
+      "logout": {
+        "ariaLabel": "Logout",
+        "text": "Logout"
+      }
+    }
+  },
   "home": {
-    "welcomeMessage": "Easy way to learn the flags and capitals of the world",
+    "welcomeMessage": "Easily learn flags and capitals from around the world",
     "play": "Play",
-    "connection": "Connection",
+    "connection": "Login",
     "createAccount": "Create an account"
   },
   "login": {
     "title": "Login",
-    "submit": "Log in",
-    "submitAriaLabel": "Login button",
+    "submit": {
+      "text": "Log in",
+      "ariaLabel": "Login button"
+    },
     "accountMissing": "Don't have an account?",
-    "success": "You are now logged in.",
     "createAccount": "Create one",
     "email": {
-      "label": "Email",
-      "placeholder": "myemail@example.com",
-      "ariaLabel": "Email input field",
+      "label": "Email or username",
+      "placeholder": "TheFlagHunter12",
+      "ariaLabel": "Email or username input field",
       "validation": {
-        "required": "Email is required",
-        "invalid": "Invalid email"
+        "required": "Email or username is required",
+        "invalid": "Invalid email or username"
       }
     },
     "password": {
-      "label": "Password",
-      "ariaLabel": "Password input field",
-      "forgotPassword": "Forgot password?",
-      "validation": {
-        "required": "Password is required"
-      }
+      "forgotPassword": "Forgot your password?"
+    },
+    "alerts": {
+      "success": "You are now logged in."
     }
   },
   "register": {
     "title": "Create an account",
     "alreadyHaveAccount": "Already have an account?",
     "login": "Log in",
-    "submitAriaLabel": "Create account button",
-    "submit": "Create account",
-    "success": "Your account has been successfully created. You can now log in.",
+    "submit": {
+      "text": "Create account",
+      "ariaLabel": "Create account button"
+    },
     "username_not_available": "This username is not available",
-    "email_already_registered": "This email is already registered",
-    "alreadyRegistered": "It looks like this email is already registered.",
     "connect": "Log in",
     "email": {
+      "label": "Email",
+      "placeholder": "my.email@flaghunter.com",
+      "ariaLabel": "Email input field",
       "validation": {
         "required": "Email is required",
         "invalid": "Invalid email"
@@ -55,10 +83,12 @@
         "required": "Username is required",
         "minLength": "At least 2 characters",
         "maxLength": "Maximum 150 characters",
-        "pattern": "Allowed characters: letters, numbers, dots (.), dashes (-), and underscores (_)"
+        "pattern": "Allowed characters: letters, numbers, periods (.), dashes (-), and underscores (_)"
       }
     },
     "password": {
+      "label": "Password",
+      "ariaLabel": "Password input field",
       "validation": {
         "required": "Password is required"
       }
@@ -72,24 +102,15 @@
       }
     },
     "passwordRules": {
-      "title": "Password rules",
-      "length": "At least 8 characters",
-      "minUppercase": "At least one uppercase letter",
-      "minNumber": "Password must contain at least one number"
+      "title": "Password must contain:"
+    },
+    "alerts": {
+      "success": "Your account was successfully created. You can now log in."
     }
   },
   "resetPassword": {
-    "title": "Reset Password",
-    "description": "Enter your email address and we’ll send you a link to reset your password.",
-    "email": {
-      "label": "Email",
-      "placeholder": "email@test.com",
-      "ariaLabel": "Email",
-      "validation": {
-        "required": "This field is required",
-        "invalid": "Invalid email address"
-      }
-    },
+    "title": "Reset password",
+    "description": "Enter your email address and we will send you a link to reset your password.",
     "submit": {
       "text": "Send reset link",
       "ariaLabel": "Password reset button"
@@ -97,51 +118,35 @@
     "success": {
       "title": "Check your inbox",
       "message": "We have sent a reset link to {{email}}",
-      "notReceived": "Didn't receive the email? Check your spam folder or",
+      "notReceived": "Didn't receive an email? Check your spam folder or",
       "tryAgain": "try again"
     },
-    "backToLogin": "Back to login",
-    "alert": {
-      "success": "If your email address is valid, you will receive a password reset link."
+    "alerts": {
+      "success": "If your email is valid, you will receive a password reset link."
     }
   },
   "resetPasswordConfirm": {
-    "title": "Reset Password",
+    "title": "Reset password",
     "checkingLink": "Checking the link...",
-    "invalidLink": "The link is invalid or has expired.",
-    "labels": {
-      "password": "New Password",
-      "confirmPassword": "Confirm Password"
-    },
-    "placeholders": {
-      "password": "••••••••",
-      "confirmPassword": "••••••••"
-    },
-    "button": "Reset",
-    "validation": {
-      "password": {
-        "minLength": "At least 8 characters",
-        "uppercase": "At least one uppercase letter",
-        "number": "At least one number",
-        "specialChar": "At least one special character",
-        "required": "Required field"
-      },
-      "confirmPassword": {
-        "match": "Passwords do not match",
-        "required": "Required field"
-      }
+    "submit": {
+      "text": "Reset",
+      "ariaLabel": "Password reset button"
     },
     "alerts": {
       "invalidLink": "The reset link has expired or is invalid.",
-      "success": "Your password has been successfully reset.",
-      "error": "Unknown error during password reset."
+      "success": "Your password was successfully reset.",
+      "error": "Unknown error occurred while resetting the password."
     }
   },
   "modeSelection": {
-    "title": "Select a Mode",
+    "title": "Select a mode",
     "guestWarning": {
       "title": "Warning",
-      "message": "You are playing as a guest. <link>Create an account</link> to save your progress."
+      "message": {
+        "part1": "You are playing as a guest.",
+        "link": "Create an account",
+        "part2": "to save your progress."
+      }
     },
     "cards": {
       "flag": {
@@ -150,7 +155,87 @@
       },
       "cities": {
         "title": "Cities",
-        "description": "Test your knowledge of cities."
+        "description": "Test your knowledge about cities."
+      }
+    }
+  },
+  "emailConfirm": {
+    "alerts": {
+      "success": "Your email address has been successfully confirmed. Thank you!"
+    }
+  },
+  "userAccount": {
+    "title": "My account",
+    "description": "Manage your account settings.",
+    "isEmailVerified": {
+      "title": "Email not verified",
+      "verificationSent": "An email has been sent to your e-mail adresse. Please check your inbox.",
+      "notVerified": "Your email address is not verified.",
+      "button": {
+        "text": "Send a verification email",
+        "ariaLabel": "Send verification email button"
+      },
+      "buttonSent": {
+        "text": "Verification e-mail successfully sent!"
+      }
+    },
+    "currentPassword": {
+      "validation": {
+        "required": "Current password is required"
+      }
+    },
+    "submitPersonalInfo": {
+      "alerts": {
+        "success": "Your personal information has been successfully updated."
+      }
+    },
+    "submitPassword": {
+      "alerts": {
+        "success": "Your password has been successfully updated."
+      }
+    },
+    "sendVerificationEmail": {
+      "alerts": {
+        "success": "Verification email sent. Please check your inbox."
+      }
+    },
+    "personalInfoCard": {
+      "title": "Personal Information",
+      "cantChangeEmail": "For now, the email address cannot be changed.",
+      "unverifiedEmail": "Not verified.",
+      "submit": {
+        "text": "Update information",
+        "ariaLabel": "Update personal information button"
+      }
+    },
+    "changePasswordCard": {
+      "title": "Change Password",
+      "currentPassword": {
+        "label": "Current password",
+        "ariaLabel": "Current password input field",
+        "placeholder": "Enter your current password"
+      },
+      "newPassword": {
+        "label": "New password",
+        "ariaLabel": "New password input field",
+        "placeholder": "Enter your current password",
+        "showHidePassword": {
+          "ariaLabel": "Show/Hide password button"
+        }
+      },
+      "confirmNewPassword": {
+        "label": "Confirm new password",
+        "ariaLabel": "Confirm new password input field",
+        "placeholder": "Re-enter your new password"
+      },
+      "submit": {
+        "text": "Change password",
+        "ariaLabel": "Change password button"
+      }
+    },
+    "submitUsername": {
+      "alerts": {
+        "success": "Your username has been successfully updated."
       }
     }
   }

@@ -9,28 +9,26 @@ import {AlertInfo} from "../../interfaces/alert.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
+import {passwordConfirmValidation, passwordValidation} from "../../utils/validationSchemas.tsx";
 
 export default function ResetPasswordConfirm() {
     const {t} = useTranslation();
     const {resetPasswordValidate, resetPasswordConfirm} = useAuth();
     const navigate = useNavigate();
     const {setAlertInfo} = useAlert();
+
+    // Get the uid and token from the URL parameters
     const {uid, token} = useParams<{ uid: string; token: string }>();
+
     const [isTokenValid, setIsTokenValid] = useState<boolean | null>(null);
 
-    const ResetSchema = Yup.object().shape({
-        password: Yup.string()
-            .min(8, t("resetPasswordConfirm.validation.password.minLength"))
-            .matches(/[A-Z]/, t("resetPasswordConfirm.validation.password.uppercase"))
-            .matches(/\d/, t("resetPasswordConfirm.validation.password.number"))
-            .matches(/[^a-zA-Z\d]/, t("resetPasswordConfirm.validation.password.specialChar"))
-            .required(t("resetPasswordConfirm.validation.password.required")),
-        confirmPassword: Yup.string()
-            .oneOf([Yup.ref("password")], t("resetPasswordConfirm.validation.confirmPassword.match"))
-            .required(t("resetPasswordConfirm.validation.confirmPassword.required"))
+    const ResetValidationSchema = Yup.object().shape({
+        password: passwordValidation,
+        confirmPassword: passwordConfirmValidation
     });
 
     const handleSubmit = async (values: { password: string; confirmPassword: string }) => {
+        // If one of the parameters is missing, show an error message
         if (!uid || !token) {
             setAlertInfo({
                 type: "error",
@@ -56,13 +54,15 @@ export default function ResetPasswordConfirm() {
                 } else {
                     setAlertInfo({
                         type: "error",
-                        message: t("resetPasswordConfirm.alerts.error")
+                        message: error.message,
                     } as AlertInfo);
                 }
             });
     };
 
     useEffect(() => {
+        // If the token is invalid, the reset cannot be completed
+        // redirect to the main page
         resetPasswordValidate(uid, token)
             .then(() => setIsTokenValid(true))
             .catch((error) => {
@@ -81,7 +81,7 @@ export default function ResetPasswordConfirm() {
     if (isTokenValid === false) {
         return (
             <div className="text-center mt-20 text-red-600">
-                {t("resetPasswordConfirm.invalidLink")}
+                {t("resetPasswordConfirm.alerts.invalidLink")}
             </div>
         );
     }
@@ -103,19 +103,21 @@ export default function ResetPasswordConfirm() {
 
                 <Formik
                     initialValues={{password: "", confirmPassword: ""}}
-                    validationSchema={ResetSchema}
+                    validationSchema={ResetValidationSchema}
                     onSubmit={handleSubmit}
                 >
                     {({isSubmitting}) => (
                         <Form className="space-y-6">
                             <div className="space-y-2">
                                 <label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    {t("resetPasswordConfirm.labels.password")}
+                                    {t("register.password.label")}
                                 </label>
-                                <Field
+                                 <Field
+                                    id="password"
                                     name="password"
                                     type="password"
-                                    placeholder={t("resetPasswordConfirm.placeholders.password")}
+                                    placeholder="••••••••"
+                                    aria-label={t("register.password.ariaLabel")}
                                     as={Input}
                                     className="w-full"
                                 />
@@ -124,12 +126,14 @@ export default function ResetPasswordConfirm() {
 
                             <div className="space-y-2">
                                 <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    {t("resetPasswordConfirm.labels.confirmPassword")}
+                                    {t("register.confirmPassword.label")}
                                 </label>
-                                <Field
+                                 <Field
+                                    id="confirmPassword"
                                     name="confirmPassword"
                                     type="password"
-                                    placeholder={t("resetPasswordConfirm.placeholders.confirmPassword")}
+                                    placeholder="••••••••"
+                                    aria-label={t("register.confirmPassword.ariaLabel")}
                                     as={Input}
                                     className="w-full"
                                 />
@@ -140,7 +144,8 @@ export default function ResetPasswordConfirm() {
                                 type="submit"
                                 buttonType="raspberry"
                                 className="w-full"
-                                text={t("resetPasswordConfirm.button")}
+                                text={t("resetPasswordConfirm..submit.text")}
+                                aria-label={t("resetPasswordConfirm.submit.ariaLabel")}
                                 disabled={isSubmitting}
                             />
                         </Form>

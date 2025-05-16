@@ -5,8 +5,10 @@ import {ChevronLeft, LogOut, Settings, User} from "lucide-react"
 import Button from "../common/Button.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import LanguageDropdown from "./LanguageDropdown.tsx";
+import {useTranslation} from "react-i18next";
 
 export function Header() {
+    const {t} = useTranslation();
     const [showBackButton, setShowBackButton] = useState<boolean>(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
     const location = useLocation()
@@ -25,7 +27,6 @@ export function Header() {
                 setIsDropdownOpen(false)
             }
         }
-
         document.addEventListener("mousedown", handleClickOutside)
         return () => {
             document.removeEventListener("mousedown", handleClickOutside)
@@ -63,7 +64,7 @@ export function Header() {
                 <div className="flex items-center space-x-4">
                     <ThemeToggle/>
 
-                    <LanguageDropdown />
+                    <LanguageDropdown/>
 
                     {/* User account dropdown */}
                     {isAuthenticated && (
@@ -73,7 +74,7 @@ export function Header() {
                                 buttonType="secondary"
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                 className="p-2 rounded-full flex items-center justify-center focus:outline-none hover:shadow-none duration-300"
-                                aria-label="User menu"
+                                aria-label={t("header.userMenu.dropdown.ariaLabel")}
                             >
                                 <User size={20}/>
                             </Button>
@@ -97,7 +98,17 @@ export function Header() {
                                             onClick={() => setIsDropdownOpen(false)}
                                         >
                                             <Settings size={16} className="mr-2 text-gray-500 dark:text-gray-400"/>
-                                            Mon compte
+                                            <span>{t("header.userMenu.myAccount")}</span>
+                                            {!user?.isEmailVerified && (
+                                                <span className="relative group cursor-default ml-2">
+                                                    <span
+                                                        className="text-yellow-500"
+                                                        aria-label={t("header.userMenu.EmailNotVerifiedAriaLabel")}
+                                                    >
+                                                       ⚠️
+                                                    </span>
+                                                </span>
+                                            )}
                                         </Link>
 
 
@@ -110,10 +121,10 @@ export function Header() {
                                                 setIsDropdownOpen(false)
                                                 handleLogout()
                                             }}
-                                            aria-label={"Logout"}
-                                            >
-                                              <LogOut size={16} className="mr-2"/>
-                                            Déconnexion
+                                            aria-label={t("header.userMenu.logout.ariaLabel")}
+                                        >
+                                            <LogOut size={16} className="mr-2"/>
+                                            {t("header.userMenu.logout.text")}
                                         </Button>
 
                                     </div>

@@ -14,7 +14,10 @@ interface AuthContextType {
     resetPassword : (email: string) => Promise<void>
     resetPasswordConfirm : (uid: string, token: string, newPassword: string) => Promise<void>
     resetPasswordValidate : (uid: string | undefined, token: string | undefined) => Promise<void>
-    // updateUser: (userData: Partial<User>) => Promise<void>
+    verifyEmail : (uid: string| undefined, token: string | undefined) => Promise<void>
+    sendVerificationEmail : () => Promise<void>
+    updateUser : (username: string) => Promise<void>
+    updateUserPassword : (oldPassword: string, newPassword: string) => Promise<void>
 }
 
 // Create the context with a default value
@@ -72,6 +75,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         return await AuthService.resetPasswordValidate(uid || "", token || "");
     }
 
+    const verifyEmail = async (uid: string | undefined, token: string | undefined): Promise<void> => {
+        await AuthService.verifyEmail(uid || "", token || "");
+    }
+
+    const sendVerificationEmail = async (): Promise<void> => {
+        await AuthService.sendVerificationEmail();
+    }
+
+    const updateUser = async (username: string): Promise<void> => {
+        const user = await AuthService.updateUser(username);
+        setUser(user);
+    }
+
+    const updateUserPassword = async (oldPassword: string, newPassword: string): Promise<void> => {
+        await AuthService.updateUserPassword(oldPassword, newPassword);
+    }
+
     // Value object that will be passed to consumers
     const value = {
         user,
@@ -82,7 +102,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         isUserNameAvailable,
         resetPassword,
         resetPasswordConfirm,
-        resetPasswordValidate
+        resetPasswordValidate,
+        verifyEmail,
+        sendVerificationEmail,
+        updateUser,
+        updateUserPassword
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -26,3 +26,7 @@ export interface ProfileResponse {
 export interface IsUserAvailableResponse {
     available: boolean
 }
+
+export interface BackendErrorResponse {
+    errorMessage: string
+}

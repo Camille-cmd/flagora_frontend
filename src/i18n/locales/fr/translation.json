@@ -1,6 +1,30 @@
 {
+  "backToLogin": "Retour à la connexion",
   "errors": {
-    "generic": "Une erreur s'est produite. Veuillez réessayer."
+    "generic": "Une erreur s'est produite. Veuillez réessayer.",
+    "resetPasswordFailed": "Échec de la réinitialisation du mot de passe. Veuillez réessayer.",
+    "resetPasswordValidateFailed": "Échec de la validation de la réinitialisation du mot de passe. Veuillez réessayer.",
+    "resetPasswordConfirmFailed": "Échec de la confirmation de la réinitialisation du mot de passe. Veuillez réessayer.",
+    "registerFailed": "Échec de l'inscription. Veuillez réessayer.",
+    "loginFailed": "Échec de la connexion. Veuillez réessayer."
+  },
+  "passwordRules": {
+    "length": "Au moins 8 caractères",
+    "uppercase": "Au moins une lettre majuscule",
+    "number": "Au moins un chiffre"
+  },
+  "header": {
+    "userMenu": {
+      "dropdown": {
+        "ariaLabel": "Menu déroulant de l'utilisateur"
+      },
+      "myAccount": "Mon compte",
+      "EmailNotVerifiedAriaLabel": "Email non vérifié",
+      "logout": {
+        "ariaLabel": "Déconnexion",
+        "text": "Déconnexion"
+      }
+    }
   },
   "home": {
     "welcomeMessage": "Apprenez facilement les drapeaux et capitales du monde entier",
@@ -10,41 +34,42 @@
   },
   "login": {
     "title": "Connexion",
-    "submit": "Se connecter",
-    "submitAriaLabel": "Bouton de connexion",
+    "submit": {
+      "text": "Se connecter",
+      "ariaLabel": "Bouton de connexion"
+    },
     "accountMissing": "Vous n'avez pas de compte?",
-    "success": "Vous êtes maintenant connecté.",
     "createAccount": "Créez-en un",
     "email": {
-      "label": "Email",
-      "placeholder": "monemail@example.com",
-      "ariaLabel": "Champ de saisie de l’email",
+      "label": "Email ou nom d'utilisateur",
+      "placeholder": "LeFlagHunter12",
+      "ariaLabel": "Champ de saisie de l’email ou nom d’utilisateur",
       "validation": {
-        "required": "L'email est requis",
-        "invalid": "Email invalide"
+        "required": "L'email ou nom d'utilisateur est requis",
+        "invalid": "Email ou nom d'utilisateur invalide"
       }
     },
     "password": {
-      "label": "Mot de passe",
-      "ariaLabel": "Champ de saisie du mot de passe",
-      "forgotPassword": "Mot de passe oublié ?",
-      "validation": {
-        "required": "Le mot de passe est requis"
-      }
+      "forgotPassword": "Mot de passe oublié ?"
+    },
+    "alerts": {
+      "success": "Vous êtes maintenant connecté."
     }
   },
   "register": {
     "title": "Créer un compte",
     "alreadyHaveAccount": "Vous avez déjà un compte?",
     "login": "Connectez-vous",
-    "submitAriaLabel": "Bouton de création de compte",
-    "submit": "Créer un compte",
-    "success": "Votre compte a bien été créé. Vous pouvez maintenant vous connecter.",
+    "submit": {
+      "text": "Créer un compte",
+      "ariaLabel": "Bouton de création de compte"
+    },
     "username_not_available": "Ce nom d'utilisateur n'est pas disponible",
-    "email_already_registered": "Cet email est déjà enregistré",
-    "alreadyRegistered": "Il semble que cet email soit déjà enregistré.",
     "connect": "Connectez-vous",
     "email": {
+      "label": "Email",
+      "placeholder": "mon.email@flaghunter.com",
+      "ariaLabel": "Champ de saisie de l’email",
       "validation": {
         "required": "L'email est requis",
         "invalid": "Email invalide"
@@ -62,6 +87,8 @@
       }
     },
     "password": {
+      "label": "Mot de passe",
+      "ariaLabel": "Champ de saisie du mot de passe",
       "validation": {
         "required": "Le mot de passe est requis"
       }
@@ -75,24 +102,15 @@
       }
     },
     "passwordRules": {
-      "title": "Règles de mot de passe",
-      "length": "Au moins 8 caractères",
-      "minUppercase": "Au moins une lettre majuscule",
-      "minNumber": "Le mot de passe doit contenir au moins un chiffre"
+      "title": "Règles du mot de passe"
+    },
+    "alerts": {
+      "success": "Votre compte a bien été créé. Vous pouvez maintenant vous connecter."
     }
   },
   "resetPassword": {
     "title": "Réinitialiser le mot de passe",
     "description": "Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
-    "email": {
-      "label": "Email",
-      "placeholder": "email@test.com",
-      "ariaLabel": "Email",
-      "validation": {
-        "required": "Champ requis",
-        "invalid": "Adresse email invalide"
-      }
-    },
     "submit": {
       "text": "Envoyer le lien de réinitialisation",
       "ariaLabel": "Bouton de réinitialisation du mot de passe"
@@ -103,36 +121,16 @@
       "notReceived": "Vous n'avez pas reçu l'email ? Vérifiez votre dossier spam ou",
       "tryAgain": "essayez à nouveau"
     },
-    "backToLogin": "Retour à la connexion",
-    "alert": {
+    "alerts": {
       "success": "Si votre adresse email est valide, vous recevrez un lien de réinitialisation de mot de passe."
     }
   },
   "resetPasswordConfirm": {
     "title": "Réinitialiser le mot de passe",
     "checkingLink": "Vérification du lien en cours...",
-    "invalidLink": "Le lien est invalide ou a expiré.",
-    "labels": {
-      "password": "Nouveau mot de passe",
-      "confirmPassword": "Confirmer le mot de passe"
-    },
-    "placeholders": {
-      "password": "••••••••",
-      "confirmPassword": "••••••••"
-    },
-    "button": "Réinitialiser",
-    "validation": {
-      "password": {
-        "minLength": "Au moins 8 caractères",
-        "uppercase": "Au moins une lettre majuscule",
-        "number": "Au moins un chiffre",
-        "specialChar": "Au moins un caractère spécial",
-        "required": "Champ requis"
-      },
-      "confirmPassword": {
-        "match": "Les mots de passe ne correspondent pas",
-        "required": "Champ requis"
-      }
+    "submit": {
+      "text": "Réinitialiser",
+      "ariaLabel": "Bouton de réinitialisation du mot de passe"
     },
     "alerts": {
       "invalidLink": "Le lien de réinitialisation a expiré ou est invalide.",
@@ -144,7 +142,11 @@
     "title": "Sélectionnez un mode",
     "guestWarning": {
       "title": "Attention",
-      "message": "Vous jouez en tant qu'invité. <link>Créez un compte</link> pour sauvegarder votre progression."
+      "message": {
+        "part1": "Vous jouez en tant qu'invité.",
+        "link": "Créez un compte",
+        "part2": "pour sauvegarder votre progression."
+      }
     },
     "cards": {
       "flag": {
@@ -154,6 +156,81 @@
       "cities": {
         "title": "Villes",
         "description": "Testez vos connaissances sur les villes."
+      }
+    }
+  },
+  "emailConfirm": {
+    "alerts": {
+      "success": "Votre adresse email a bien été confirmée. Merci !"
+    }
+  },
+  "userAccount": {
+    "title": "Mon compte",
+    "description": "Gérez vos informations personnelles et votre mot de passe.",
+    "isEmailVerified": {
+      "title": "Email non vérifié",
+      "verificationSent": "Un email a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.",
+      "notVerified": "Votre adresse e-mail n'est pas vérifiée.",
+      "button": {
+        "text": "Envoyer l'email de vérification",
+        "ariaLabel": "Bouton d'envoi email vérification"
+      },
+      "buttonSent": {
+        "text": "Email envoyé avec succès !"
+      }
+    },
+    "currentPassword": {
+      "validation": {
+        "required": "Mot de passe actuel requis"
+      }
+    },
+    "submitPersonalInfo": {
+      "alerts": {
+        "success": "Vos informations personnelles ont été mises à jour."
+      }
+    },
+    "submitPassword": {
+      "alerts": {
+        "success": "Votre mot de passe a été modifié."
+      }
+    },
+    "sendVerificationEmail": {
+      "alerts": {
+        "success": "Un email de vérification a été envoyé à votre adresse e-mail."
+      }
+    },
+    "personalInfoCard": {
+      "title": "Informations personnelles",
+      "cantChangeEmail": "Pour le moment, l'adresse e-mail ne peut pas être modifiée.",
+      "unverifiedEmail": "Non vérifiée.",
+      "submit": {
+        "text": "Mettre à jour les informations",
+        "ariaLabel": "Bouton de mise à jour des informations personnelles"
+      }
+    },
+    "changePasswordCard": {
+      "title": "Changer le mot de passe",
+      "currentPassword": {
+        "label": "Mot de passe actuel",
+        "ariaLabel": "Champ de saisie du mot de passe actuel",
+        "placeholder": "Entrez votre mot de passe actuel"
+      },
+      "newPassword": {
+        "label": "Nouveau mot de passe",
+        "ariaLabel": "Champ de saisie du nouveau mot de passe",
+        "placeholder": "Entrez votre nouveau mot de passe",
+        "showHidePassword": {
+          "ariaLabel": "Afficher/Masquer le mot de passe"
+        }
+      },
+      "confirmNewPassword": {
+        "label": "Confirmer le nouveau mot de passe",
+        "ariaLabel": "Champ de saisie de la confirmation du nouveau mot de passe",
+        "placeholder": "Ressaisissez votre nouveau mot de passe"
+      },
+      "submit": {
+        "text": "Changer le mot de passe",
+        "ariaLabel": "Bouton de changement de mot de passe"
       }
     }
   }

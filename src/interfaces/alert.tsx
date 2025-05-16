@@ -9,5 +9,5 @@ export interface AlertInfo {
     dismissible?: boolean
     onDismiss?: () => void
     className?: string
-    timeout?: number
+    timeout?: number | null // Timeout in seconds
 }

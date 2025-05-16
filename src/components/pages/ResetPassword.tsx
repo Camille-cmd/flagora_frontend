@@ -12,6 +12,7 @@ import Button from "../common/Button.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import {AlertInfo} from "../../interfaces/alert.tsx";
 import {useAlert} from "../../contexts/AlertContext.tsx";
+import {emailValidation} from "../../utils/validationSchemas.tsx";
 
 export default function ResetPassword() {
     const {t} = useTranslation();
@@ -21,12 +22,17 @@ export default function ResetPassword() {
     const [submitted, setSubmitted] = useState(false);
     const [submittedEmail, setSubmittedEmail] = useState("");
 
-    const validationSchema = Yup.object({
-        email: Yup.string()
-            .email(t("resetPassword.email.validation.invalid"))
-            .required(t("resetPassword.email.validation.required")),
+    // Validation schema for the reset password form
+    const ResetPasswordValidationSchema = Yup.object({
+        email: emailValidation,
     });
 
+
+    /**
+     * Handle the form submission
+     * Keep track of the submitted email for the success message
+     * @param values
+     */
     const handleSubmit = (values: { email: string }) => {
         resetPassword(values.email)
             .then(() => {
@@ -35,10 +41,17 @@ export default function ResetPassword() {
 
                 setAlertInfo({
                     type: "success",
-                    message: t("resetPassword.alert.success"),
+                    message: t("resetPassword.alerts.success"),
                 } as AlertInfo);
             })
-            .catch(() => {});
+            .catch(error => {
+                setAlertInfo({
+                    type: "error",
+                    message: error.message,
+                    timeout : null,
+                    dismissible: true,
+                } as AlertInfo);
+            })
     };
 
     return (
@@ -63,7 +76,7 @@ export default function ResetPassword() {
 
                             <Formik
                                 initialValues={{email: ""}}
-                                validationSchema={validationSchema}
+                                validationSchema={ResetPasswordValidationSchema}
                                 onSubmit={handleSubmit}
                             >
                                 {({isValid, dirty, isSubmitting}) => (
@@ -73,7 +86,7 @@ export default function ResetPassword() {
                                                 htmlFor="email"
                                                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                                             >
-                                                {t("resetPassword.email.label")}
+                                                {t("register.email.label")}
                                             </label>
                                             <div className="relative">
                                                 <Field
@@ -82,9 +95,9 @@ export default function ResetPassword() {
                                                     as={Input}
                                                     id="email"
                                                     className="w-full p-3 pl-10"
-                                                    placeholder={t("resetPassword.email.placeholder")}
+                                                    placeholder={t("register.email.placeholder")}
                                                     icon={<Mail className="w-5 h-5" />}
-                                                    aria-label={t("resetPassword.email.ariaLabel")}
+                                                    aria-label={t("register.email.ariaLabel")}
                                                 />
                                             </div>
                                             <ErrorMessage name="email" component="p" className="text-red-500 text-sm" />
@@ -140,7 +153,7 @@ export default function ResetPassword() {
                             className="inline-flex items-center text-sm text-primary hover:text-raspberry-600"
                         >
                             <ArrowLeft className="w-4 h-4 mr-1" />
-                            {t("resetPassword.backToLogin")}
+                            {t("backToLogin")}
                         </Link>
                     </div>
                 </div>

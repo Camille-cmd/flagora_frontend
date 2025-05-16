@@ -2,6 +2,7 @@ import api from "../api/api.tsx"
 import {IsUserAvailableResponse, LoginResponse, User} from "../../interfaces/apiResponse.tsx"
 import axios from "axios";
 import i18n from "../../i18n/i18n.tsx";
+import {extractErrorMessage} from "../utils/errorHandler.tsx";
 
 
 export default class AuthService {
@@ -24,12 +25,7 @@ export default class AuthService {
             return await this.getCurrentUser();
 
         } catch (error: unknown) {
-            if (axios.isAxiosError(error) && error.response) {
-                throw new Error(error.response.data.error ?? error.response.data.code ?? 'Login failed');
-            } else {
-                console.error(error)
-                throw new Error('Login failed');
-            }
+            throw new Error(extractErrorMessage(error, i18n.t('errors.loginFailed')));
         }
     }
 
@@ -59,41 +55,30 @@ export default class AuthService {
             } as User;
 
         } catch (error: unknown) {
-            // TODO : dry
-            if (axios.isAxiosError(error) && error.response) {
-                const message =
-                    error.response.data.message ??
-                    error.message ??
-                    'Login failed';
-
-                throw new Error(message);
-            } else {
-                throw error;
-            }
+            throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
         }
     }
 
     static async register(email: string, username: string, password: string): Promise<User> {
         try {
+            const language = i18n.language;
             const response = await api.post<User>('auth/register', {
                 username,
                 email,
                 password,
+                language
             });
 
             return {
                 id: response.data.id,
                 username: response.data.username,
                 email: response.data.email,
+                isEmailVerified: response.data.isEmailVerified,
+                language: response.data.language
             } as User;
 
         } catch (error: unknown) {
-            if (axios.isAxiosError(error) && error.response) {
-                const codeStr = error.response.data.code;
-                throw new Error(codeStr);
-            } else {
-                throw error;
-            }
+            throw new Error(extractErrorMessage(error, i18n.t('errors.registerFailed')));
         }
     }
 
@@ -102,17 +87,9 @@ export default class AuthService {
             await api.get('auth/logout');
             localStorage.removeItem(this.tokenKey);
         } catch (error: unknown) {
-            // TODO : dry
-            if (axios.isAxiosError(error) && error.response) {
-                const message =
-                    error.response.data.message ??
-                    error.message ??
-                    'Login failed';
-
-                throw new Error(message);
-            } else {
-                throw error;
-            }
+            // If the logout fails, we still want to remove the sessionId from localStorage to avoid logging loop
+            localStorage.removeItem(this.tokenKey);
+            throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
         }
 
     }
@@ -120,7 +97,7 @@ export default class AuthService {
     static async isUserNameAvailable(username: string): Promise<boolean> {
         try {
             const response = await api.post<IsUserAvailableResponse>(
-                'auth/check_username', { username }
+                'auth/check_username', {username}
             )
             return response.data.available;
         } catch (error: unknown) {
@@ -132,14 +109,14 @@ export default class AuthService {
 
                 throw new Error(message);
             } else {
-                throw error;
+                throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
             }
         }
     }
 
     static async resetPassword(email: string): Promise<void> {
         try {
-            await api.post('auth/reset_password', { email });
+            await api.post('auth/reset_password', {email});
         } catch (error: unknown) {
             if (axios.isAxiosError(error) && error.response) {
                 const message =
@@ -149,29 +126,29 @@ export default class AuthService {
 
                 throw new Error(message);
             } else {
-                throw error;
+                throw new Error(extractErrorMessage(error, i18n.t('errors.resetPasswordFailed')));
             }
         }
     }
 
     static async resetPasswordValidate(uid: string, token: string): Promise<void> {
         try {
-           await api.get(`/auth/reset_password_validate`, {
-                    params: { uid, token },
-                });
+            await api.get(`/auth/reset_password_validate`, {
+                params: {uid, token},
+            });
         } catch (error: unknown) {
             if (axios.isAxiosError(error) && error.response) {
                 const codeStr = error.response.data.code;
                 throw new Error(codeStr);
             } else {
-                throw error;
+                throw new Error(extractErrorMessage(error, i18n.t('errors.resetPasswordValidateFailed')));
             }
         }
     }
 
     static async resetPasswordConfirm(uid: string, token: string, password: string): Promise<void> {
         try {
-            await api.post('auth/reset_password_confirm', { uid, token, password });
+            await api.post('auth/reset_password_confirm', {uid, token, password});
         } catch (error: unknown) {
             if (axios.isAxiosError(error) && error.response) {
                 const message =
@@ -181,8 +158,56 @@ export default class AuthService {
 
                 throw new Error(message);
             } else {
-                throw error;
+                throw new Error(extractErrorMessage(error, i18n.t('errors.resetPasswordConfirmFailed')));
             }
+        }
+    }
+
+    static async sendVerificationEmail(): Promise<void> {
+        console.log("Sending verification email");
+        try {
+            await api.get(`/auth/email-verify`);
+        } catch (error: unknown) {
+            throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
+        }
+    }
+
+    static async verifyEmail(uid: string, token: string): Promise<void> {
+        try {
+            await api.get(`/auth/email-verify/validate`, {
+                params: {uid, token},
+            });
+        } catch (error: unknown) {
+            throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
+        }
+    }
+
+    static async updateUser(username: string): Promise<User> {
+        try {
+            const response = await api.put('user/', {
+                username,
+            });
+
+            return {
+                id: response.data.id,
+                username: response.data.username,
+                email: response.data.email,
+                isEmailVerified: response.data.isEmailVerified,
+                language: response.data.language
+            } as User;
+        } catch (error: unknown) {
+            throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
+        }
+    }
+
+    static async updateUserPassword(oldPassword: string, newPassword: string): Promise<void> {
+        try {
+            await api.put('user/password', {
+                oldPassword,
+                newPassword,
+            });
+        } catch (error: unknown) {
+            throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
         }
     }
 }

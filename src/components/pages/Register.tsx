@@ -9,102 +9,59 @@ import {AlertInfo} from "../../interfaces/alert.tsx";
 import {useAlert} from "../../contexts/AlertContext.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import {useEffect} from "react";
-import debounce from "lodash/debounce";
 import {useTranslation} from "react-i18next";
+import {
+    emailValidation,
+    passwordConfirmValidation,
+    passwordValidation,
+    UsernameValidation
+} from "../../utils/validationSchemas.tsx";
+import {validateUsername} from "../../utils/user.tsx";
 
 
 export default function Register() {
-    const {register, isAuthenticated, isUserNameAvailable} = useAuth();
+    const {register, isAuthenticated} = useAuth();
     const navigate = useNavigate();
     const {setAlertInfo} = useAlert();
     const {t} = useTranslation()
 
+    // Validation schema for the registration form
     const RegisterValidationSchema = Yup.object().shape({
-        email: Yup.string().email(t("register.email.validation.invalid")).required(t("register.email.validation.required")),
-        username: Yup.string()
-            .matches(/^[\w.-]+$/, t("register.username.validation.pattern"))
-            .min(2, t("register.username.validation.minLength")) // Minimum 2 characters (not checked by backend)
-            .max(150, t("register.username.validation.maxLength"))
-            .required(t("register.username.validation.required")),
-        password: Yup.string()
-            .min(8, t("register.passwordRules.length"))
-            .matches(/[A-Z]/, t("register.passwordRules.minUppercase"))
-            .matches(/\d/, t("register.passwordRules.minNumber"))
-            .required(t("register.password.validation.required")),
-        confirmPassword: Yup.string()
-            .oneOf([Yup.ref('password')], t("register.confirmPassword.validation.match"))
-            .required(t("register.confirmPassword.validation.required")),
+        email: emailValidation,
+        username: UsernameValidation,
+        password: passwordValidation,
+        confirmPassword: passwordConfirmValidation
     });
 
 
-    const handleRegister = (values: { email: string; username: string; password: string; confirmPassword: string }) => {
+    /**
+     * Handle the registration form submission
+     * Registers the user and redirects to the login page
+     * @param values - email, username, password, confirmPassword
+     */
+    const handleRegister = async (values: { email: string; username: string; password: string; confirmPassword: string }) => {
+        setAlertInfo(undefined) // Clear previous alerts
+
         register(values.email, values.username, values.password)
             .then(() => {
                     navigate("/login", {replace: true});
                     setAlertInfo({
                         type: "success",
-                        message: t("register.success"),
+                        message: t("register.alerts.success"),
+                        timeout: 8,
                     } as AlertInfo);
                 }
             )
             .catch(error => {
-                const errorCode = error.message
-                switch (errorCode) {
-                    case "username_already_registered":
-                        setAlertInfo({
-                            type: "error",
-                            message: t("register.username_not_available"),
-                            timeout: 10,
-                        } as AlertInfo);
-                        break;
-                    case "email_already_registered":
-                        setAlertInfo({
-                            type: "error",
-                            title: t("register.email_already_registered"),
-                            message: (
-                                <>
-                                {t("register.alreadyRegistered")}{" "}
-                                    <Link to="/login"
-                                          onClick={() => setAlertInfo(undefined)}
-                                          className="text-red-500 hover:text-red-600">
-                                        {t("register.connect")}
-                                    </Link>
-                                </>
-                            ),
-                            timeout: 10,
-                        } as AlertInfo);
-                        break;
-                    default:
-                        setAlertInfo({
-                            type: "error",
-                            message: error.message,
-                            timeout: 10,
-                        } as AlertInfo);
-                }
+                setAlertInfo({
+                    type: "error",
+                    message: error.message,
+                    timeout: null,
+                    dismissible: true,
+                } as AlertInfo);
             })
     };
 
-    // Validate username availability
-    const validateUsernameAvailability = async (value: string): Promise<string | undefined> => {
-        if (!value || value.length < 2) return undefined; // Skip validation if empty or too short
-
-        const available = await isUserNameAvailable(value);
-        return available ? undefined : t("register.username_not_available");
-    };
-
-    // Debounce it (1 second delay)
-    const debouncedValidateUsername = debounce(
-        (value: string, callback: (msg?: string) => void) => {
-            validateUsernameAvailability(value).then(callback);
-        },
-        500
-    );
-    // Wrapper function to use with Formik
-    const validateUsername = (value: string): Promise<string | undefined> => {
-        return new Promise((resolve) => {
-            debouncedValidateUsername(value, resolve);
-        });
-    };
 
     // Redirect user to the main page if already logged-in
     useEffect(() => {
@@ -112,6 +69,7 @@ export default function Register() {
             navigate("/", {replace: true});
         }
     }, [isAuthenticated, navigate]);
+
 
     return (
         <div className="flex flex-col justify-center items-center px-4 mt-4 transition-colors duration-300">
@@ -134,14 +92,14 @@ export default function Register() {
                         <Form className="space-y-8">
                             <div className="space-y-2">
                                 <label htmlFor="email" className="block text-sm text-secondary dark:text-primary">
-                                    Email
+                                    {t("register.email.label")}
                                 </label>
                                 <Field
                                     id="email"
                                     name="email"
                                     type="email"
-                                    placeholder={t("login.email.placeholder")}
-                                    aria-label={t("login.email.ariaLabel")}
+                                    placeholder={t("register.email.placeholder")}
+                                    aria-label={t("register.email.ariaLabel")}
                                     as={Input}
                                     className="w-full box-border p-2"
                                 />
@@ -168,14 +126,14 @@ export default function Register() {
                             <div className="space-y-2">
                                 <label htmlFor="password"
                                        className="block text-sm text-secondary dark:text-primary">
-                                    {t("login.password.label")}
+                                    {t("register.password.label")}
                                 </label>
                                 <Field
                                     id="password"
                                     name="password"
                                     type="password"
                                     placeholder="••••••••"
-                                    aria-label={t("login.password.ariaLabel")}
+                                    aria-label={t("register.password.ariaLabel")}
                                     as={Input}
                                     className="w-full box-border p-2"
                                 />
@@ -204,15 +162,15 @@ export default function Register() {
                                 <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
                                     <li className="flex items-center">
                                         <Check size={16} className="text-green-500 mr-2"/>
-                                        {t("register.passwordRules.length")}
+                                        {t("passwordRules.length")}
                                     </li>
                                     <li className="flex items-center">
                                         <Check size={16} className="text-green-500 mr-2"/>
-                                        {t("register.passwordRules.minUppercase")}
+                                        {t("passwordRules.uppercase")}
                                     </li>
                                     <li className="flex items-center">
                                         <Check size={16} className="text-green-500 mr-2"/>
-                                        {t("register.passwordRules.minNumber")}
+                                        {t("passwordRules.number")}
                                     </li>
                                 </ul>
                             </div>
@@ -221,10 +179,10 @@ export default function Register() {
                                 type="submit"
                                 buttonType="primary"
                                 className="w-full px-5 py-2.5 mt-10"
-                                text={t("register.submit")}
+                                text={t("register.submit.text")}
                                 disabled={!isValid || !dirty || isSubmitting}
                                 loading={isSubmitting}
-                                aria-label={t("register.submitAriaLabel")}
+                                aria-label={t("register.submit.ariaLabel")}
                             />
                         </Form>
                     )}

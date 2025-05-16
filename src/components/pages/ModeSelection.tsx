@@ -4,7 +4,7 @@ import {PageTitle} from "../common/PageTitle.tsx";
 import Card from "../common/Card/Card.tsx";
 import Alert from "../common/Alert/Alert.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
-import {useTranslation, Trans} from "react-i18next";
+import {useTranslation} from "react-i18next";
 
 export default function ModeSelection() {
     const {isAuthenticated} = useAuth();
@@ -23,12 +23,16 @@ export default function ModeSelection() {
                         title={t("modeSelection.guestWarning.title")}
                         dismissible={true}
                         message={
-                            <Trans i18nKey="modeSelection.guestWarning.message" components={{
-                                link: <Link
+                            <>
+                                {t("modeSelection.guestWarning.message.part1")}{" "}
+                                <Link
                                     to="/register"
                                     className="font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 underline underline-offset-2"
-                                />
-                            }}/>
+                                >
+                                    {t("modeSelection.guestWarning.message.link")}
+                                </Link>{" "}
+                                {t("modeSelection.guestWarning.message.part2")}
+                            </>
                         }
                     />
                 </div>
