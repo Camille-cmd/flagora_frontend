@@ -27,7 +27,7 @@ interface AuthProviderProps {
     children: ReactNode
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({children}: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null)
 
     // Check authentication status on mount

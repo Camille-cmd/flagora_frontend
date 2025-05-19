@@ -150,17 +150,8 @@ export default class AuthService {
         try {
             await api.post('auth/reset_password_confirm', {uid, token, password});
         } catch (error: unknown) {
-            if (axios.isAxiosError(error) && error.response) {
-                const message =
-                    error.response.data.message ??
-                    error.message ??
-                    'Reset password confirm failed';
-
-                throw new Error(message);
-            } else {
-                throw new Error(extractErrorMessage(error, i18n.t('errors.resetPasswordConfirmFailed')));
+            throw new Error(extractErrorMessage(error, i18n.t('errors.resetPasswordConfirmFailed')));
             }
-        }
     }
 
     static async sendVerificationEmail(): Promise<void> {

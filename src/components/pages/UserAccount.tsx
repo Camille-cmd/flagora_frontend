@@ -43,7 +43,7 @@ export default function UserAccount() {
                     message: t("userAccount.submitPersonalInfo.alerts.success"),
                 } as AlertInfo)
             })
-            .catch((error) => {
+            .catch((error: { message: any }) => {
                 setAlertInfo({
                     type: "error",
                     message: error.message
@@ -63,7 +63,7 @@ export default function UserAccount() {
                     message: t("userAccount.submitPassword.alerts.success"),
                 } as AlertInfo)
             })
-            .catch((error) => {
+            .catch((error: { message: any }) => {
                 setAlertInfo({
                     type: "error",
                     message: error.message
@@ -81,11 +81,18 @@ export default function UserAccount() {
                         message: t("userAccount.sendVerificationEmail.alerts.success"),
                     } as AlertInfo)
                 }
-            )
+            ).catch(error => {
+                setAlertInfo(
+                    {
+                        type: "error",
+                        message: error.message
+                    } as AlertInfo
+                )
+        })
     }
 
     return (
-        <main className="flex flex-col items-center justify-center p-6">
+        <div className="flex flex-col items-center justify-center p-6">
             <div className="w-full max-w-2xl">
                 {/* Page Title */}
                 <PageTitle title={t("userAccount.title")}/>
@@ -269,7 +276,7 @@ export default function UserAccount() {
                                             type={"password"}
                                             id="currentPassword"
                                             name="currentPassword"
-                                            autocomplete="new-password"  // Prevents autofill
+                                            autoComplete="new-password"  // Prevents autofill
                                             as={Input}
                                             className="w-full p-3 pl-10"
                                             placeholder={t("userAccount.changePasswordCard.currentPassword.placeholder")}
@@ -374,6 +381,6 @@ export default function UserAccount() {
                     </Formik>
                 </Card>
             </div>
-        </main>
+        </div>
     )
 }

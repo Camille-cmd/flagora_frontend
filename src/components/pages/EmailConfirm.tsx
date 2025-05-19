@@ -29,16 +29,14 @@ export default function EmailConfirm() {
                 } as AlertInfo);
                 navigate("/", {replace: true});
             })
-            .catch((error) => {
+            .catch(() => {
                 setIsTokenValid(false);
-                if (error.message === "invalid_token") {
-                    setAlertInfo({
-                        type: "error",
-                        message: t("resetPasswordConfirm.alerts.invalidLink"),
-                        timeout: 10
-                    } as AlertInfo);
-                    navigate("/", {replace: true});
-                }
+                setAlertInfo({
+                    type: "error",
+                    message: t("resetPasswordConfirm.alerts.invalidLink"),
+                    timeout: 10
+                } as AlertInfo);
+                navigate("/", {replace: true});
             });
     }, []);
 
