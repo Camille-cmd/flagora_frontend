@@ -1,71 +1,144 @@
 import {Flag, Send, Star} from "lucide-react"
-import Button from "../common/Button.tsx";
-import Card from "../common/Card/Card.tsx";
-import {CardHeader} from "../common/Card/CardHeader.tsx";
-import Input from "../common/Input.tsx";
+import Button from "../common/Button.tsx"
+import Card from "../common/Card/Card.tsx"
+import {CardHeader} from "../common/Card/CardHeader.tsx"
+import Input from "../common/Input.tsx"
+import useWebSocket from "react-use-websocket"
+import {useEffect, useReducer, useState} from "react"
+import {Field, Form, Formik, FormikHelpers} from "formik"
+import gameReducer from "../../reducers/gameReducer.tsx";
+import {AnswerResultMessage, NewQuestionsMessage, WebsocketMessage} from "../../interfaces/websocket.tsx";
+import {useTranslation} from "react-i18next";
 
-export default function FlagsGame() {
-    // const {setAlertInfo} = useAlert();
 
-    const handleSubmit = () => {
-        // Handle form submission logic here
-    }
+export default function Game() {
+    const {t} = useTranslation();
+    const [state, dispatch] = useReducer(gameReducer, {
+        questions: [],
+        currentIndex: 0,
+        currentQuestion: '',
+        score: 0,
+    });
+
+    const [answerStatus, setAnswerStatus] = useState<"correct" | "wrong" | null>(null);
+
+    const {sendJsonMessage, lastJsonMessage} = useWebSocket(
+        `${import.meta.env.VITE_WS_URL}/`,
+        {
+            shouldReconnect: () => true,
+            reconnectAttempts: 10,
+        },
+    )
+
+    const handleSubmit = (
+        values: { answer: string }, actions: FormikHelpers<{ answer: string }>
+    ) => {
+
+        const questionId = Object.keys(state.questions)[state.currentIndex];
+        sendJsonMessage({
+            type: "answer_submission",
+            id: questionId,
+            answer: values.answer,
+        });
+
+        actions.resetForm()
+
+    };
+
+
+    useEffect(() => {
+        if (!lastJsonMessage) return;
+
+        const response = lastJsonMessage as WebsocketMessage;
+
+        let payload;
+        switch (response.type) {
+            case "new_questions":
+                payload = response.payload as NewQuestionsMessage;
+                dispatch({type: "new_questions", questions: payload.questions});
+                break;
+
+            case "answer_result":
+                payload = response.payload as AnswerResultMessage;
+                if (payload.isCorrect) {
+                    dispatch({type: "next_question"});
+                    setAnswerStatus("correct")
+
+                    // Request more questions if only 2 remaining
+                    const remainingQuestions = Object.keys(state.questions).length - state.currentIndex - 1;
+                    if (remainingQuestions <= 2) {
+                        sendJsonMessage({
+                            type: "request_questions"
+                        });
+                    }
+                } else {
+                    setAnswerStatus("wrong")
+                }
+
+                // Reset after short delay to allow UI to reflect color
+                setTimeout(() => setAnswerStatus(null), 500);
+                break;
+        }
+    }, [lastJsonMessage]);
+
 
     return (
         <div className="flex flex-col items-center justify-center p-2">
-
-            {/* Game - Quiz View (Flags) */}
             <div className="w-full max-w-xl">
-
-                {/* Game Card */}
                 <Card color1="yellow" color2="blue">
-
                     <div className="relative p-8">
-
                         <CardHeader
                             className="mb-6"
                             title={"Quel est ce pays?"}
                             icon={
                                 <div className="p-3 bg-white dark:bg-blue-800 rounded-full shadow-md mr-4">
-                                    {/*TODO : icon depends on the game mode*/}
                                     <Flag className="w-6 h-6 text-blue-600 dark:text-blue-400"/>
                                 </div>
-                            }>
-                        </CardHeader>
+                            }
+                        />
 
                         {/* Flag Image */}
                         <div className="mb-8 transform transition-all duration-300 hover:scale-[1.02] relative">
                             <div className="relative w-full h-64 border-4 border-white dark:border-gray-700 rounded-lg overflow-hidden shadow-md">
                                 <img
-                                    src="https://placehold.co/1280x720"
+                                    src={`data:image/svg+xml;utf8,${encodeURIComponent(state.currentQuestion)}`}
                                     alt="Drapeau"
                                     className="w-full h-full object-cover"
                                 />
                             </div>
-
                         </div>
 
-                        {/* Input Form */}
-                        <form className="space-y-6">
-                            <div className="relative">
-                                <Input
-                                    type="text"
-                                    className="w-full p-4 pl-5 pr-12"
-                                    placeholder="Entrez le nom du pays"
-                                />
-                            </div>
+                        {/* Formik Form */}
+                        <Formik
+                            initialValues={{answer: ""}}
+                            onSubmit={handleSubmit}
+                        >
+                            {() => (
+                                <Form className="space-y-6">
+                                    <div className="relative">
+                                        <Field
+                                            name="answer"
+                                            as={Input}
+                                            type="text"
+                                            className={`w-full p-4 pl-5 pr-12 ${
+                                                answerStatus === "correct" ? "bg-green-300 dark:bg-green-900/90" :
+                                                answerStatus === "wrong" ? "bg-red-600 dark:bg-red-900/90  shake" : ""
+                                            }`}
+                                            placeholder={t("game.answer.placeholder")}
+                                        />
+                                    </div>
 
-                            <Button
-                                type="button"
-                                buttonType="primary"
-                                className="w-full py-4 px-6"
-                                text={"Valider"}
-                                children={
-                                    <Send className="w-5 h-5"/>
-                                }
-                                onClick={handleSubmit}
-                            />
-                        </form>
+                                    <Button
+                                        type="submit"
+                                        buttonType="primary"
+                                        className="w-full py-4 px-6"
+                                        text={t("game.submit")}
+                                    >
+                                        <Send className="w-5 h-5"/>
+                                    </Button>
+                                </Form>
+                            )}
+                        </Formik>
                     </div>
                 </Card>
 

@@ -233,5 +233,15 @@
         "ariaLabel": "Bouton de changement de mot de passe"
       }
     }
+  },
+  "game": {
+    "alerts": {
+      "success": "Bonne réponse !",
+      "wrong": "Mauvaise réponse, réessaie."
+    },
+    "answer": {
+      "placeholder": "Entrez le nom du pays"
+    },
+    "submit": "Valider"
   }
 }

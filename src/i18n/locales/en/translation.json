@@ -238,5 +238,15 @@
         "success": "Your username has been successfully updated."
       }
     }
+  },
+  "game": {
+    "alerts": {
+      "success": "Correcte!",
+      "wrong": "That's not it, try again"
+    },
+    "answer":{
+      "placeholder": "Type in the country name"
+    },
+    "submit": "Submit"
   }
 }

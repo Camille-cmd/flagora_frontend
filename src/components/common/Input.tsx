@@ -15,12 +15,12 @@ export default function Input({
 }: InputProps): JSX.Element {
     const baseStyles = `${className} p-2 box-border border-2`;
     const disabledStyles = disabled ? "opacity-50 cursor-not-allowed" : "";
-    const focusStyles =  !disabled ? `focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 dark:focus:ring-yellow-900 dark:focus:border-yellow-900`: "";
+    const focusStyles =  !disabled ? `focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 dark:focus:ring-yellow-900 dark:focus:border-yellow-500`: "";
 
     return (
         <>
         <input
-            className={`border-gray-200 dark:border-gray-600 bg-white dark:bg-darkblue-600 text-secondary dark:text-primary rounded-lg ${baseStyles} ${disabledStyles} ${focusStyles} outline-none transition-all`}
+            className={`${baseStyles} border-gray-200 dark:border-gray-600 bg-white dark:bg-darkblue-600 text-secondary dark:text-primary rounded-lg ${disabledStyles} ${focusStyles} outline-none transition-all`}
             {...args}
         />
             {icon &&
