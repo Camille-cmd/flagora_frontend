@@ -3,7 +3,6 @@
 import {Flag, Send, SkipForward, Star, XCircle} from "lucide-react"
 import Button from "../common/Button.tsx"
 import Card from "../common/Card/Card.tsx"
-import {CardHeader} from "../common/Card/CardHeader.tsx"
 import useWebSocket from "react-use-websocket"
 import {useEffect, useReducer, useState} from "react"
 import {Form, Formik, type FormikHelpers} from "formik"
@@ -55,7 +54,7 @@ export default function Game() {
         sendJsonMessage({
             type: "question_skipped",
             id: questionId,
-            answer: "" // Empty answer to indicate a false answer
+            answer: "", // Empty answer to indicate a false answer
         })
 
         // Move to next question
@@ -115,33 +114,36 @@ export default function Game() {
     }, [])
 
     return (
-        <div className="flex flex-col items-center justify-center p-2">
-            <div className="w-full max-w-xl">
+        <div className="flex flex-col items-center justify-center p-2 md:p-6">
+            <div className="w-full xl:max-w-xl">
                 <Card color1="yellow" color2="blue">
-                    <CardHeader
-                        className="mb-3"
-                        title={"Quel est ce pays?"}
-                        icon={
-                            <div className="p-3 bg-white dark:bg-blue-800 rounded-full shadow-md mr-4">
-                                <Flag className="w-6 h-6 text-blue-600 dark:text-blue-400"/>
-                            </div>
-                        }
-                    />
+
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center">
+                            <Star className="text-green-600 mr-2"/>
+                            <span className="text-gray-600 dark:text-gray-300">Score: {state.score}</span>
+                        </div>
+                        <Button
+                            type="button"
+                            buttonType="custom"
+                            size={"small"}
+                            className="py-2.5 mr-6 text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
+                            onClick={handleSkip}
+                            disabled={isSkipping || countries.length === 0}
+                            text={t("game.skip")}
+                        >
+                            <SkipForward className="w-5 h-5"/>
+                        </Button>
+                    </div>
 
                     {/* Flag Image */}
-                    <div className="mb-8 transform transition-all duration-300 hover:scale-[1.02] relative">
-                        <div className="relative w-full h-64 border-4 border-white dark:border-gray-700 rounded-lg overflow-hidden shadow-md bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+                    <div className="relative">
+                        <div className="mb-6 relative w-full h-56 flex items-center justify-center">
                             {state.currentQuestion ? (
                                 <img
                                     src={`data:image/svg+xml;utf8,${encodeURIComponent(state.currentQuestion)}`}
-                                    alt="Drapeau"
-                                    className="max-w-full max-h-full object-contain"
-                                    style={{
-                                        width: "auto",
-                                        height: "auto",
-                                        maxWidth: "100%",
-                                        maxHeight: "100%",
-                                    }}
+                                    alt="Flag"
+                                    className="max-w-[120%] md:max-w-full max-h-full"
                                 />
                             ) : (
                                 <div className="flex items-center justify-center w-full h-full text-gray-400 dark:text-gray-500">
@@ -154,10 +156,10 @@ export default function Game() {
                     {/* Formik Form */}
                     <Formik initialValues={{answer: ""}} onSubmit={handleSubmit}>
                         {({values, setFieldValue, submitForm}) => (
-                            <Form className="space-y-4 md:px-8">
+                            <Form className="space-y-4 lg:mt-10 md:px-8 pb-4 md:pb-0">
                                 {/* Correct Answer Message */}
                                 {correctAnswer && (
-                                    <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 rounded-r-lg animate-in slide-in-from-top-2 duration-300">
+                                    <div className="mb-4 p-2 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 rounded-r-lg animate-in slide-in-from-top-2 duration-300">
                                         <div className="flex items-center space-x-2">
                                             <XCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0"/>
                                             <p className="text-sm text-blue-800 dark:text-blue-200">
@@ -208,33 +210,11 @@ export default function Game() {
                                     >
                                         <Send className="w-5 h-5"/>
                                     </Button>
-
-                                    {/* Skip Button */}
-                                    <Button
-                                        type="button"
-                                        buttonType="secondary"
-                                        className="w-full py-2.5 border border-gray-200 dark:border-gray-700 hover:shadow-none"
-                                        onClick={handleSkip}
-                                        disabled={isSkipping || countries.length === 0}
-                                        text={t("game.skip")}
-                                    >
-                                        <SkipForward className="w-5 h-5"/>
-                                    </Button>
                                 </div>
                             </Form>
                         )}
                     </Formik>
                 </Card>
-
-                {/* Score Card */}
-                <div className="mt-6 p-4 bg-white dark:bg-darkblue-700 rounded-lg shadow-md border border-gray-100 dark:border-gray-700 flex justify-between items-center">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full mr-3">
-                            <Star className="text-green-600"/>
-                        </div>
-                        <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Score: {state.score}</span>
-                    </div>
-                </div>
             </div>
         </div>
     )

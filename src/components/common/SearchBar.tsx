@@ -21,7 +21,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
     const inputRef = useRef<HTMLInputElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
-    const maxDisplayOptions: number = 3
+    const maxDisplayOptions: number = 5
 
     useEffect(() => {
         if (!Array.isArray(options) || options.length === 0) return;
@@ -63,7 +63,9 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
         onChange(newValue)
-        setIsOpen(true)
+         if (newValue.trim() !== "") {
+            setIsOpen(true)
+        }
     }
 
     const handleOptionSelect = (option: Country) => {
@@ -73,7 +75,9 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
     }
 
     const handleInputFocus = () => {
-        setIsOpen(true)
+        if (value.trim() !== "") {
+            setIsOpen(true)
+        }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -90,6 +94,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
                 break
             case "Enter":
                 e.preventDefault()
+                setIsOpen(false)
                 if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
                     const selected = filteredOptions[highlightedIndex]
                     handleOptionSelect(selected)
@@ -133,7 +138,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
             {isOpen && filteredOptions.length > 0 && (
                 <div
                     ref={dropdownRef}
-                    className="absolute z-50 w-full max-w-[calc(100%-2px)] transform -translate-x-1/2 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl max-h-48 overflow-y-auto"
+                    className="z-50 w-full max-w-full transform -translate-x-1/2 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl max-h-48 overflow-y-auto"
                 >
                     {filteredOptions.map((option, index) => (
                         <div
