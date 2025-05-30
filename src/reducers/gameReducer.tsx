@@ -13,7 +13,6 @@ type GameAction =
 export default function gameReducer(state: GameState, action: GameAction): GameState {
     switch (action.type) {
         case "new_questions":
-            console.log(state.currentQuestion || action.questions[0])
             return {
                 questions: {...state.questions, ...action.questions},
                 currentIndex: state.currentIndex || 0,

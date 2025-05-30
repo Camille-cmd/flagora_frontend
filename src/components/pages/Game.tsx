@@ -2,14 +2,15 @@ import {Flag, Send, Star} from "lucide-react"
 import Button from "../common/Button.tsx"
 import Card from "../common/Card/Card.tsx"
 import {CardHeader} from "../common/Card/CardHeader.tsx"
-import Input from "../common/Input.tsx"
 import useWebSocket from "react-use-websocket"
 import {useEffect, useReducer, useState} from "react"
-import {Field, Form, Formik, FormikHelpers} from "formik"
+import {Form, Formik, FormikHelpers} from "formik"
 import gameReducer from "../../reducers/gameReducer.tsx";
 import {AnswerResultMessage, NewQuestionsMessage, WebsocketMessage} from "../../interfaces/websocket.tsx";
 import {useTranslation} from "react-i18next";
-
+import SearchBar from "../common/SearchBar.tsx"
+import CountryService from "../../services/CountryService.tsx";
+import {Country} from "../../interfaces/country.tsx";
 
 export default function Game() {
     const {t} = useTranslation();
@@ -19,9 +20,8 @@ export default function Game() {
         currentQuestion: '',
         score: 0,
     });
-
+    const [countries, setCountries] = useState<Country[]>([]);
     const [answerStatus, setAnswerStatus] = useState<"correct" | "wrong" | null>(null);
-
     const {sendJsonMessage, lastJsonMessage} = useWebSocket(
         `${import.meta.env.VITE_WS_URL}/`,
         {
@@ -81,6 +81,14 @@ export default function Game() {
         }
     }, [lastJsonMessage]);
 
+    // on mount
+    useEffect(() => {
+        CountryService.getCountries().then(
+            (countries) => {
+                setCountries(countries);
+            }
+        )
+    }, []);
 
     return (
         <div className="flex flex-col items-center justify-center p-2">
@@ -113,25 +121,35 @@ export default function Game() {
                             initialValues={{answer: ""}}
                             onSubmit={handleSubmit}
                         >
-                            {() => (
+                            {({values, setFieldValue, submitForm}) => (
                                 <Form className="space-y-6">
-                                    <div className="relative">
-                                        <Field
-                                            name="answer"
-                                            as={Input}
-                                            type="text"
-                                            className={`w-full p-4 pl-5 pr-12 ${
-                                                answerStatus === "correct" ? "bg-green-300 dark:bg-green-900/90" :
-                                                answerStatus === "wrong" ? "bg-red-600 dark:bg-red-900/90  shake" : ""
-                                            }`}
-                                            placeholder={t("game.answer.placeholder")}
-                                        />
-                                    </div>
+                                    {countries.length === 0 ? (
+                                        <div className="flex justify-center">
+                                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
+                                        </div>
+                                    ) : (
+                                        <div className="relative">
+                                        <SearchBar
+                                                value={values.answer}
+                                                onChange={(value) => setFieldValue("answer", value)}
+                                                onSubmit={submitForm}
+                                                placeholder={t("game.answer.placeholder")}
+                                                options={countries}
+                                                className={`w-full p-4 pl-5 pr-12 ${
+                                                    answerStatus === "correct"
+                                                        ? "bg-green-300 dark:bg-green-900/90"
+                                                        : answerStatus === "wrong"
+                                                            ? "bg-red-600 dark:bg-red-900/90 shake"
+                                                            : ""
+                                                }`}
+                                            />
+                                        </div>
+                                    )}
 
                                     <Button
                                         type="submit"
                                         buttonType="primary"
-                                        className="w-full py-4 px-6"
+                                        className="w-full py-3"
                                         text={t("game.submit")}
                                     >
                                         <Send className="w-5 h-5"/>
