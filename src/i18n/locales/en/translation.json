@@ -242,11 +242,14 @@
   "game": {
     "alerts": {
       "success": "Correcte!",
-      "wrong": "That's not it, try again"
+      "wrong": "That's not it, try again",
+      "oops": "Oops!",
+      "correctAnswer": "The answer was: "
     },
     "answer":{
       "placeholder": "Type in the country name"
     },
-    "submit": "Submit"
+    "submit": "Submit",
+    "skip": "skip"
   }
 }

@@ -237,11 +237,14 @@
   "game": {
     "alerts": {
       "success": "Bonne réponse !",
-      "wrong": "Mauvaise réponse, réessaie."
+      "wrong": "Mauvaise réponse, réessaie.",
+      "oops": "Oups !",
+      "correctAnswer": "La bonne réponse était : "
     },
     "answer": {
       "placeholder": "Entrez le nom du pays"
     },
-    "submit": "Valider"
+    "submit": "Valider",
+    "skip": "Passer"
   }
 }
