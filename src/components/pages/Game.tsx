@@ -7,14 +7,16 @@ import useWebSocket from "react-use-websocket"
 import {useEffect, useReducer, useState} from "react"
 import {Form, Formik, type FormikHelpers} from "formik"
 import gameReducer from "../../reducers/gameReducer.tsx"
-import type {AnswerResultMessage, NewQuestionsMessage, WebsocketMessage} from "../../interfaces/websocket.tsx"
+import {AcceptUser, AnswerResultMessage, NewQuestionsMessage, WebsocketMessage} from "../../interfaces/websocket.tsx"
 import {useTranslation} from "react-i18next"
 import SearchBar from "../common/SearchBar.tsx"
 import CountryService from "../../services/CountryService.tsx"
 import type {Country} from "../../interfaces/country.tsx"
+import {useAuth} from "../../services/auth/useAuth.tsx";
 
 export default function Game() {
     const {t} = useTranslation()
+    const {isAuthenticated, token, cleanToken} = useAuth()
     const [state, dispatch] = useReducer(gameReducer, {
         questions: [],
         currentIndex: 0,
@@ -26,10 +28,21 @@ export default function Game() {
     const [correctAnswer, setCorrectAnswer] = useState<string | null>(null)
     const [isSkipping, setIsSkipping] = useState(false)
 
+    const acceptUser = () => {
+        // Send the user we have in storage for the backend auth
+        sendJsonMessage({
+            type: "user_accept",
+            token: token
+        })
+    }
+
     const {sendJsonMessage, lastJsonMessage} = useWebSocket(`${import.meta.env.VITE_WS_URL}/`, {
+        onOpen: acceptUser,
         shouldReconnect: () => true,
         reconnectAttempts: 10,
+        protocols: ['Authorization', `ustm8hb5nh111ogsavzg8sjfymjeidht`],
     })
+
 
     const handleSubmit = (values: { answer: string }, actions: FormikHelpers<{ answer: string }>) => {
         const questionId = Object.keys(state.questions)[state.currentIndex]
@@ -73,6 +86,15 @@ export default function Game() {
 
         let payload
         switch (response.type) {
+            case "user_accept":
+                payload = response.payload as AcceptUser
+                // If we have an authenticated user but the backend has not
+                // This is a problem: redirect to login
+                if (!payload.is_user_authenticated && isAuthenticated){
+                    cleanToken();
+                    window.location.href = "/login";
+                }
+                break
             case "new_questions":
                 payload = response.payload as NewQuestionsMessage
                 dispatch({type: "new_questions", questions: payload.questions})

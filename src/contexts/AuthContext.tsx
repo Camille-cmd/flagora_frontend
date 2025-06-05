@@ -6,7 +6,9 @@ import {User} from "../interfaces/apiResponse.tsx";
 // Define the shape of our context
 interface AuthContextType {
     user: User | null
+    token: string | null
     isAuthenticated: boolean
+    cleanToken: () => void
     login: (email: string, password: string) => Promise<void>
     register: (email: string, username: string, password: string) => Promise<void>
     logout: () => Promise<void>
@@ -95,7 +97,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}: AuthProvid
     // Value object that will be passed to consumers
     const value = {
         user,
+        token: AuthService.token,
         isAuthenticated: AuthService.isAuthenticated,
+        cleanToken: AuthService.cleanToken,
         login,
         register,
         logout,

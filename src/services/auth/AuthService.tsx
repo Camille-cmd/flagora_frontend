@@ -12,6 +12,14 @@ export default class AuthService {
         return !!localStorage.getItem(this.tokenKey);
     }
 
+    public static get token(): string | null {
+        return localStorage.getItem(this.tokenKey);
+    }
+
+    public static cleanToken(): void {
+        localStorage.removeItem(this.tokenKey)
+    }
+
     static async login(email: string, password: string): Promise<User> {
         try {
             const response = await api.post<LoginResponse>('auth/login', {

@@ -11,3 +11,7 @@ export interface WebsocketMessage {
     type: string;
     payload: unknown;
 }
+
+export interface AcceptUser {
+    is_user_authenticated: boolean;
+}
