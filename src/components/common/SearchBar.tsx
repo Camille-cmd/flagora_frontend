@@ -75,7 +75,10 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
     }
 
     const handleInputFocus = () => {
+        console.log(value.trim())
+        console.log(value.trim() !== "")
         if (value.trim() !== "") {
+            console.log("handle focus")
             setIsOpen(true)
         }
     }
@@ -103,6 +106,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
                     onSubmit()
                 }
                 // keep focus on input
+                value = "" // restore value
                 inputRef.current?.focus()
                 break
             case "Escape":

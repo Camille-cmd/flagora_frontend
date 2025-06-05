@@ -7,12 +7,20 @@ import useWebSocket from "react-use-websocket"
 import {useEffect, useReducer, useState} from "react"
 import {Form, Formik, type FormikHelpers} from "formik"
 import gameReducer from "../../reducers/gameReducer.tsx"
-import {AcceptUser, AnswerResultMessage, NewQuestionsMessage, WebsocketMessage} from "../../interfaces/websocket.tsx"
+import {
+    AcceptUser,
+    AnswerResultMessage,
+    CorrectAnswer,
+    NewQuestionsMessage,
+    WebsocketMessage
+} from "../../interfaces/websocket.tsx"
 import {useTranslation} from "react-i18next"
 import SearchBar from "../common/SearchBar.tsx"
 import CountryService from "../../services/CountryService.tsx"
 import type {Country} from "../../interfaces/country.tsx"
 import {useAuth} from "../../services/auth/useAuth.tsx";
+import {countryCodeEmoji} from "../../utils/common.tsx";
+import {Link} from "react-router-dom";
 
 export default function Game() {
     const {t} = useTranslation()
@@ -25,7 +33,7 @@ export default function Game() {
     })
     const [countries, setCountries] = useState<Country[]>([])
     const [answerStatus, setAnswerStatus] = useState<"correct" | "wrong" | null>(null)
-    const [correctAnswer, setCorrectAnswer] = useState<string | null>(null)
+    const [correctAnswer, setCorrectAnswer] = useState<CorrectAnswer | null>(null)
     const [isSkipping, setIsSkipping] = useState(false)
 
     const acceptUser = () => {
@@ -90,7 +98,7 @@ export default function Game() {
                 payload = response.payload as AcceptUser
                 // If we have an authenticated user but the backend has not
                 // This is a problem: redirect to login
-                if (!payload.is_user_authenticated && isAuthenticated){
+                if (!payload.is_user_authenticated && isAuthenticated) {
                     cleanToken();
                     window.location.href = "/login";
                 }
@@ -118,7 +126,12 @@ export default function Game() {
                     setAnswerStatus("wrong")
                     // Set the correct answer if provided (yes when question is skipped)
                     if (payload.correctAnswer) {
-                        setCorrectAnswer(payload.correctAnswer)
+                        console.log(payload)
+                        setCorrectAnswer({
+                            "name": payload.correctAnswer,
+                            "code": countryCodeEmoji(payload.code),
+                            "link": payload.wikipediaLink
+                        } as CorrectAnswer)
                     }
                 }
 
@@ -186,8 +199,12 @@ export default function Game() {
                                             <XCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0"/>
                                             <p className="text-sm text-blue-800 dark:text-blue-200">
                                                 <span className="font-medium">{t("game.alerts.oops")}</span> {t("game.alerts.correctAnswer")}{" "}
-                                                <span className="font-semibold text-blue-900 dark:text-blue-100">{correctAnswer}</span>
-                                                <span className="ml-1">🤔</span>
+                                                <Link to={correctAnswer.link} target="_blank" className={"text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"}>
+                                                  <span className="font-semibold text-blue-900 dark:text-blue-100">
+                                                    {correctAnswer.name}
+                                                  </span>
+                                                 </Link>
+                                                <span className="ml-1">{correctAnswer.code}</span>
                                             </p>
                                         </div>
                                     </div>
