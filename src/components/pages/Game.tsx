@@ -38,17 +38,13 @@ export default function Game() {
 
     const acceptUser = () => {
         // Send the user we have in storage for the backend auth
-        sendJsonMessage({
-            type: "user_accept",
-            token: token
-        })
+        sendJsonMessage({type: "user_accept", token: token})
     }
 
     const {sendJsonMessage, lastJsonMessage} = useWebSocket(`${import.meta.env.VITE_WS_URL}/`, {
         onOpen: acceptUser,
         shouldReconnect: () => true,
         reconnectAttempts: 10,
-        protocols: ['Authorization', `ustm8hb5nh111ogsavzg8sjfymjeidht`],
     })
 
 
@@ -95,6 +91,7 @@ export default function Game() {
         let payload
         switch (response.type) {
             case "user_accept":
+                console.log("user accept")
                 payload = response.payload as AcceptUser
                 // If we have an authenticated user but the backend has not
                 // This is a problem: redirect to login
@@ -104,6 +101,7 @@ export default function Game() {
                 }
                 break
             case "new_questions":
+                console.log("new questions")
                 payload = response.payload as NewQuestionsMessage
                 dispatch({type: "new_questions", questions: payload.questions})
                 break
@@ -115,13 +113,7 @@ export default function Game() {
                     setAnswerStatus("correct")
                     setCorrectAnswer(null) // Clear any previous correct answer
 
-                    // Request more questions if only 2 remaining
-                    const remainingQuestions = Object.keys(state.questions).length - state.currentIndex - 1
-                    if (remainingQuestions <= 2) {
-                        sendJsonMessage({
-                            type: "request_questions",
-                        })
-                    }
+
                 } else {
                     setAnswerStatus("wrong")
                     // Set the correct answer if provided (yes when question is skipped)
@@ -133,6 +125,14 @@ export default function Game() {
                             "link": payload.wikipediaLink
                         } as CorrectAnswer)
                     }
+                }
+
+                // Request more questions if only 2 remaining
+                const remainingQuestions = Object.keys(state.questions).length - state.currentIndex - 1
+                if (remainingQuestions <= 2) {
+                    sendJsonMessage({
+                        type: "request_questions",
+                    })
                 }
 
                 // Reset answer status after short delay to allow UI to reflect color
@@ -171,6 +171,26 @@ export default function Game() {
                         </Button>
                     </div>
 
+                    {/* Correct Answer Message */}
+                    {correctAnswer && (
+                        <div className="mb-4 p-2 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 rounded-r-lg animate-in slide-in-from-top-2 duration-300">
+                            <div className="flex items-center space-x-2">
+                                <XCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0"/>
+                                <p className="text-sm text-blue-800 dark:text-blue-200">
+                                    <span className="font-medium">{t("game.alerts.oops")}</span> {t("game.alerts.correctAnswer")}{" "}
+                                    <Link to={correctAnswer.link}
+                                          target="_blank"
+                                          className={"text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"}>
+                                                  <span className="font-semibold text-blue-900 dark:text-blue-100">
+                                                    {correctAnswer.name}
+                                                  </span>
+                                    </Link>
+                                    <span className="ml-1">{correctAnswer.code}</span>
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Flag Image */}
                     <div className="relative">
                         <div className="mb-6 relative w-full h-56 flex items-center justify-center">
@@ -192,24 +212,6 @@ export default function Game() {
                     <Formik initialValues={{answer: ""}} onSubmit={handleSubmit}>
                         {({values, setFieldValue, submitForm}) => (
                             <Form className="space-y-4 lg:mt-10 md:px-8 pb-4 md:pb-0">
-                                {/* Correct Answer Message */}
-                                {correctAnswer && (
-                                    <div className="mb-4 p-2 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 rounded-r-lg animate-in slide-in-from-top-2 duration-300">
-                                        <div className="flex items-center space-x-2">
-                                            <XCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0"/>
-                                            <p className="text-sm text-blue-800 dark:text-blue-200">
-                                                <span className="font-medium">{t("game.alerts.oops")}</span> {t("game.alerts.correctAnswer")}{" "}
-                                                <Link to={correctAnswer.link} target="_blank" className={"text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"}>
-                                                  <span className="font-semibold text-blue-900 dark:text-blue-100">
-                                                    {correctAnswer.name}
-                                                  </span>
-                                                 </Link>
-                                                <span className="ml-1">{correctAnswer.code}</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-
                                 {countries.length === 0 ? (
                                     <div className="flex justify-center">
                                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
