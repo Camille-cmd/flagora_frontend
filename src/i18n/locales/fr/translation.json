@@ -242,7 +242,8 @@
       "correctAnswer": "La bonne réponse était : "
     },
     "answer": {
-      "placeholder": "Entrez le nom du pays"
+      "placeholder": "Entrez le nom du pays",
+      "city_placeholder": "Entrez le nom de la capitale"
     },
     "submit": "Valider",
     "skip": "Passer"

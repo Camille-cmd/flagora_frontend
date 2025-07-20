@@ -1,9 +1,8 @@
-"use client"
-
 import type React from "react"
 import {useEffect, useRef, useState} from "react"
 import Input from "./Input.tsx"
 import {Country} from "../../interfaces/country.tsx";
+import {City} from "../../interfaces/city.tsx";
 
 interface SearchBarProps {
     value: string
@@ -11,12 +10,12 @@ interface SearchBarProps {
     onSubmit: () => void
     placeholder?: string
     className?: string
-    options: Country[]
+    options: Country[] | City[]
 }
 
 export default function SearchBar({value, onChange, onSubmit, placeholder, className = "", options}: SearchBarProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const [filteredOptions, setFilteredOptions] = useState<Country[]>([])
+    const [filteredOptions, setFilteredOptions] = useState<Country[] | City[]>([])
     const searchRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
@@ -24,6 +23,8 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
     const maxDisplayOptions: number = 5
 
     useEffect(() => {
+        console.log("submitting", value)
+        console.log("options", options)
         if (!Array.isArray(options) || options.length === 0) return;
 
         if (value.trim() === "") {
@@ -63,22 +64,23 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
         onChange(newValue)
-         if (newValue.trim() !== "") {
+        if (newValue.trim() !== "") {
             setIsOpen(true)
         }
     }
 
-    const handleOptionSelect = (option: Country) => {
-        onChange(option.iso2Code) // <-- Set the code as the value
+    const handleOptionSelect = (option: Country | City) => {
+        if (option.iso2Code) {
+            onChange(option.iso2Code) // <-- Set the code as the value
+        } else if (option.name) {
+            onChange(option.name)
+        }
         setIsOpen(false)
         inputRef.current?.blur()
     }
 
     const handleInputFocus = () => {
-        console.log(value.trim())
-        console.log(value.trim() !== "")
         if (value.trim() !== "") {
-            console.log("handle focus")
             setIsOpen(true)
         }
     }

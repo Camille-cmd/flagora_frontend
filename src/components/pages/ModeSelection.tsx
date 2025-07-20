@@ -13,7 +13,7 @@ export default function ModeSelection() {
     return (
         <main className="flex flex-col items-center justify-center p-6">
             {/* Title */}
-            <PageTitle title={t("modeSelection.title")} />
+            <PageTitle title={t("modeSelection.title")}/>
 
             {/* Warning */}
             {!isAuthenticated && (
@@ -41,7 +41,8 @@ export default function ModeSelection() {
             {/* Mode Selection Cards */}
             <div className="grid gap-8 md:grid-cols-2 max-w-4xl w-full">
                 {/* Flag Card */}
-                <Link to="/game" className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
+                <Link to="/game/countries"
+                      className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
                     <Card color1="blue" color2="yellow">
                         <div className="p-3 mb-4 flex flex-col items-center text-center">
                             <div className="mb-4 p-3 bg-white dark:bg-blue-800 rounded-full shadow-md">
@@ -58,7 +59,8 @@ export default function ModeSelection() {
                 </Link>
 
                 {/* Cities Card */}
-                <Link to="/game" className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
+                <Link to="/game/cities"
+                      className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
                     <Card color1="green" color2="raspberry">
                         <div className="p-3 mb-4 flex flex-col items-center text-center">
                             <div className="mb-4 p-3 bg-white dark:bg-green-800 rounded-full shadow-md">

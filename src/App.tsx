@@ -19,36 +19,37 @@ function App() {
 
     return (
         <AuthProvider>
-        <AlertProvider>
+            <AlertProvider>
 
-            <BrowserRouter>
-                <Header/>
+                <BrowserRouter>
+                    <Header/>
 
-                <AlertPopup></AlertPopup>
+                    <AlertPopup></AlertPopup>
 
-                <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/register" element={<Register/>}/>
-                    <Route path="/forgot-password" element={<ResetPassword/>}/>
-                    <Route path="/reset-password/:uid/:token" element={<ResetPasswordConfirm />} />
-                    <Route path="/email-confirmation/:uid/:token" element={<EmailConfirm />} />
-                    <Route path="/mode-selection" element={<ModeSelection/>}/>
-                    <Route path="/game" element={<Game/>}/>
+                    <Routes>
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/login" element={<Login/>}/>
+                        <Route path="/register" element={<Register/>}/>
+                        <Route path="/forgot-password" element={<ResetPassword/>}/>
+                        <Route path="/reset-password/:uid/:token" element={<ResetPasswordConfirm/>}/>
+                        <Route path="/email-confirmation/:uid/:token" element={<EmailConfirm/>}/>
+                        <Route path="/mode-selection" element={<ModeSelection/>}/>
+                        <Route path="/game/countries" element={<Game gameMode={"GUESS_COUNTRY_FROM_FLAG"}/>}/>
+                        <Route path="/game/cities" element={<Game gameMode={"GUESS_CAPITAL_FROM_COUNTRY"}/>}/>
 
-                    <Route
-                        path="account"
-                        element={
-                            <ProtectedRoute>
-                                <UserAccount/>
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
+                        <Route
+                            path="account"
+                            element={
+                                <ProtectedRoute>
+                                    <UserAccount/>
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Routes>
 
-            </BrowserRouter>
+                </BrowserRouter>
 
-        </AlertProvider>
+            </AlertProvider>
         </AuthProvider>
     )
 }

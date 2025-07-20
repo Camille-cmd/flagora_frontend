@@ -1,0 +1,1 @@
+export type GameModes = 'GUESS_COUNTRY_FROM_FLAG' | 'GUESS_CAPITAL_FROM_COUNTRY';

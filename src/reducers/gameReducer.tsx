@@ -1,5 +1,4 @@
-
-type GameState = {
+export type GameState = {
     questions: Record<number, string>;
     currentIndex: number;
     currentQuestion: string;
@@ -21,6 +20,11 @@ export default function gameReducer(state: GameState, action: GameAction): GameS
             };
         case "next_question": {
             const nextIndex = state.currentIndex + 1;
+            console.log(
+                nextIndex,
+                state.questions[nextIndex],
+                state.questions
+            )
             return {
                 ...state,
                 currentIndex: nextIndex,

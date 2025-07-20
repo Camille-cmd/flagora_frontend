@@ -1,11 +1,8 @@
-"use client"
-
-import {Flag, Send, SkipForward, Star, XCircle} from "lucide-react"
+import {SkipForward, Star, XCircle} from "lucide-react"
 import Button from "../common/Button.tsx"
 import Card from "../common/Card/Card.tsx"
 import useWebSocket from "react-use-websocket"
 import {useEffect, useReducer, useState} from "react"
-import {Form, Formik, type FormikHelpers} from "formik"
 import gameReducer from "../../reducers/gameReducer.tsx"
 import {
     AcceptUser,
@@ -15,14 +12,19 @@ import {
     WebsocketMessage
 } from "../../interfaces/websocket.tsx"
 import {useTranslation} from "react-i18next"
-import SearchBar from "../common/SearchBar.tsx"
-import CountryService from "../../services/CountryService.tsx"
-import type {Country} from "../../interfaces/country.tsx"
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import {countryCodeEmoji} from "../../utils/common.tsx";
 import {Link} from "react-router-dom";
+import GuessCountryForm from "./game_modes/GuessCountryForm.tsx";
+import GuessCapitalCityForm from "./game_modes/GuessCapitalCityForm.tsx";
+import {GameModes} from "../../interfaces/gameModes.tsx";
 
-export default function Game() {
+
+interface GameProps {
+    gameMode: GameModes
+}
+
+export default function Game({gameMode}: Readonly<GameProps>) {
     const {t} = useTranslation()
     const {isAuthenticated, token, cleanToken} = useAuth()
     const [state, dispatch] = useReducer(gameReducer, {
@@ -31,14 +33,13 @@ export default function Game() {
         currentQuestion: "",
         score: 0,
     })
-    const [countries, setCountries] = useState<Country[]>([])
     const [answerStatus, setAnswerStatus] = useState<"correct" | "wrong" | null>(null)
     const [correctAnswer, setCorrectAnswer] = useState<CorrectAnswer | null>(null)
     const [isSkipping, setIsSkipping] = useState(false)
 
     const acceptUser = () => {
         // Send the user we have in storage for the backend auth
-        sendJsonMessage({type: "user_accept", token: token})
+        sendJsonMessage({type: "user_accept", token: token, gameMode: gameMode})
     }
 
     const {sendJsonMessage, lastJsonMessage} = useWebSocket(`${import.meta.env.VITE_WS_URL}/`, {
@@ -46,18 +47,6 @@ export default function Game() {
         shouldReconnect: () => true,
         reconnectAttempts: 10,
     })
-
-
-    const handleSubmit = (values: { answer: string }, actions: FormikHelpers<{ answer: string }>) => {
-        const questionId = Object.keys(state.questions)[state.currentIndex]
-        sendJsonMessage({
-            type: "answer_submission",
-            id: questionId,
-            answer: values.answer,
-        })
-
-        actions.resetForm()
-    }
 
     const handleSkip = () => {
         // Prevent multiple rapid skips
@@ -100,8 +89,8 @@ export default function Game() {
                     window.location.href = "/login";
                 }
                 break
+
             case "new_questions":
-                console.log("new questions")
                 payload = response.payload as NewQuestionsMessage
                 dispatch({type: "new_questions", questions: payload.questions})
                 break
@@ -141,12 +130,6 @@ export default function Game() {
         }
     }, [lastJsonMessage])
 
-    // on mount
-    useEffect(() => {
-        CountryService.getCountries().then((countries) => {
-            setCountries(countries)
-        })
-    }, [])
 
     return (
         <div className="flex flex-col items-center justify-center p-2 md:p-6">
@@ -164,7 +147,7 @@ export default function Game() {
                             size={"small"}
                             className="py-2.5 mr-6 text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
                             onClick={handleSkip}
-                            disabled={isSkipping || countries.length === 0}
+                            disabled={isSkipping}
                             text={t("game.skip")}
                         >
                             <SkipForward className="w-5 h-5"/>
@@ -191,70 +174,25 @@ export default function Game() {
                         </div>
                     )}
 
-                    {/* Flag Image */}
-                    <div className="relative">
-                        <div className="mb-6 relative w-full h-56 flex items-center justify-center">
-                            {state.currentQuestion ? (
-                                <img
-                                    src={`data:image/svg+xml;utf8,${encodeURIComponent(state.currentQuestion)}`}
-                                    alt="Flag"
-                                    className="max-w-[120%] md:max-w-full max-h-full"
-                                />
-                            ) : (
-                                <div className="flex items-center justify-center w-full h-full text-gray-400 dark:text-gray-500">
-                                    <Flag className="w-16 h-16"/>
-                                </div>
-                            )}
-                        </div>
-                    </div>
 
                     {/* Formik Form */}
-                    <Formik initialValues={{answer: ""}} onSubmit={handleSubmit}>
-                        {({values, setFieldValue, submitForm}) => (
-                            <Form className="space-y-4 lg:mt-10 md:px-8 pb-4 md:pb-0">
-                                {countries.length === 0 ? (
-                                    <div className="flex justify-center">
-                                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
-                                    </div>
-                                ) : (
-                                    <div className="relative">
-                                        <SearchBar
-                                            value={values.answer}
-                                            onChange={(value) => {
-                                                setFieldValue("answer", value)
-                                                // Clear correct answer message when user starts typing
-                                                if (correctAnswer && value.length > 0) {
-                                                    setCorrectAnswer(null)
-                                                }
-                                            }}
-                                            onSubmit={submitForm}
-                                            placeholder={t("game.answer.placeholder")}
-                                            options={countries}
-                                            className={`w-full p-4 pl-5 pr-12 ${
-                                                answerStatus === "correct"
-                                                    ? "bg-green-300 dark:bg-green-900/90"
-                                                    : answerStatus === "wrong"
-                                                        ? "bg-red-600 dark:bg-red-900/90 shake"
-                                                        : ""
-                                            }`}
-                                        />
-                                    </div>
-                                )}
-
-                                <div className="space-y-3">
-                                    <Button
-                                        type="submit"
-                                        buttonType="primary"
-                                        className="w-full py-3"
-                                        text={t("game.submit")}
-                                        disabled={countries.length === 0}
-                                    >
-                                        <Send className="w-5 h-5"/>
-                                    </Button>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
+                    {gameMode === "GUESS_COUNTRY_FROM_FLAG" ? (
+                        <GuessCountryForm
+                            sendJsonMessage={sendJsonMessage}
+                            state={state}
+                            answerStatus={answerStatus}
+                            correctAnswer={correctAnswer}
+                            setCorrectAnswer={setCorrectAnswer}
+                        />
+                    ) : gameMode === "GUESS_CAPITAL_FROM_COUNTRY" ? (
+                        <GuessCapitalCityForm
+                            sendJsonMessage={sendJsonMessage}
+                            state={state}
+                            answerStatus={answerStatus}
+                            correctAnswer={correctAnswer}
+                            setCorrectAnswer={setCorrectAnswer}
+                        />
+                    ) : null}
                 </Card>
             </div>
         </div>
