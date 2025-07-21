@@ -15,9 +15,12 @@ export default function Card({children, className = "", color1, color2}: CardPro
     return (
         <>
             <div
-                className={`relative overflow-hidden bg-neutral-50 dark:bg-darkblue-700 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 ${className}`}
+                className={`relative bg-neutral-50 dark:bg-darkblue-700 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 ${className}`}
             >
-                <DecorativeBubbles color1={color1} color2={color2}/>
+                {/* Only this wrapper clips the bubbles */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                    <DecorativeBubbles color1={color1} color2={color2}/>
+                </div>
                 <div className="relative p-8">
                     {children}
                 </div>

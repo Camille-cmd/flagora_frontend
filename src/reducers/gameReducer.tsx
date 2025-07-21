@@ -12,19 +12,16 @@ type GameAction =
 export default function gameReducer(state: GameState, action: GameAction): GameState {
     switch (action.type) {
         case "new_questions":
+            const firstKey = Number(Object.keys(action.questions)[0]);
+            const firstQuestion = action.questions[firstKey];
             return {
                 questions: {...state.questions, ...action.questions},
                 currentIndex: state.currentIndex || 0,
-                currentQuestion: state.currentQuestion || action.questions[0],
+                currentQuestion: state.currentQuestion || firstQuestion,
                 score: state.score || 0,
             };
         case "next_question": {
             const nextIndex = state.currentIndex + 1;
-            console.log(
-                nextIndex,
-                state.questions[nextIndex],
-                state.questions
-            )
             return {
                 ...state,
                 currentIndex: nextIndex,

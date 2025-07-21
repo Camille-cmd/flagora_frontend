@@ -155,7 +155,7 @@
       },
       "cities": {
         "title": "Villes",
-        "description": "Testez vos connaissances sur les villes."
+        "description": "Testez vos connaissances sur les capitales."
       }
     }
   },
@@ -246,6 +246,7 @@
       "city_placeholder": "Entrez le nom de la capitale"
     },
     "submit": "Valider",
-    "skip": "Passer"
+    "skip": "Passer",
+    "loadingQuestions": "Chargement…"
   }
 }

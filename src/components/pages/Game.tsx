@@ -36,6 +36,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
     const [answerStatus, setAnswerStatus] = useState<"correct" | "wrong" | null>(null)
     const [correctAnswer, setCorrectAnswer] = useState<CorrectAnswer | null>(null)
     const [isSkipping, setIsSkipping] = useState(false)
+    const [isLoading, setIsLoading] = useState(true);
 
     const acceptUser = () => {
         // Send the user we have in storage for the backend auth
@@ -49,8 +50,8 @@ export default function Game({gameMode}: Readonly<GameProps>) {
     })
 
     const handleSkip = () => {
-        // Prevent multiple rapid skips
-        if (isSkipping) return
+        // Prevent multiple rapid skips or skip if questions are not ready yet
+        if (isSkipping || Object.keys(state.questions).length === 0) return
 
         setIsSkipping(true)
 
@@ -63,8 +64,6 @@ export default function Game({gameMode}: Readonly<GameProps>) {
             answer: "", // Empty answer to indicate a false answer
         })
 
-        // Move to next question
-        dispatch({type: "next_question"})
 
         // Reset skipping state after a short delay
         setTimeout(() => {
@@ -80,7 +79,6 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         let payload
         switch (response.type) {
             case "user_accept":
-                console.log("user accept")
                 payload = response.payload as AcceptUser
                 // If we have an authenticated user but the backend has not
                 // This is a problem: redirect to login
@@ -93,6 +91,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
             case "new_questions":
                 payload = response.payload as NewQuestionsMessage
                 dispatch({type: "new_questions", questions: payload.questions})
+                setIsLoading(false)
                 break
 
             case "answer_result":
@@ -102,17 +101,18 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                     setAnswerStatus("correct")
                     setCorrectAnswer(null) // Clear any previous correct answer
 
-
                 } else {
                     setAnswerStatus("wrong")
                     // Set the correct answer if provided (yes when question is skipped)
                     if (payload.correctAnswer) {
-                        console.log(payload)
                         setCorrectAnswer({
                             "name": payload.correctAnswer,
                             "code": countryCodeEmoji(payload.code),
                             "link": payload.wikipediaLink
                         } as CorrectAnswer)
+
+                        // Move to next question
+                        dispatch({type: "next_question"})
                     }
                 }
 
@@ -130,10 +130,34 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         }
     }, [lastJsonMessage])
 
+    // Skip shortcut
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // ignore keys while loading
+            if (isLoading) return;
+
+            if (e.key === "Enter" && e.shiftKey) {
+                e.preventDefault();
+                handleSkip();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isSkipping, isLoading, state.currentIndex]);
 
     return (
         <div className="flex flex-col items-center justify-center p-2 md:p-6">
             <div className="w-full xl:max-w-xl">
+
+                {isLoading && (
+                    <div className="text-center text-gray-500 dark:text-gray-300 mb-4 animate-pulse">
+                        {t("game.loadingQuestions")}
+                    </div>
+                )}
+
                 <Card color1="yellow" color2="blue">
 
                     <div className="flex items-center justify-between mb-8">
@@ -147,7 +171,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                             size={"small"}
                             className="py-2.5 mr-6 text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
                             onClick={handleSkip}
-                            disabled={isSkipping}
+                            disabled={isSkipping || isLoading}
                             text={t("game.skip")}
                         >
                             <SkipForward className="w-5 h-5"/>

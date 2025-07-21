@@ -23,22 +23,40 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
     const maxDisplayOptions: number = 5
 
     useEffect(() => {
-        console.log("submitting", value)
-        console.log("options", options)
         if (!Array.isArray(options) || options.length === 0) return;
 
-        if (value.trim() === "") {
-            setFilteredOptions(options.slice(0, maxDisplayOptions))
+        // Filter depending on what the user types
+        const lowerValue = value.toLowerCase().trim();
+        if (lowerValue === "") {
+            setFilteredOptions(options.slice(0, maxDisplayOptions));
         } else {
-            const filtered = options
-                .filter((option) => option.name.toLowerCase().startsWith(value.toLowerCase()))
-                .slice(0, maxDisplayOptions)
-            setFilteredOptions(filtered)
+            // Helper function to split the name into words
+            const splitWords = (text: string): string[] => {
+                return text.toLowerCase().split(/[\s\-_/]+/); // support for space, hyphen, underscore, slash
+            };
+
+            // First: match where any word starts with the input
+            const wordStartsWithMatches = options.filter((option) =>
+                splitWords(option.name).some((word) => word.startsWith(lowerValue))
+            );
+
+            // Then: match where input is included anywhere (but not already matched)
+            const includesMatches = options.filter((option) =>
+                !wordStartsWithMatches.includes(option) &&
+                option.name.toLowerCase().includes(lowerValue)
+            );
+
+            const combined = [...wordStartsWithMatches, ...includesMatches].slice(0, maxDisplayOptions);
+
+            setFilteredOptions(combined);
         }
-        setHighlightedIndex(-1)
-    }, [value, options])
+
+        setHighlightedIndex(-1);
+    }, [value, options]);
+
 
     useEffect(() => {
+        // Close the dropdown when user clicks outside
         function handleClickOutside(event: MouseEvent) {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
                 setIsOpen(false)
@@ -50,6 +68,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
             document.removeEventListener("mousedown", handleClickOutside)
         }
     }, [])
+
 
     // Scroll highlighted item into view
     useEffect(() => {
@@ -69,17 +88,16 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
         }
     }
 
-    const handleOptionSelect = (option: Country | City) => {
-        if (option.iso2Code) {
-            onChange(option.iso2Code) // <-- Set the code as the value
-        } else if (option.name) {
-            onChange(option.name)
-        }
+    const handleOptionSelect = (option: Country | City, fieldName: keyof Country | keyof City) => {
+        // Get the value dynamically from the target fieldName and trigger OnChange
+        const selectedValue = option[fieldName];
+        onChange(selectedValue);
         setIsOpen(false)
         inputRef.current?.blur()
     }
 
     const handleInputFocus = () => {
+        // Open dropdown on first user input
         if (value.trim() !== "") {
             setIsOpen(true)
         }
@@ -102,7 +120,8 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
                 setIsOpen(false)
                 if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
                     const selected = filteredOptions[highlightedIndex]
-                    handleOptionSelect(selected)
+                    const fieldName = selected.iso2Code ? "iso2Code" : "name"
+                    handleOptionSelect(selected, fieldName)
                     onSubmit()
                 } else if (value.trim() !== "") {
                     onSubmit()
@@ -120,7 +139,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
 
     return (
         <div className="relative" ref={searchRef}>
-            <div className="relative">
+            <div>
                 <Input
                     ref={inputRef}
                     type="text"
@@ -136,7 +155,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
 
             {/* Dropdown positioned absolutely with higher z-index */}
             {isOpen && (
-                <div className="fixed inset-0 bg-black/5 z-999"
+                <div className="fixed inset-0 bg-black/5 pointer-events-none"
                      onClick={() => setIsOpen(false)}
                      aria-hidden="true"></div>
             )}
@@ -144,7 +163,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
             {isOpen && filteredOptions.length > 0 && (
                 <div
                     ref={dropdownRef}
-                    className="z-50 w-full max-w-full transform -translate-x-1/2 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl max-h-48 overflow-y-auto"
+                    className="absolute top-full left-0 w-full z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl max-h-48 overflow-y-auto"
                 >
                     {filteredOptions.map((option, index) => (
                         <div
@@ -154,7 +173,7 @@ export default function SearchBar({value, onChange, onSubmit, placeholder, class
                                     ? "bg-blue-50 dark:bg-gray-700 text-yellow-700 dark:text-yellow-300"
                                     : "text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
                             }`}
-                            onClick={() => handleOptionSelect(option)}
+                            onClick={() => handleOptionSelect(option, "name")}
                         >
                             {option.name}
                         </div>

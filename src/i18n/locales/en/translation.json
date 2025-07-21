@@ -155,7 +155,7 @@
       },
       "cities": {
         "title": "Cities",
-        "description": "Test your knowledge about cities."
+        "description": "Test your knowledge about capital cities."
       }
     }
   },
@@ -251,6 +251,7 @@
       "city_placeholder": "Typ in the city name"
     },
     "submit": "Submit",
-    "skip": "skip"
+    "skip": "skip",
+    "loadingQuestions": "Loading…"
   }
 }
