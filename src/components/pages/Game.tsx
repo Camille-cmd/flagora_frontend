@@ -98,11 +98,14 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 payload = response.payload as AnswerResultMessage
                 if (payload.isCorrect) {
                     dispatch({type: "next_question"})
+                    dispatch({type: "update_score", add_up: 1, reset: false})
                     setAnswerStatus("correct")
                     setCorrectAnswer(null) // Clear any previous correct answer
 
                 } else {
                     setAnswerStatus("wrong")
+                    // Score keep track of strikes, if one wrong, resetS
+                    dispatch({type: "update_score", add_up: 0, reset: true})
                     // Set the correct answer if provided (yes when question is skipped)
                     if (payload.correctAnswer) {
                         setCorrectAnswer({
