@@ -6,6 +6,7 @@ import Button from "../common/Button.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import LanguageDropdown from "./LanguageDropdown.tsx";
 import {useTranslation} from "react-i18next";
+import FlagoraIcon from '../../assets/flagora_logo.svg';
 
 export function Header() {
     const {t} = useTranslation();
@@ -27,6 +28,7 @@ export function Header() {
                 setIsDropdownOpen(false)
             }
         }
+
         document.addEventListener("mousedown", handleClickOutside)
         return () => {
             document.removeEventListener("mousedown", handleClickOutside)
@@ -39,29 +41,35 @@ export function Header() {
             setIsDropdownOpen(false)
             navigate("/")
         })
-
-
     }
 
     return (
         <header className="p-4 border-b border-slate-200 dark:border-slate-700 transition-colors duration-300">
-            <div className="container mx-auto flex items-center justify-between">
-                {showBackButton ? (
-                    <Link
-                        to="/"
-                        className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"
-                    >
-                        <ChevronLeft size={20}/>
-                    </Link>
-                ) : (
-                    <div className="w-5"></div>
-                )}
-                <div className="flex items-center">
-                    <h1 className="text-xl font-bold text-slate-800 dark:text-white ml-2 transition-colors duration-300">
+            <div className="container mx-auto grid grid-cols-[auto_1fr_auto] md:grid-cols-3 items-center gap-2 md:gap-0">
+                {/* Left side - Back button or spacer */}
+                <div className="flex items-center justify-start">
+                    {showBackButton ? (
+                        <Link
+                            to="/"
+                            className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"
+                        >
+                            <ChevronLeft size={20}/>
+                        </Link>
+                    ) : (
+                        <div className="w-5"></div>
+                    )}
+                </div>
+
+                {/* Center - Logo and title */}
+                <div className="flex items-center justify-center">
+                    <h1 className="text-lg sm:text-2xl font-bold text-slate-800 dark:text-white transition-colors duration-300">
                         Flagora
                     </h1>
+                    <img src={FlagoraIcon} alt="Flagora" className="ml-2 w-7 h-7 sm:w-9 sm:h-9"/>
                 </div>
-                <div className="flex items-center space-x-4">
+
+                {/* Right side - Controls */}
+                <div className="flex items-center justify-end space-x-2 sm:space-x-4">
                     <ThemeToggle/>
 
                     <LanguageDropdown/>
@@ -110,7 +118,6 @@ export function Header() {
                                                 </span>
                                             )}
                                         </Link>
-
 
                                         <Button
                                             type={"button"}
