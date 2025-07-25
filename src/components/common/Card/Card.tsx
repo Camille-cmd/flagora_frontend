@@ -18,7 +18,7 @@ export default function Card({children, className = "", color1, color2}: CardPro
                 className={`relative bg-neutral-50 dark:bg-darkblue-700 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 ${className}`}
             >
                 {/* Only this wrapper clips the bubbles */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                <div className="absolute inset-0 pointer-events-none z-0 rounded-xl overflow-hidden">
                     <DecorativeBubbles color1={color1} color2={color2}/>
                 </div>
                 <div className="relative p-8">

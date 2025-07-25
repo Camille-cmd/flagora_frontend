@@ -69,6 +69,7 @@ export default function GuessCapitalCityForm(
                             // <div className="relative">
                             <SearchBar
                                 value={values.answer}
+                                answerFieldName={"name"}
                                 onChange={(value) => {
                                     setFieldValue("answer", value)
                                     // Clear correct answer message when user starts typing
@@ -81,9 +82,9 @@ export default function GuessCapitalCityForm(
                                 options={cities}
                                 className={`w-full p-4 pl-5 pr-12 ${
                                     answerStatus === "correct"
-                                        ? "bg-green-300 dark:bg-green-900/90"
+                                        ? "bg-green-400 dark:bg-green-900/90"
                                         : answerStatus === "wrong"
-                                            ? "bg-red-600 dark:bg-red-900/90 shake"
+                                            ? "bg-red-700 dark:bg-red-900/90 shake"
                                             : ""
                                 }`}
                             />

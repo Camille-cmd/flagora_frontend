@@ -78,6 +78,7 @@ export default function GuessCountryForm(
                         ) : (
                             <SearchBar
                                 value={values.answer}
+                                answerFieldName={"name"}
                                 onChange={(value) => {
                                     setFieldValue("answer", value)
                                     // Clear correct answer message when user starts typing
