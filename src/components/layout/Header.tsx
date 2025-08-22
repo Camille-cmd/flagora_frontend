@@ -1,7 +1,7 @@
 import {ThemeToggle} from "./ThemeToggle.tsx"
 import {Link, useLocation, useNavigate} from "react-router-dom"
 import {useEffect, useRef, useState} from "react"
-import {ChevronLeft, LogOut, Settings, User} from "lucide-react"
+import {ChartColumnStacked, ChevronLeft, LogOut, Settings, User} from "lucide-react"
 import Button from "../common/Button.tsx";
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import LanguageDropdown from "./LanguageDropdown.tsx";
@@ -98,6 +98,16 @@ export function Header() {
                                                 {user?.username}
                                             </p>
                                         </div>
+                                        <Link
+                                            to="/stats"
+                                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-darkblue-600 transition-colors"
+                                            role="menuitem"
+                                            onClick={() => setIsDropdownOpen(false)}
+                                        >
+                                            <ChartColumnStacked size={16}
+                                                                className="mr-2 text-gray-500 dark:text-gray-400"/>
+                                            <span>{t("header.userStats.myStats")}</span>
+                                        </Link>
 
                                         <Link
                                             to="/account"

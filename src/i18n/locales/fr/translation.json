@@ -24,6 +24,9 @@
         "ariaLabel": "Déconnexion",
         "text": "Déconnexion"
       }
+    },
+    "userStats": {
+      "myStats": "Statistiques"
     }
   },
   "home": {
@@ -248,5 +251,16 @@
     "submit": "Valider",
     "skip": "Passer",
     "loadingQuestions": "Chargement…"
+  },
+  "stats": {
+    "pageTitle": "Vos statistiques détaillées",
+    "noStats": "Pas de statistiques pour le moment.",
+    "flagMode": "Mode drapeau",
+    "citiesMode": "Mode capitales",
+    "maxStreak": "Nombre max de combos",
+    "maxStreakDescription": "Le nombre maximal de bonne réponse successives.",
+    "successRate": "% de réussite",
+    "maxFails": "Plus d'échec",
+    "maxCorrect": "Plus de réussite"
   }
 }

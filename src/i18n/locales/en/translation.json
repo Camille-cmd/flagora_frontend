@@ -24,6 +24,9 @@
         "ariaLabel": "Logout",
         "text": "Logout"
       }
+    },
+    "userStats": {
+      "myStats": "Stats"
     }
   },
   "home": {
@@ -253,5 +256,16 @@
     "submit": "Submit",
     "skip": "skip",
     "loadingQuestions": "Loading…"
+  },
+  "stats": {
+    "pageTitle": "Your detailed stats",
+    "noStats": "No stats yet",
+    "flagMode": "Guess the flag mode",
+    "citiesMode": "Guess the capital city mode",
+    "maxStreak": "Max streak",
+    "maxStreakDescription": "The maximum number of streaks in one game",
+    "successRate": "% of success",
+    "maxFails": "Most failed",
+    "maxCorrect": "Most correctly guessed"
   }
 }

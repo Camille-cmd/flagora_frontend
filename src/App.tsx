@@ -14,6 +14,7 @@ import {AuthProvider} from "./contexts/AuthContext.tsx";
 import AlertPopup from "./components/common/Alert/AlertPopup.tsx";
 import ResetPasswordConfirm from "./components/pages/ResetPasswordConfirm.tsx";
 import EmailConfirm from "./components/pages/EmailConfirm.tsx";
+import UserStats from "./components/pages/UserStats.tsx";
 
 function App() {
 
@@ -42,6 +43,14 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <UserAccount/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="stats"
+                            element={
+                                <ProtectedRoute>
+                                    <UserStats/>
                                 </ProtectedRoute>
                             }
                         />
