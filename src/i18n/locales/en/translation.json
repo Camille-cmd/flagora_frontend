@@ -266,6 +266,7 @@
     "maxStreakDescription": "The maximum number of streaks in one game",
     "successRate": "% of success",
     "maxFails": "Most failed",
-    "maxCorrect": "Most correctly guessed"
+    "maxCorrect": "Most correctly guessed",
+    "successRateTitle": "Success rate"
   }
 }

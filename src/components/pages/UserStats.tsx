@@ -1,4 +1,4 @@
-import {AlertCircle, Trophy, Zap} from "lucide-react"
+import {AlertCircle, Crown, Trophy, Zap} from "lucide-react"
 import {CityOut, CountryOut, UserStatsByGameMode} from "../../interfaces/userStats.tsx";
 import UserService from "../../services/UserService.tsx";
 import {useEffect, useState} from "react";
@@ -91,6 +91,16 @@ export default function UserStats() {
                                             </div>
                                             <div className="text-3xl font-bold text-raspberry-600 mb-2">{gameModeStats.stats.mostStrikes}</div>
                                             <p className="text-sm text-gray-600 dark:text-gray-300">{t("stats.maxStreakDescription")}</p>
+                                        </div>
+
+                                        {/* Success Rate */}
+                                        <div className="bg-white dark:bg-darkblue-600 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h4 className="text-lg font-medium text-secondary dark:text-primary flex items-center">
+                                                    <Crown size={20} className="mr-2 text-green-500"/>
+                                                    {t("stats.successRateTitle")}
+                                                </h4>
+                                            </div>
                                             <div className="text-lg font-semibold text-raspberry-600 mt-2">
                                                 {gameModeStats.stats.successRate}{t("stats.successRate")}
                                             </div>

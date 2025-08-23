@@ -261,6 +261,7 @@
     "maxStreakDescription": "Le nombre maximal de bonne réponse successives.",
     "successRate": "% de réussite",
     "maxFails": "Plus d'échec",
-    "maxCorrect": "Plus de réussite"
+    "maxCorrect": "Plus de réussite",
+    "successRateTitle": "Taux de réussite"
   }
 }
