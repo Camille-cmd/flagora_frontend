@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom"
-import {KeyRound, UserRoundPlus} from "lucide-react";
+import {KeyRound, Play, UserRoundPlus} from "lucide-react";
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import {useTranslation} from "react-i18next";
 
@@ -24,28 +24,29 @@ export default function Home() {
             <div className="space-y-4 w-full max-w-xs">
                 <Link
                     to="/mode-selection"
-                    className="block w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-secondary dark:text-gray-200 font-medium rounded-lg text-center transition-colors no-underline"
+                    className="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-secondary dark:text-secondary dark:font-semibold font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
                 >
+                    <span className="mr-2"><Play/></span>
                     {t("home.play")}
                 </Link>
 
                 {!isAuthenticated &&
                     <>
-                    <Link
-                        to="/login"
-                        className="w-full py-3  bg-darkblue-600 dark:bg-raspberry-700 hover:bg-darkblue-700 dark:hover:bg-raspberry-600 text-primary dark:text-gray-200 font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
-                    >
-                        <span className="mr-2"><KeyRound/></span>
-                        {t("home.connection")}
-                    </Link>
+                        <Link
+                            to="/login"
+                            className="w-full py-3 bg-darkblue-600 dark:bg-raspberry-700 hover:bg-darkblue-700 dark:hover:bg-raspberry-600 text-primary dark:text-gray-200 dark:font-semibold font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
+                        >
+                            <span className="mr-2"><KeyRound/></span>
+                            {t("home.connection")}
+                        </Link>
 
-                    <Link
-                        to="/register"
-                        className="w-full py-3 dark:bg-gray-700 dark:text-gray-400 border border-solid border-darkblue-600 text-secondary font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
-                    >
-                        <span className="mr-2"><UserRoundPlus/></span>
-                        {t("home.createAccount")}
-                    </Link>
+                        <Link
+                            to="/register"
+                            className="w-full py-3 dark:bg-gray-700 dark:text-primary border border-solid border-darkblue-600 text-secondary dark:font-semibold font-medium rounded-lg text-center flex items-center justify-center transition-colors duration-300 no-underline"
+                        >
+                            <span className="mr-2"><UserRoundPlus/></span>
+                            {t("home.createAccount")}
+                        </Link>
                     </>
                 }
             </div>

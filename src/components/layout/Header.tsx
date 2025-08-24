@@ -62,9 +62,9 @@ export function Header() {
 
                 {/* Center - Logo and title */}
                 <div className="flex items-center justify-center">
-                    <h1 className="text-lg sm:text-2xl font-bold text-slate-800 dark:text-white transition-colors duration-300">
-                        Flagora
-                    </h1>
+                    <Link to="/" className="text-slate-800 dark:text-white no-underline transition-colors duration-300">
+                        <h1 className="text-lg sm:text-2xl font-bold text-slate-800 dark:text-white transition-colors duration-300">Flagora</h1>
+                    </Link>
                     <img src={FlagoraIcon} alt="Flagora" className="ml-2 w-7 h-7 sm:w-9 sm:h-9"/>
                 </div>
 

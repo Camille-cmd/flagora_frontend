@@ -1,4 +1,4 @@
-import {SkipForward, Star, XCircle} from "lucide-react"
+import {SkipForward, XCircle} from "lucide-react"
 import Button from "../common/Button.tsx"
 import Card from "../common/Card/Card.tsx"
 import useWebSocket from "react-use-websocket"
@@ -18,10 +18,12 @@ import {Link} from "react-router-dom";
 import GuessCountryForm from "./game_modes/GuessCountryForm.tsx";
 import GuessCapitalCityForm from "./game_modes/GuessCapitalCityForm.tsx";
 import {GameModes} from "../../interfaces/gameModes.tsx";
+import Score from "../layout/score.tsx";
+import {GameLostPopup} from "../layout/GameLostPopup.tsx";
 
 
 interface GameProps {
-    gameMode: GameModes
+    gameMode: GameModes,
 }
 
 export default function Game({gameMode}: Readonly<GameProps>) {
@@ -37,6 +39,8 @@ export default function Game({gameMode}: Readonly<GameProps>) {
     const [correctAnswer, setCorrectAnswer] = useState<CorrectAnswer | null>(null)
     const [isSkipping, setIsSkipping] = useState(false)
     const [isLoading, setIsLoading] = useState(true);
+    const [gameIsLost, setGameIsLost] = useState(false);
+    const [bestStreak, setBestStreak] = useState(0);
 
     const acceptUser = () => {
         // Send the user we have in storage for the backend auth
@@ -71,6 +75,14 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         }, 500)
     }
 
+    const handleGameOverRetry = () => {
+        setGameIsLost(false);
+        dispatch({type: "next_question"});
+        setCorrectAnswer(null);
+        setAnswerStatus(null);
+    }
+
+    // Handle incoming messages from the backend
     useEffect(() => {
         if (!lastJsonMessage) return
 
@@ -98,14 +110,16 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 payload = response.payload as AnswerResultMessage
                 if (payload.isCorrect) {
                     dispatch({type: "next_question"})
-                    dispatch({type: "update_score", add_up: 1, reset: false})
+                    dispatch({type: "update_score", new_streak: payload.currentStreak})
                     setAnswerStatus("correct")
                     setCorrectAnswer(null) // Clear any previous correct answer
 
                 } else {
-                    setAnswerStatus("wrong")
-                    // Score keep track of strikes, if one wrong, resetS
-                    dispatch({type: "update_score", add_up: 0, reset: true})
+                    setAnswerStatus("wrong");
+
+                    // Score keep track of strikes
+                    dispatch({type: "update_score", new_streak: payload.currentStreak})
+
                     // Set the correct answer if provided (yes when question is skipped)
                     if (payload.correctAnswer) {
                         setCorrectAnswer({
@@ -114,9 +128,18 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                             "link": payload.wikipediaLink
                         } as CorrectAnswer)
 
-                        // Move to next question
-                        dispatch({type: "next_question"})
+                        // Move to the next question only in training mode
+                        if (gameMode.includes("TRAINING")) {
+                            dispatch({type: "next_question"})
+                        }
                     }
+
+                    // In challenge mode, game is lost if the answer is wrong
+                    if (gameMode.includes("CHALLENGE")) {
+                        setGameIsLost(true);
+                        setBestStreak(payload.bestStreak)
+                    }
+
                 }
 
                 // Request more questions if only 2 remaining
@@ -143,6 +166,11 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 e.preventDefault();
                 handleSkip();
             }
+
+            if (e.key === "Enter" && gameIsLost) {
+                e.preventDefault();
+                handleGameOverRetry();
+            }
         };
 
         window.addEventListener("keydown", handleKeyDown);
@@ -161,13 +189,25 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                     </div>
                 )}
 
+                {gameMode.includes("TRAINING") && (
+                    <div className="text-center text-gray-500 dark:text-gray-300 mb-4 text-xl">{t("modeSelection.cards.training")}</div>
+                )}
+
+                {gameIsLost && (
+                    <GameLostPopup
+                        score={state.score}
+                        correctAnswer={correctAnswer}
+                        bestStreak={bestStreak}
+                        triggerNextQuestion={handleGameOverRetry}
+                    />
+                )}
+
                 <Card color1="yellow" color2="blue">
 
                     <div className="flex items-center justify-between mb-8">
-                        <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center">
-                            <Star className="text-green-600 mr-2"/>
-                            <span className="text-gray-600 dark:text-gray-300">Score: {state.score}</span>
-                        </div>
+
+                        <Score score={state.score}/>
+
                         <Button
                             type="button"
                             buttonType="custom"
@@ -203,7 +243,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
 
                     {/* Formik Form */}
-                    {gameMode === "GUESS_COUNTRY_FROM_FLAG" ? (
+                    {gameMode.includes("GCFF") ? (
                         <GuessCountryForm
                             sendJsonMessage={sendJsonMessage}
                             state={state}
@@ -211,7 +251,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                             correctAnswer={correctAnswer}
                             setCorrectAnswer={setCorrectAnswer}
                         />
-                    ) : gameMode === "GUESS_CAPITAL_FROM_COUNTRY" ? (
+                    ) : gameMode.includes("GCFC") ? (
                         <GuessCapitalCityForm
                             sendJsonMessage={sendJsonMessage}
                             state={state}

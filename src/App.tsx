@@ -35,8 +35,13 @@ function App() {
                         <Route path="/reset-password/:uid/:token" element={<ResetPasswordConfirm/>}/>
                         <Route path="/email-confirmation/:uid/:token" element={<EmailConfirm/>}/>
                         <Route path="/mode-selection" element={<ModeSelection/>}/>
-                        <Route path="/game/countries" element={<Game gameMode={"GUESS_COUNTRY_FROM_FLAG"}/>}/>
-                        <Route path="/game/cities" element={<Game gameMode={"GUESS_CAPITAL_FROM_COUNTRY"}/>}/>
+                        <Route path="/game/countries/challenge-combo"
+                               element={<Game gameMode={"GCFF_CHALLENGE_COMBO"}/>}/>
+                        <Route path="/game/countries/training-infinite"
+                               element={<Game gameMode={"GCFF_TRAINING_INFINITE"}/>}/>
+                        <Route path="/game/cities/challenge-combo" element={<Game gameMode={"GCFC_CHALLENGE_COMBO"}/>}/>
+                        <Route path="/game/cities/training-infinite"
+                               element={<Game gameMode={"GCFC_TRAINING_INFINITE"}/>}/>
 
                         <Route
                             path="account"

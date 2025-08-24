@@ -81,6 +81,20 @@ export default function UserStats() {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                                        {/* Success Rate */}
+                                        <div className="bg-white dark:bg-darkblue-600 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h4 className="text-lg font-medium text-secondary dark:text-primary flex items-center">
+                                                    <Crown size={20} className="mr-2 text-green-500"/>
+                                                    {t("stats.successRateTitle")}
+                                                </h4>
+                                            </div>
+                                            <div className="text-lg font-semibold text-raspberry-600 mt-2">
+                                                {gameModeStats.stats.successRate}{t("stats.successRate")}
+                                            </div>
+                                        </div>
+
                                         {/* Most Strikes */}
                                         <div className="bg-white dark:bg-darkblue-600 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
                                             <div className="flex items-center justify-between mb-4">
@@ -93,16 +107,17 @@ export default function UserStats() {
                                             <p className="text-sm text-gray-600 dark:text-gray-300">{t("stats.maxStreakDescription")}</p>
                                         </div>
 
-                                        {/* Success Rate */}
+                                        {/* Most Correctly Guessed */}
                                         <div className="bg-white dark:bg-darkblue-600 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
                                             <div className="flex items-center justify-between mb-4">
                                                 <h4 className="text-lg font-medium text-secondary dark:text-primary flex items-center">
-                                                    <Crown size={20} className="mr-2 text-green-500"/>
-                                                    {t("stats.successRateTitle")}
+                                                    <Trophy size={20} className="mr-2 text-green-500"/>
+                                                    {t("stats.maxCorrect")}
                                                 </h4>
                                             </div>
+                                            <div className="space-y-2">{renderItem(gameModeStats.stats.mostCorrectlyGuessed)}</div>
                                             <div className="text-lg font-semibold text-raspberry-600 mt-2">
-                                                {gameModeStats.stats.successRate}{t("stats.successRate")}
+                                                {gameModeStats.stats.mostCorrectlyGuessed.successRate}{t("stats.successRate")}
                                             </div>
                                         </div>
 
@@ -120,19 +135,6 @@ export default function UserStats() {
                                             </div>
                                         </div>
 
-                                        {/* Most Correctly Guessed */}
-                                        <div className="bg-white dark:bg-darkblue-600 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h4 className="text-lg font-medium text-secondary dark:text-primary flex items-center">
-                                                    <Trophy size={20} className="mr-2 text-green-500"/>
-                                                    {t("stats.maxCorrect")}
-                                                </h4>
-                                            </div>
-                                            <div className="space-y-2">{renderItem(gameModeStats.stats.mostCorrectlyGuessed)}</div>
-                                            <div className="text-lg font-semibold text-raspberry-600 mt-2">
-                                                {gameModeStats.stats.mostCorrectlyGuessed.successRate}{t("stats.successRate")}
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             ))}

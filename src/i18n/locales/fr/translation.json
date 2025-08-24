@@ -159,7 +159,9 @@
       "cities": {
         "title": "Villes",
         "description": "Testez vos connaissances sur les capitales."
-      }
+      },
+      "training": "Mode entrainement",
+      "challenge": "Mode challenge"
     }
   },
   "emailConfirm": {
@@ -263,5 +265,20 @@
     "maxFails": "Plus d'échec",
     "maxCorrect": "Plus de réussite",
     "successRateTitle": "Taux de réussite"
+  },
+  "score": {
+    "streak": "Combos"
+  },
+  "popup": {
+    "gameOver": {
+      "yourScore": "Ton score:",
+      "title": "Game Over",
+      "correctAnswer": "La bonne réponse était :",
+      "encouragement": "Tente de battre ce score. 💪",
+      "retry": "Retente",
+      "share": "Partager",
+      "copied": "Copié !",
+      "bestStreak": "Meilleur combo :"
+    }
   }
 }

@@ -2,9 +2,12 @@ export interface AnswerResultMessage {
     id: number;
     isCorrect: boolean;
     correctAnswer: string;
+    currentStreak: number;
+    bestStreak: number;
     code: string;
     wikipediaLink: string
 }
+
 export interface NewQuestionsMessage {
     questions: Record<number, string>;
 }
