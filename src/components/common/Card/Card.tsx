@@ -26,7 +26,7 @@ export default function Card({
     return (
         <>
             <div
-                className={`relative ${bgClassName} rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 ${className}`}
+                className={`card relative ${bgClassName} rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 ${className}`}
             >
                 {/* Only this wrapper clips the bubbles */}
                 <div className="absolute inset-0 pointer-events-none z-0 rounded-xl overflow-hidden">

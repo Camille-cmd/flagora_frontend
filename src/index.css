@@ -1,15 +1,34 @@
 @import "@fontsource/inter/index.css";
 @import "@fontsource/rubik/index.css";
+
 @tailwind utilities;
 
-.shake{
+.shake {
     position: relative;
     animation: horizontal-shaking 200ms 2;
 }
+
 @keyframes horizontal-shaking {
- 0% { transform: translateX(0) }
- 25% { transform: translateX(5px) }
- 50% { transform: translateX(-5px) }
- 75% { transform: translateX(5px) }
- 100% { transform: translateX(0) }
+    0% {
+        transform: translateX(0)
+    }
+    25% {
+        transform: translateX(5px)
+    }
+    50% {
+        transform: translateX(-5px)
+    }
+    75% {
+        transform: translateX(5px)
+    }
+    100% {
+        transform: translateX(0)
+    }
+}
+
+/* On mobile, increase font size to prevent zooming */
+@supports (-webkit-overflow-scrolling: touch) {
+    input, select, textarea {
+        font-size: 16px;
+    }
 }

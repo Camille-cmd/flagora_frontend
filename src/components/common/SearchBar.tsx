@@ -11,7 +11,6 @@ interface SearchBarProps {
     placeholder?: string
     className?: string
     options: Country[] | City[]
-    // Field to send to the backend for answer check (iso2 for Countries e.g.)
     answerFieldName: keyof Country | keyof City
 }
 
@@ -20,24 +19,28 @@ interface AutoCompleteData {
     value: string
 }
 
-export default function SearchBar({
-                                      value,
-                                      onChange,
-                                      onSubmit,
-                                      placeholder,
-                                      className = "",
-                                      options,
-                                      answerFieldName
-                                  }: SearchBarProps) {
+export default function SearchBar(
+    {
+        value,
+        onChange,
+        onSubmit,
+        placeholder,
+        className = "",
+        options,
+        answerFieldName
+    }: SearchBarProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [filteredOptions, setFilteredOptions] = useState<Country[] | City[]>([])
-    // Text is the text to display, value is the value to send to the backend for answer check
     const [autoCompleteData, setAutoCompleteData] = useState<AutoCompleteData | null>(null)
     const searchRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
-    const maxDisplayOptions: number = 5
+    const maxDisplayOptions: number = 15
+
+    // helper to strip accents
+    const normalize = (str: string) =>
+        str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
     useEffect(() => {
         if (!Array.isArray(options) || options.length === 0) {
@@ -46,62 +49,65 @@ export default function SearchBar({
         }
 
         // Filter depending on what the user types
-        const lowerValue = value.toLowerCase().trim();
+        const lowerValue = normalize(value.toLowerCase().trim());
+
         if (lowerValue === "") {
             setFilteredOptions(options.slice(0, maxDisplayOptions));
             setAutoCompleteData(null)
-        } else {
-            // Helper function to split the name into words
-            const splitWords = (text: string): string[] => {
-                return text.toLowerCase().split(/[\s\-_/]+/); // support for space, hyphen, underscore, slash
-            };
+            return
+        }
 
-            // first match words strictly starting with the input
-            const filtered = options
-                .filter((option) => option.name.toLowerCase().startsWith(value.toLowerCase()))
-                .slice(0, maxDisplayOptions)
+        // Helper function to split the name into word
+        const splitWords = (text: string): string[] =>
+            normalize(text.toLowerCase()).split(/[\s\-_/]+/)
 
-            // Then: match where any word starts with the input (but not already matched)
-            const wordStartsWithMatches = options.filter((option) =>
-                !filtered.includes(option) &&
-                splitWords(option.name).some((word) => word.startsWith(lowerValue))
-            );
+        // first match words strictly starting with the input
+        const filtered = options
+            .filter(option => normalize(option.name.toLowerCase()).startsWith(lowerValue))
+            .slice(0, maxDisplayOptions)
 
-            // Then: match where input is included anywhere (but not already matched)
-            const includesMatches = options.filter((option) =>
-                !wordStartsWithMatches.includes(option) && !filtered.includes(option) &&
-                option.name.toLowerCase().includes(lowerValue)
-            );
+        // Then: match where any word starts with the input (but not already matched)
+        const wordStartsWithMatches = options.filter(option =>
+            !filtered.includes(option) &&
+            splitWords(option.name).some(word => word.startsWith(lowerValue))
+        )
 
-            const combined = [...filtered, ...wordStartsWithMatches, ...includesMatches].slice(0, maxDisplayOptions);
+        // Then: match where input is included anywhere (but not already matched)
+        const includesMatches = options.filter(option =>
+            !filtered.includes(option) &&
+            !wordStartsWithMatches.includes(option) &&
+            normalize(option.name.toLowerCase()).includes(lowerValue)
+        )
 
-            setFilteredOptions(combined);
+        const combined = [...filtered, ...wordStartsWithMatches, ...includesMatches].slice(0, maxDisplayOptions)
 
-            // Set autocomplete text from first result that starts with the input
-            const firstMatch = combined.find(option =>
-                option.name.toLowerCase().startsWith(lowerValue)
-            );
+        setFilteredOptions(combined)
 
-            if (firstMatch && lowerValue.length > 0) {
-                // Get the remaining part of the first match after the typed text
-                const matchedPart = firstMatch.name.slice(0, value.length);
-                const remainingPart = firstMatch.name.slice(value.length);
+        // Autocomplete: find first result starting with input
+        const firstMatch = combined.find(option =>
+            normalize(option.name.toLowerCase()).startsWith(lowerValue)
+        )
 
-                // Only show autocomplete if the case matches or we're doing case-insensitive matching
-                if (matchedPart.toLowerCase() === value.toLowerCase()) {
-                    setAutoCompleteData({text: value + remainingPart, value: firstMatch[answerFieldName]})
-                } else {
-                    setAutoCompleteData(null)
-                }
+        if (firstMatch && lowerValue.length > 0) {
+            // Get the remaining part of the first match after the typed text
+            const matchedLength = value.length
+            const matchedPart = firstMatch.name.slice(0, matchedLength)
+            const remainingPart = firstMatch.name.slice(matchedLength)
+
+            // Only show autocomplete if the case matches or we're doing case-insensitive matching
+            if (normalize(matchedPart.toLowerCase()) === lowerValue) {
+                setAutoCompleteData({text: value + remainingPart, value: firstMatch[answerFieldName]})
             } else {
                 setAutoCompleteData(null)
             }
+        } else {
+            setAutoCompleteData(null)
         }
-        setHighlightedIndex(-1);
-    }, [value, options]);
+
+        setHighlightedIndex(-1)
+    }, [value, options])
 
     useEffect(() => {
-        // Close the dropdown when user clicks outside
         function handleClickOutside(event: MouseEvent) {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
                 setIsOpen(false)
@@ -113,16 +119,6 @@ export default function SearchBar({
             document.removeEventListener("mousedown", handleClickOutside)
         }
     }, [])
-
-    // Scroll highlighted item into view
-    useEffect(() => {
-        if (highlightedIndex >= 0 && dropdownRef.current) {
-            const highlightedElement = dropdownRef.current.children[highlightedIndex] as HTMLElement
-            if (highlightedElement) {
-                highlightedElement.scrollIntoView({block: "nearest"})
-            }
-        }
-    }, [highlightedIndex])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
@@ -142,7 +138,6 @@ export default function SearchBar({
     }
 
     const handleInputFocus = () => {
-        // Open dropdown on first user input
         if (value.trim() !== "") {
             setIsOpen(true)
         }
@@ -177,8 +172,6 @@ export default function SearchBar({
                     handleOptionSelect(selected)
                     onSubmit()
                 } else if (autoCompleteData?.value && autoCompleteData.value !== value) {
-                    console.log("Accept autocomplete")
-                    console.log(autoCompleteData)
                     // Accept autocomplete and submit
                     onChange(autoCompleteData.value)
                     setAutoCompleteData(null)
@@ -186,8 +179,7 @@ export default function SearchBar({
                 } else if (value.trim() !== "") {
                     onSubmit()
                 }
-                // keep focus on input
-                inputRef.current?.focus()
+                inputRef.current?.focus({preventScroll: true})
                 break
             case "Escape":
                 setIsOpen(false)
@@ -210,24 +202,21 @@ export default function SearchBar({
                     placeholder={placeholder}
                     className={`w-full pl-10 pr-10 ${className}`}
                     autoComplete="off"
+                    spellCheck="false"
+                    autoCorrect="off"
                 />
 
                 {/* Ghost text for autocomplete - positioned absolutely over the input */}
                 {autoCompleteData?.value && autoCompleteData.value !== value && (
                     <div
                         className="absolute inset-0 flex items-center pl-5 pr-5 pointer-events-none"
-                        style={{
-                            font: 'inherit',
-                            fontSize: "15px",
-                            fontFamily: 'inherit',
-                            lineHeight: 'inherit'
-                        }}
+                        style={{font: "inherit", fontSize: "15px", lineHeight: "inherit"}}
                     >
                         <div className="flex">
-                            <span className="text-transparent select-none" style={{whiteSpace: 'pre'}}>
+                            <span className="text-transparent select-none" style={{whiteSpace: "pre"}}>
                                 {value}
                             </span>
-                            <span className="text-gray-400 dark:text-gray-500 select-none" style={{whiteSpace: 'pre'}}>
+                            <span className="text-gray-400 dark:text-gray-500 select-none" style={{whiteSpace: "pre"}}>
                                 {autoCompleteData.text.slice(value.length)}
                             </span>
                         </div>
@@ -235,12 +224,13 @@ export default function SearchBar({
                 )}
             </div>
 
-            {/* Dropdown positioned absolutely with higher z-index */}
+            {/* Dropdown */}
             {isOpen && (
                 <div className="fixed inset-0 bg-black/5 pointer-events-none"
                      onClick={() => setIsOpen(false)}
                      aria-hidden="true"></div>
             )}
+
             {isOpen && filteredOptions.length > 0 && (
                 <div
                     ref={dropdownRef}

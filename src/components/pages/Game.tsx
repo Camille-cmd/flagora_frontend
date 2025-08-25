@@ -2,7 +2,7 @@ import {SkipForward, XCircle} from "lucide-react"
 import Button from "../common/Button.tsx"
 import Card from "../common/Card/Card.tsx"
 import useWebSocket from "react-use-websocket"
-import {useEffect, useReducer, useState} from "react"
+import {useEffect, useReducer, useRef, useState} from "react"
 import gameReducer from "../../reducers/gameReducer.tsx"
 import {
     AcceptUser,
@@ -18,9 +18,10 @@ import {Link} from "react-router-dom";
 import GuessCountryForm from "./game_modes/GuessCountryForm.tsx";
 import GuessCapitalCityForm from "./game_modes/GuessCapitalCityForm.tsx";
 import {GameModes} from "../../interfaces/gameModes.tsx";
-import Score from "../layout/score.tsx";
+import Score from "../layout/Score.tsx";
 import {GameLostPopup} from "../layout/GameLostPopup.tsx";
-
+import useMobileScreen from "../../utils/useMobileScreen.tsx";
+import {Tooltip} from "../common/Tooltip.tsx";
 
 interface GameProps {
     gameMode: GameModes,
@@ -41,6 +42,9 @@ export default function Game({gameMode}: Readonly<GameProps>) {
     const [isLoading, setIsLoading] = useState(true);
     const [gameIsLost, setGameIsLost] = useState(false);
     const [bestStreak, setBestStreak] = useState(0);
+
+    const flagTopElement = useRef<HTMLDivElement | null>(null);
+    const isMobile = useMobileScreen();
 
     const acceptUser = () => {
         // Send the user we have in storage for the backend auth
@@ -152,6 +156,9 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
                 // Reset answer status after short delay to allow UI to reflect color
                 setTimeout(() => setAnswerStatus(null), 500)
+                if (isMobile) {
+                    flagTopElement.current?.scrollIntoView({behavior: "smooth", block: "nearest"});
+                }
                 break
         }
     }, [lastJsonMessage])
@@ -181,7 +188,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
     return (
         <div className="flex flex-col items-center justify-center p-2 md:p-6">
-            <div className="w-full xl:max-w-xl">
+            <div className="w-full xl:max-w-xl mb-24">
 
                 {isLoading && (
                     <div className="text-center text-gray-500 dark:text-gray-300 mb-4 animate-pulse">
@@ -204,21 +211,8 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
                 <Card color1="yellow" color2="blue">
 
-                    <div className="flex items-center justify-between mb-8">
-
-                        <Score score={state.score}/>
-
-                        <Button
-                            type="button"
-                            buttonType="custom"
-                            size={"small"}
-                            className="py-2.5 mr-6 text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
-                            onClick={handleSkip}
-                            disabled={isSkipping || isLoading}
-                            text={t("game.skip")}
-                        >
-                            <SkipForward className="w-5 h-5"/>
-                        </Button>
+                    <div ref={flagTopElement} className="flex items-center justify-between mb-8">
+                        <Score score={state.score} gameMode={gameMode}/>
                     </div>
 
                     {/* Correct Answer Message */}
@@ -260,6 +254,21 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                             setCorrectAnswer={setCorrectAnswer}
                         />
                     ) : null}
+
+                    <Tooltip message={t("game.skipTooltip")}>
+                        <Button
+                            data-tooltip-target="tooltip-default"
+                            type="button"
+                            buttonType="custom"
+                            size={"small"}
+                            className="py-2.5 mr-6 text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
+                            onClick={handleSkip}
+                            disabled={isSkipping || isLoading}
+                            text={t("game.skip")}
+                        >
+                            <SkipForward className="w-5 h-5"/>
+                        </Button>
+                    </Tooltip>
                 </Card>
             </div>
         </div>

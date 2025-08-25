@@ -252,7 +252,8 @@
     },
     "submit": "Valider",
     "skip": "Passer",
-    "loadingQuestions": "Chargement…"
+    "loadingQuestions": "Chargement…",
+    "skipTooltip": "Utilisez le raccourci Shift + Entrer pour passer"
   },
   "stats": {
     "pageTitle": "Vos statistiques détaillées",

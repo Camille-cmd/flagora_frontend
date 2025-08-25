@@ -257,7 +257,8 @@
     },
     "submit": "Submit",
     "skip": "skip",
-    "loadingQuestions": "Loading…"
+    "loadingQuestions": "Loading…",
+    "skipTooltip": "Use shiftKey + Enter shortcut to skip"
   },
   "stats": {
     "pageTitle": "Your detailed stats",

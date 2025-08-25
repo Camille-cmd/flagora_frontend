@@ -66,7 +66,6 @@ export default function GuessCapitalCityForm(
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
                             </div>
                         ) : (
-                            // <div className="relative">
                             <SearchBar
                                 value={values.answer}
                                 answerFieldName={"name"}
@@ -88,7 +87,6 @@ export default function GuessCapitalCityForm(
                                             : ""
                                 }`}
                             />
-                            // </div>
                         )}
 
                         <div className="space-y-3">
