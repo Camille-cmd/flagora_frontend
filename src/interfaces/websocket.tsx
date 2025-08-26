@@ -1,11 +1,10 @@
 export interface AnswerResultMessage {
     id: number;
     isCorrect: boolean;
-    correctAnswer: string;
+    correctAnswer: CorrectAnswer[];
     currentStreak: number;
     bestStreak: number;
-    code: string;
-    wikipediaLink: string
+    remainingToGuess: number;
 }
 
 export interface NewQuestionsMessage {
@@ -24,5 +23,7 @@ export interface AcceptUser {
 export interface CorrectAnswer {
     name: string;
     code: string;
-    link: string;
+    wikipediaLink: string;
 }
+
+export type AnswerStatusTypes = "correct" | "wrong" | "partiallyCorrect";

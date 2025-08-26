@@ -84,7 +84,9 @@ export default function GuessCapitalCityForm(
                                         ? "bg-green-400 dark:bg-green-900/90"
                                         : answerStatus === "wrong"
                                             ? "bg-red-700 dark:bg-red-900/90 shake"
-                                            : ""
+                                            : answerStatus === "partiallyCorrect"
+                                                ? "bg-amber-700 decoration-amber-900/90"
+                                                : ""
                                 }`}
                             />
                         )}

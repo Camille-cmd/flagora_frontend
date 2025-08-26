@@ -6,15 +6,15 @@ import {useEffect, useState} from "react";
 import type {Country} from "../../../interfaces/country.tsx";
 import GameService from "../../../services/GameService.tsx";
 import type {GameState} from "../../../reducers/gameReducer.tsx"
-import {CorrectAnswer} from "../../../interfaces/websocket.tsx";
+import {AnswerStatusTypes, CorrectAnswer} from "../../../interfaces/websocket.tsx";
 import {useTranslation} from "react-i18next";
 
 export interface GuessCountryFormProps {
     sendJsonMessage: (message: any) => void,
     state: GameState,
-    answerStatus: "correct" | "wrong" | null,
-    correctAnswer: CorrectAnswer | null,
-    setCorrectAnswer: (correctAnswer: CorrectAnswer | null) => void,
+    answerStatus: AnswerStatusTypes | null,
+    correctAnswer: CorrectAnswer[] | null,
+    setCorrectAnswer: (correctAnswer: CorrectAnswer[] | null) => void,
 }
 
 export default function GuessCountryForm(

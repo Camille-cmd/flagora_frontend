@@ -7,13 +7,13 @@ import gameReducer from "../../reducers/gameReducer.tsx"
 import {
     AcceptUser,
     AnswerResultMessage,
+    AnswerStatusTypes,
     CorrectAnswer,
     NewQuestionsMessage,
     WebsocketMessage
 } from "../../interfaces/websocket.tsx"
 import {useTranslation} from "react-i18next"
 import {useAuth} from "../../services/auth/useAuth.tsx";
-import {countryCodeEmoji} from "../../utils/common.tsx";
 import {Link} from "react-router-dom";
 import GuessCountryForm from "./game_modes/GuessCountryForm.tsx";
 import GuessCapitalCityForm from "./game_modes/GuessCapitalCityForm.tsx";
@@ -36,12 +36,13 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         currentQuestion: "",
         score: 0,
     })
-    const [answerStatus, setAnswerStatus] = useState<"correct" | "wrong" | null>(null)
-    const [correctAnswer, setCorrectAnswer] = useState<CorrectAnswer | null>(null)
+    const [answerStatus, setAnswerStatus] = useState<AnswerStatusTypes | null>(null)
+    const [correctAnswer, setCorrectAnswer] = useState<CorrectAnswer[] | null>(null)
     const [isSkipping, setIsSkipping] = useState(false)
     const [isLoading, setIsLoading] = useState(true);
     const [gameIsLost, setGameIsLost] = useState(false);
     const [bestStreak, setBestStreak] = useState(0);
+    const [remainingToGuess, setRemainingToGuess] = useState(0);
 
     const flagTopElement = useRef<HTMLDivElement | null>(null);
     const isMobile = useMobileScreen();
@@ -112,12 +113,20 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
             case "answer_result":
                 payload = response.payload as AnswerResultMessage
+
+                setRemainingToGuess(payload.remainingToGuess);
+
                 if (payload.isCorrect) {
-                    dispatch({type: "next_question"})
-                    dispatch({type: "update_score", new_streak: payload.currentStreak})
-                    setAnswerStatus("correct")
                     setCorrectAnswer(null) // Clear any previous correct answer
 
+                    // Move to the next question if all answers have been guessed
+                    if (payload.remainingToGuess == 0) {
+                        dispatch({type: "next_question"})
+                        setAnswerStatus("correct")
+                        dispatch({type: "update_score", new_streak: payload.currentStreak})
+                    } else {
+                        setAnswerStatus("partiallyCorrect")
+                    }
                 } else {
                     setAnswerStatus("wrong");
 
@@ -126,11 +135,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
                     // Set the correct answer if provided (yes when question is skipped)
                     if (payload.correctAnswer) {
-                        setCorrectAnswer({
-                            "name": payload.correctAnswer,
-                            "code": countryCodeEmoji(payload.code),
-                            "link": payload.wikipediaLink
-                        } as CorrectAnswer)
+                        setCorrectAnswer(payload.correctAnswer)
 
                         // Move to the next question only in training mode
                         if (gameMode.includes("TRAINING")) {
@@ -155,7 +160,9 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 }
 
                 // Reset answer status after short delay to allow UI to reflect color
-                setTimeout(() => setAnswerStatus(null), 500)
+                if (payload.remainingToGuess == 0) {
+                    setTimeout(() => setAnswerStatus(null), 500)
+                }
                 if (isMobile) {
                     flagTopElement.current?.scrollIntoView({behavior: "smooth", block: "nearest"});
                 }
@@ -216,21 +223,33 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                     </div>
 
                     {/* Correct Answer Message */}
-                    {correctAnswer && (
+                    {correctAnswer && correctAnswer.length > 0 && (
                         <div className="mb-4 p-2 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 rounded-r-lg animate-in slide-in-from-top-2 duration-300">
                             <div className="flex items-center space-x-2">
                                 <XCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0"/>
                                 <p className="text-sm text-blue-800 dark:text-blue-200">
                                     <span className="font-medium">{t("game.alerts.oops")}</span> {t("game.alerts.correctAnswer")}{" "}
-                                    <Link to={correctAnswer.link}
-                                          target="_blank"
-                                          className={"text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"}>
-                                                  <span className="font-semibold text-blue-900 dark:text-blue-100">
-                                                    {correctAnswer.name}
-                                                  </span>
-                                    </Link>
-                                    <span className="ml-1">{correctAnswer.code}</span>
+                                    {correctAnswer.map((answer, i) => (
+                                        <Link key={i} to={answer.wikipediaLink}
+                                              target="_blank"
+                                              className={"text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"}>
+                                        <span className="font-semibold text-blue-900 dark:text-blue-100">
+                                            {answer.name}
+                                        </span>
+                                            <span className="ml-1">{answer.code}</span>
+                                            {i < correctAnswer.length - 1 && ", "}
+                                        </Link>
+                                    ))}
                                 </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {answerStatus === "partiallyCorrect" && (
+                        <div className="mb-4 p-2 text-center bg-amber-50 dark:bg-orange-600/60 border-l-4 border-amber-400 rounded-lg animate-in slide-in-from-top-2 duration-300">
+                            <div className="flex flex-col space-y-2">
+                                <span>{t("game.alerts.capitalsMessage")}</span>
+                                <span>{t("game.alerts.remainingCapitals", {count: remainingToGuess})}</span>
                             </div>
                         </div>
                     )}

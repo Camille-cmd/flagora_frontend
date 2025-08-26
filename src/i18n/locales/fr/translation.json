@@ -244,7 +244,10 @@
       "success": "Bonne réponse !",
       "wrong": "Mauvaise réponse, réessaie.",
       "oops": "Oups !",
-      "correctAnswer": "La bonne réponse était : "
+      "correctAnswer": "La bonne réponse était : ",
+      "capitalsMessage": "Bonne réponse ! Mais ce pays a plusieurs capitales, quelles sont les autres ?",
+      "remainingCapitals_one": "{{count}} autre capitale acceptée pour ce pays",
+      "remainingCapitals_other": "{{count}} autres capitales acceptées pour ce pays"
     },
     "answer": {
       "placeholder": "Entrez le nom du pays",

@@ -6,7 +6,7 @@ import {useTranslation} from "react-i18next";
 
 interface GameLostPopupProps {
     score: number;
-    correctAnswer: CorrectAnswer | null;
+    correctAnswer: Array<CorrectAnswer> | null;
     bestStreak: number;
     triggerNextQuestion: () => void;
 }
@@ -50,10 +50,12 @@ export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQues
                         </p>
                     )}
 
-                    {correctAnswer && (
+                    {correctAnswer && correctAnswer.length > 0 && (
                         <p className="text-lg mb-6">
                             {t("popup.gameOver.correctAnswer")}{" "}
-                            <span className="font-semibold">{correctAnswer.name} {correctAnswer.code}</span>
+                            {correctAnswer.map((correctAnswer, i) => (
+                                <span key={i} className="font-semibold">{correctAnswer.name} {correctAnswer.code}</span>
+                            ))}
                         </p>
                     )}
 

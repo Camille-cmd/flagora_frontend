@@ -249,7 +249,10 @@
       "success": "Correct!",
       "wrong": "That's not it, try again",
       "oops": "Oops!",
-      "correctAnswer": "The answer was: "
+      "correctAnswer": "The answer was: ",
+      "capitalsMessage": "That's it, but the country has several capitals, what are the other ones?",
+      "remainingCapitals_one": "{{count}} other accepted capital for this country",
+      "remainingCapitals_other": "{{count}} other accepted capitals for this country"
     },
     "answer": {
       "placeholder": "Type in the country name",
