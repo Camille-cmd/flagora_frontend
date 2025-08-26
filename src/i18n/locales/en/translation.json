@@ -329,5 +329,11 @@
         "note1": "Be careful, some countries have several accepted capitals. You need to enter all of them."
       }
     }
+  },
+  "gameModes": {
+    "GCFF_TRAINING_INFINITE": "Flag mode - training",
+    "GCFF_CHALLENGE_COMBO": "Flag mode - challenge",
+    "GCFC_TRAINING_INFINITE": "Capital cities mode - training",
+    "GCFC_CHALLENGE_COMBO": "Capital cities mode - challenge"
   }
 }

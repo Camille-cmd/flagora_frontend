@@ -3,11 +3,12 @@ import {X} from "lucide-react";
 import {CorrectAnswer} from "../../interfaces/websocket.tsx";
 import {Dialog, DialogPanel, DialogTitle} from "@headlessui/react";
 import {useTranslation} from "react-i18next";
+import {countryCodeEmoji} from "../../utils/common.tsx";
 
 interface GameLostPopupProps {
     score: number;
     correctAnswer: Array<CorrectAnswer> | null;
-    bestStreak: number;
+    bestStreak: number | null;
     triggerNextQuestion: () => void;
 }
 
@@ -27,12 +28,15 @@ export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQues
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true"/>
             <div className="fixed inset-0 flex items-center justify-center p-6">
                 <DialogPanel className="mx-auto max-w-xl w-full rounded-3xl bg-white dark:bg-darkblue-600 p-10 shadow-2xl text-center relative">
-                    <button
+                    <Button
                         onClick={onClose}
-                        className="absolute top-5 right-5 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        text={<X className="w-6 h-6"/>}
+                        buttonType="raspberry"
+                        size="small"
+                        aria-label="Close popup"
+                        className="absolute top-5 right-5"
                     >
-                        <X className="w-6 h-6"/>
-                    </button>
+                    </Button>
 
                     <DialogTitle className="text-4xl font-extrabold mb-6 text-secondary dark:text-primary">
                         {t("popup.gameOver.title")}
@@ -50,11 +54,13 @@ export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQues
                         </p>
                     )}
 
+                    {/* Correct answer is a list of possible correct answers*/}
                     {correctAnswer && correctAnswer.length > 0 && (
                         <p className="text-lg mb-6">
                             {t("popup.gameOver.correctAnswer")}{" "}
                             {correctAnswer.map((correctAnswer, i) => (
-                                <span key={i} className="font-semibold">{correctAnswer.name} {correctAnswer.code}</span>
+                                <span key={i}
+                                      className="font-semibold">{correctAnswer.name} {countryCodeEmoji(correctAnswer.code)}</span>
                             ))}
                         </p>
                     )}
@@ -66,7 +72,7 @@ export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQues
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button
                             type="button"
-                            buttonType="primary"
+                            buttonType="raspberry"
                             onClick={onRetry}
                             text={t("popup.gameOver.retry")}
                         />

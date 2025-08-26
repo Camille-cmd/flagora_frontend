@@ -12,12 +12,11 @@ interface GameTutorialPopupProps {
 
 
 /*
-Popup to display a tutorial for a specific game mode.
-
-Props:
-- gameMode: The game mode for which to display the tutorial.
-- onClose: Callback function to close the popup.
-- onNeverShowAgain: Callback function to mark the tutorial as never shown.
+*Popup to display a tutorial for a specific game mode.
+*
+* @param {gameMode} gameMode - The game mode for which to display the tutorial.
+* onClose - Callback function to close the popup.
+* onNeverShowAgain - Callback function to mark the tutorial as never shown.
  */
 export default function GameTutorialPopup({gameMode, onClose, onNeverShowAgain}: GameTutorialPopupProps) {
     const {t} = useTranslation()

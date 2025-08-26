@@ -3,6 +3,7 @@ import {CityOut, CountryOut, UserStatsByGameMode} from "../../interfaces/userSta
 import UserService from "../../services/UserService.tsx";
 import {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
+import {PageTitle} from "../common/PageTitle.tsx";
 
 export default function UserStats() {
     const {t} = useTranslation()
@@ -61,22 +62,22 @@ export default function UserStats() {
                 <div className="min-h-screen bg-primary dark:bg-darkblue-700 flex flex-col transition-colors duration-300">
 
                     <div className="container mx-auto p-6">
-                        <h2 className="text-2xl font-bold text-secondary dark:text-primary mb-6">{t("stats.pageTitle")}</h2>
+                        <PageTitle title={t("stats.pageTitle")}></PageTitle>
 
-                        <div className="space-y-8">
+                        <div className="space-y-6">
                             {stats.map((gameModeStats) => (
-                                <div key={gameModeStats.gameMode} className="space-y-6">
+                                <div key={gameModeStats.gameMode} className="space-y-4">
                                     {/* Game Mode Header */}
                                     <div className="flex items-center space-x-3">
                                         <div className="w-8 h-8 bg-raspberry-600 rounded-full flex items-center justify-center">
-                                            {gameModeStats.gameMode === "GUESS_COUNTRY_FROM_FLAG" ? (
+                                            {gameModeStats.gameMode.includes("GCFF") ? (
                                                 <span className="text-white text-sm">🏳️</span>
                                             ) : (
                                                 <span className="text-white text-sm">📍</span>
                                             )}
                                         </div>
                                         <h3 className="text-xl font-bold text-secondary dark:text-primary">
-                                            {gameModeStats.gameMode === "GUESS_COUNTRY_FROM_FLAG" ? t("stats.flagMode") : t("stats.citiesMode")}
+                                            {t(`gameModes.${gameModeStats.gameMode}`)}
                                         </h3>
                                     </div>
 
@@ -96,16 +97,18 @@ export default function UserStats() {
                                         </div>
 
                                         {/* Most Strikes */}
-                                        <div className="bg-white dark:bg-darkblue-600 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h4 className="text-lg font-medium text-secondary dark:text-primary flex items-center">
-                                                    <Zap size={20} className="mr-2 text-raspberry-600"/>
-                                                    {t("stats.maxStreak")}
-                                                </h4>
+                                        {gameModeStats.gameMode.includes("CHALLENGE") && (
+                                            <div className="bg-white dark:bg-darkblue-600 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <h4 className="text-lg font-medium text-secondary dark:text-primary flex items-center">
+                                                        <Zap size={20} className="mr-2 text-raspberry-600"/>
+                                                        {t("stats.maxStreak")}
+                                                    </h4>
+                                                </div>
+                                                <div className="text-3xl font-bold text-raspberry-600 mb-2">{gameModeStats.stats.mostStrikes}</div>
+                                                <p className="text-sm text-gray-600 dark:text-gray-300">{t("stats.maxStreakDescription")}</p>
                                             </div>
-                                            <div className="text-3xl font-bold text-raspberry-600 mb-2">{gameModeStats.stats.mostStrikes}</div>
-                                            <p className="text-sm text-gray-600 dark:text-gray-300">{t("stats.maxStreakDescription")}</p>
-                                        </div>
+                                        )}
 
                                         {/* Most Correctly Guessed */}
                                         <div className="bg-white dark:bg-darkblue-600 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
@@ -144,7 +147,7 @@ export default function UserStats() {
             ) : (
                 <div className="min-h-screen bg-primary dark:bg-darkblue-700 flex items-center justify-center transition-colors duration-300">
                     <p className="text-lg font-semibold text-secondary dark:text-primary">
-                        Aucune statistique disponible
+                        {t("stats.noStats")}
                     </p>
                 </div>
             )}

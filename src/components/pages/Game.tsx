@@ -24,6 +24,7 @@ import useMobileScreen from "../../utils/useMobileScreen.tsx";
 import {Tooltip} from "../common/Tooltip.tsx";
 import {useGameTutorial} from "../../hooks/useGameTutorial.tsx";
 import GameTutorialPopup from "../layout/useGameTutorialPopup.tsx";
+import {countryCodeEmoji} from "../../utils/common.tsx";
 
 interface GameProps {
     gameMode: GameModes,
@@ -49,9 +50,8 @@ export default function Game({gameMode}: Readonly<GameProps>) {
     const [isSkipping, setIsSkipping] = useState(false)
     const [isLoading, setIsLoading] = useState(true);
     const [gameIsLost, setGameIsLost] = useState(false);
-    const [bestStreak, setBestStreak] = useState(0);
+    const [bestStreak, setBestStreak] = useState<number | null>(null);
     const [remainingToGuess, setRemainingToGuess] = useState(0);
-
     const flagTopElement = useRef<HTMLDivElement | null>(null);
     const isMobile = useMobileScreen();
 
@@ -142,7 +142,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                     dispatch({type: "update_score", new_streak: payload.currentStreak})
 
                     // Set the correct answer if provided (yes when question is skipped)
-                    if (payload.correctAnswer) {
+                    if (payload.correctAnswer.length > 0) {
                         setCorrectAnswer(payload.correctAnswer)
 
                         // Move to the next question only in training mode
@@ -163,7 +163,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 const remainingQuestions = Object.keys(state.questions).length - state.currentIndex - 1
                 if (remainingQuestions <= 2) {
                     sendJsonMessage({
-                        type: "request_questions",
+                        type: "request_questions"
                     })
                 }
 
@@ -171,10 +171,13 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 if (payload.remainingToGuess == 0) {
                     setTimeout(() => setAnswerStatus(null), 500)
                 }
+
+                // Scroll to the flag top element if on mobile
                 if (isMobile) {
                     flagTopElement.current?.scrollIntoView({behavior: "smooth", block: "nearest"});
                 }
-                break
+
+                break;
         }
     }, [lastJsonMessage])
 
@@ -260,7 +263,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                                         <span className="font-semibold text-blue-900 dark:text-blue-100">
                                             {answer.name}
                                         </span>
-                                            <span className="ml-1">{answer.code}</span>
+                                            <span className="ml-1">{countryCodeEmoji(answer.code)}</span>
                                             {i < correctAnswer.length - 1 && ", "}
                                         </Link>
                                     ))}
@@ -303,8 +306,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                             data-tooltip-target="tooltip-default"
                             type="button"
                             buttonType="custom"
-                            size={"small"}
-                            className="py-2.5 mr-6 text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
+                            className="py-2.5 w-full text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
                             onClick={handleSkip}
                             disabled={isSkipping || isLoading}
                             text={t("game.skip")}

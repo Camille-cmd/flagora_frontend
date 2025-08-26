@@ -3,7 +3,7 @@ export interface AnswerResultMessage {
     isCorrect: boolean;
     correctAnswer: CorrectAnswer[];
     currentStreak: number;
-    bestStreak: number;
+    bestStreak: number | null;
     remainingToGuess: number;
 }
 

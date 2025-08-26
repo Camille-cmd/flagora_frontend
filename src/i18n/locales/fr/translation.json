@@ -321,5 +321,11 @@
         "note1": "Attention, certains pays ont plusieurs capitales officielles. Vous devez toutes les saisir."
       }
     }
+  },
+  "gameModes": {
+    "GCFF_TRAINING_INFINITE": "Mode Drapeau - entrainement",
+    "GCFF_CHALLENGE_COMBO": "Mode Drapeau - challenge",
+    "GCFC_TRAINING_INFINITE": "Mode Capitale - entrainement",
+    "GCFC_CHALLENGE_COMBO": "Mode Capitale - challenge"
   }
 }

@@ -23,28 +23,28 @@ export default function Score({score, gameMode}: ScoreProps) {
 
     const scoreMilestones: ScoreMilestone[] = [
         {
-            threshold: 1,
+            threshold: 5,
             color: "text-blue-600 dark:text-blue-400",
             bgColor: "bg-blue-100 dark:bg-blue-900/30",
             icon: <Star className="w-5 h-5"/>,
             sparkColor: "text-blue-400",
         },
         {
-            threshold: 2,
+            threshold: 8,
             color: "text-green-600 dark:text-green-400",
             bgColor: "bg-green-100 dark:bg-green-900/30",
             icon: <Sparkles className="w-5 h-5"/>,
             sparkColor: "text-green-400",
         },
         {
-            threshold: 3,
+            threshold: 15,
             color: "text-purple-600 dark:text-purple-400",
             bgColor: "bg-purple-100 dark:bg-purple-900/30",
             icon: <Zap className="w-5 h-5"/>,
             sparkColor: "text-purple-400",
         },
         {
-            threshold: 30,
+            threshold: 28,
             color: "text-orange-600 dark:text-orange-400",
             bgColor: "bg-orange-100 dark:bg-orange-900/30",
             icon: <Trophy className="w-5 h-5"/>,
@@ -58,21 +58,21 @@ export default function Score({score, gameMode}: ScoreProps) {
             sparkColor: "text-red-400",
         },
         {
-            threshold: 50,
+            threshold: 60,
             color: "text-pink-600 dark:text-pink-400",
             bgColor: "bg-pink-100 dark:bg-pink-900/30",
             icon: <Crown className="w-5 h-5"/>,
             sparkColor: "text-pink-400",
         },
         {
-            threshold: 100,
+            threshold: 80,
             color: "text-yellow-600 dark:text-yellow-400",
             bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
             icon: <Crown className="w-5 h-5"/>,
             sparkColor: "text-yellow-400",
         },
         {
-            threshold: 300,
+            threshold: 150,
             color: "text-gradient-to-r from-purple-600 to-pink-600",
             bgColor: "bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30",
             icon: <Crown className="w-6 h-6"/>,
@@ -99,7 +99,7 @@ export default function Score({score, gameMode}: ScoreProps) {
             setCurrentMilestone(null)
             return
         }
-        
+
         // Skip celebration on first render to avoid initial animation
         if (isFirstRender) {
             setIsFirstRender(false)
