@@ -38,10 +38,10 @@ function App() {
                         <Route path="/game/countries/challenge-combo"
                                element={<Game gameMode={"GCFF_CHALLENGE_COMBO"}/>}/>
                         <Route path="/game/countries/training-infinite"
-                               element={<Game gameMode={"GCFF_TRAINING_INFINITE"}/>}/>
+                               element={<ProtectedRoute><Game gameMode={"GCFF_TRAINING_INFINITE"}/></ProtectedRoute>}/>
                         <Route path="/game/cities/challenge-combo" element={<Game gameMode={"GCFC_CHALLENGE_COMBO"}/>}/>
                         <Route path="/game/cities/training-infinite"
-                               element={<Game gameMode={"GCFC_TRAINING_INFINITE"}/>}/>
+                               element={<ProtectedRoute><Game gameMode={"GCFC_TRAINING_INFINITE"}/></ProtectedRoute>}/>
 
                         <Route
                             path="account"

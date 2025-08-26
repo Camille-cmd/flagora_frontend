@@ -2,24 +2,27 @@ import type React from "react"
 import {createContext, type ReactNode, useEffect, useState} from "react"
 import AuthService from "../services/auth/AuthService.tsx";
 import {User} from "../interfaces/apiResponse.tsx";
+import {GameModes} from "../interfaces/gameModes.tsx";
 
 // Define the shape of our context
 interface AuthContextType {
     user: User | null
+    loadingUser: boolean
     token: string | null
     isAuthenticated: boolean
     cleanToken: () => void
     login: (email: string, password: string) => Promise<void>
     register: (email: string, username: string, password: string) => Promise<void>
     logout: () => Promise<void>
-    isUserNameAvailable : (username: string) => Promise<boolean>
-    resetPassword : (email: string) => Promise<void>
-    resetPasswordConfirm : (uid: string, token: string, newPassword: string) => Promise<void>
-    resetPasswordValidate : (uid: string | undefined, token: string | undefined) => Promise<void>
-    verifyEmail : (uid: string| undefined, token: string | undefined) => Promise<void>
-    sendVerificationEmail : () => Promise<void>
-    updateUser : (username: string) => Promise<void>
-    updateUserPassword : (oldPassword: string, newPassword: string) => Promise<void>
+    isUserNameAvailable: (username: string) => Promise<boolean>
+    resetPassword: (email: string) => Promise<void>
+    resetPasswordConfirm: (uid: string, token: string, newPassword: string) => Promise<void>
+    resetPasswordValidate: (uid: string | undefined, token: string | undefined) => Promise<void>
+    verifyEmail: (uid: string | undefined, token: string | undefined) => Promise<void>
+    sendVerificationEmail: () => Promise<void>
+    updateUser: (username: string) => Promise<void>
+    updateUserPassword: (oldPassword: string, newPassword: string) => Promise<void>
+    updateUserPreferences: (showTips: boolean, gameMode: GameModes) => Promise<void>
 }
 
 // Create the context with a default value
@@ -31,6 +34,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({children}: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null)
+    const [loadingUser, setLoadingUser] = useState(true)
 
     // Check authentication status on mount
     useEffect(() => {
@@ -42,6 +46,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}: AuthProvid
                 .catch(() => {
                     // session probably expired
                     setUser(null);
+                })
+                .finally(() => {
+                    setLoadingUser(false)
                 })
         }
     }, [user])
@@ -94,9 +101,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}: AuthProvid
         await AuthService.updateUserPassword(oldPassword, newPassword);
     }
 
+    const updateUserPreferences = async (showTips: boolean, gameMode: GameModes): Promise<void> => {
+        await AuthService.updateUserPreferences(showTips, gameMode)
+    }
+
     // Value object that will be passed to consumers
     const value = {
         user,
+        loadingUser,
         token: AuthService.token,
         isAuthenticated: AuthService.isAuthenticated,
         cleanToken: AuthService.cleanToken,
@@ -110,7 +122,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}: AuthProvid
         verifyEmail,
         sendVerificationEmail,
         updateUser,
-        updateUserPassword
+        updateUserPassword,
+        updateUserPreferences
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

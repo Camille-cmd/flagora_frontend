@@ -41,33 +41,35 @@ export default function ModeSelection() {
             {/* Mode Selection Cards */}
             {/*Training Cards*/}
             <div className="grid gap-8 md:grid-cols-2 max-w-4xl w-full">
-                {/* Flag Card */}
-                <Link to="/game/countries/training-infinite"
-                      className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
-                    <Card color1="blue"
-                          color2="yellow"
-                          childrenClassName={"p-5"}>
-                        <div className="p-3 mb-4 flex flex-col items-center text-center">
-                            <div className="mb-4 p-3 bg-white dark:bg-blue-800 rounded-full shadow-md">
-                                <Flag className="w-10 h-10 text-blue-600 dark:text-blue-400"/>
+
+                {/* Training Flag Card (only for authenticated users) */}
+                {isAuthenticated && (
+                    <Link to="/game/countries/training-infinite"
+                          className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
+                        <Card color1="blue"
+                              color2="yellow"
+                              childrenClassName={"p-5"}>
+                            <div className="p-3 mb-4 flex flex-col items-center text-center">
+                                <div className="mb-4 p-3 bg-white dark:bg-blue-800 rounded-full shadow-md">
+                                    <Flag className="w-10 h-10 text-blue-600 dark:text-blue-400"/>
+                                </div>
+                                <h2 className="text-2xl font-bold text-secondary dark:text-primary mb-2 flex items-center">
+                                    <GraduationCap className="mr-2"/>
+                                    {t("modeSelection.cards.flag.title")}
+                                </h2>
+                                <h3 className="font-bold text-secondary dark:text-primary mb-2">
+                                    ({t("modeSelection.cards.training")})
+                                </h3>
+                                <p className="text-gray-600 dark:text-gray-300">
+                                    {t("modeSelection.cards.flag.description")}
+                                </p>
                             </div>
-                            <h2 className="text-2xl font-bold text-secondary dark:text-primary mb-2 flex items-center">
-                                <GraduationCap className="mr-2"/>
-                                {t("modeSelection.cards.flag.title")}
-                            </h2>
-                            <h3 className="font-bold text-secondary dark:text-primary mb-2">
-                                ({t("modeSelection.cards.training")})
-                            </h3>
-                            <p className="text-gray-600 dark:text-gray-300">
-                                {t("modeSelection.cards.flag.description")}
-                            </p>
-                        </div>
-                    </Card>
-                </Link>
+                        </Card>
+                    </Link>
+                )}
 
 
-                {/* Competitive Card */}
-                {/* Flag Card */}
+                {/* Challenge Flag Card */}
                 <Link to="/game/countries/challenge-combo"
                       className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
                     <Card color1="blue"
@@ -86,36 +88,37 @@ export default function ModeSelection() {
                                 ({t("modeSelection.cards.challenge")})
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">
-                                {t("modeSelection.cards.flag.description")}
+                                {t("modeSelection.cards.flag.descriptionChallenge")}
                             </p>
                         </div>
                     </Card>
                 </Link>
 
-                {/* Cities Card */}
-                <Link to="/game/cities/training-infinite"
-                      className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
-                    <Card color1="green" color2="raspberry" childrenClassName={"p-5"}>
-                        <div className="p-3 mb-4 flex flex-col items-center text-center">
-                            <div className="mb-4 p-3 bg-white dark:bg-green-800 rounded-full shadow-md">
-                                <MapPin className="w-10 h-10 text-green-600 dark:text-green-400"/>
+                {/* Training Cities Card (only for authenticated users) */}
+                {isAuthenticated && (
+                    <Link to="/game/cities/training-infinite"
+                          className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
+                        <Card color1="green" color2="raspberry" childrenClassName={"p-5"}>
+                            <div className="p-3 mb-4 flex flex-col items-center text-center">
+                                <div className="mb-4 p-3 bg-white dark:bg-green-800 rounded-full shadow-md">
+                                    <MapPin className="w-10 h-10 text-green-600 dark:text-green-400"/>
+                                </div>
+                                <h2 className="text-2xl font-bold text-secondary dark:text-primary mb-2 flex items-center">
+                                    <GraduationCap className="mr-2"/>
+                                    {t("modeSelection.cards.cities.title")}
+                                </h2>
+                                <h3 className="font-bold text-secondary dark:text-primary mb-2">
+                                    ({t("modeSelection.cards.training")})
+                                </h3>
+                                <p className="text-gray-600 dark:text-gray-300">
+                                    {t("modeSelection.cards.cities.description")}
+                                </p>
                             </div>
-                            <h2 className="text-2xl font-bold text-secondary dark:text-primary mb-2 flex items-center">
-                                <GraduationCap className="mr-2"/>
-                                {t("modeSelection.cards.cities.title")}
-                            </h2>
-                            <h3 className="font-bold text-secondary dark:text-primary mb-2">
-                                ({t("modeSelection.cards.training")})
-                            </h3>
-                            <p className="text-gray-600 dark:text-gray-300">
-                                {t("modeSelection.cards.cities.description")}
-                            </p>
-                        </div>
-                    </Card>
-                </Link>
+                        </Card>
+                    </Link>
+                )}
 
-                {/* Competitive Card */}
-                {/* Cities Card */}
+                {/* Challenge Cities Card */}
                 <Link to="/game/cities/challenge-combo"
                       className="group relative overflow-hidden no-underline rounded-xl shadow-lg hover:shadow-xl">
                     <Card color1="green"
@@ -134,7 +137,7 @@ export default function ModeSelection() {
                                 ({t("modeSelection.cards.challenge")})
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">
-                                {t("modeSelection.cards.cities.description")}
+                                {t("modeSelection.cards.cities.descriptionChallenge")}
                             </p>
                         </div>
                     </Card>

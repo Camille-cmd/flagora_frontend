@@ -3,6 +3,7 @@ import {IsUserAvailableResponse, LoginResponse, User} from "../../interfaces/api
 import axios from "axios";
 import i18n from "../../i18n/i18n.tsx";
 import {extractErrorMessage} from "../utils/errorHandler.tsx";
+import {GameModes} from "../../interfaces/gameModes.tsx";
 
 
 export default class AuthService {
@@ -59,7 +60,8 @@ export default class AuthService {
                 username: response.data.username,
                 email: response.data.email,
                 isEmailVerified: response.data.isEmailVerified,
-                language: response.data.language
+                language: response.data.language,
+                tooltipPreferences: response.data.tooltipPreferences
             } as User;
 
         } catch (error: unknown) {
@@ -159,11 +161,10 @@ export default class AuthService {
             await api.post('auth/reset_password_confirm', {uid, token, password});
         } catch (error: unknown) {
             throw new Error(extractErrorMessage(error, i18n.t('errors.resetPasswordConfirmFailed')));
-            }
+        }
     }
 
     static async sendVerificationEmail(): Promise<void> {
-        console.log("Sending verification email");
         try {
             await api.get(`/auth/email-verify`);
         } catch (error: unknown) {
@@ -185,6 +186,24 @@ export default class AuthService {
         try {
             const response = await api.put('user/', {
                 username,
+            });
+
+            return {
+                id: response.data.id,
+                username: response.data.username,
+                email: response.data.email,
+                isEmailVerified: response.data.isEmailVerified,
+                language: response.data.language
+            } as User;
+        } catch (error: unknown) {
+            throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
+        }
+    }
+
+    static async updateUserPreferences(showTips: boolean, gameMode: GameModes): Promise<User> {
+        try {
+            const response = await api.put('user/me/', {
+                showTips, gameMode
             });
 
             return {

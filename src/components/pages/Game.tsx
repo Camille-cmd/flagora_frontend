@@ -22,6 +22,8 @@ import Score from "../layout/Score.tsx";
 import {GameLostPopup} from "../layout/GameLostPopup.tsx";
 import useMobileScreen from "../../utils/useMobileScreen.tsx";
 import {Tooltip} from "../common/Tooltip.tsx";
+import {useGameTutorial} from "../../hooks/useGameTutorial.tsx";
+import GameTutorialPopup from "../layout/useGameTutorialPopup.tsx";
 
 interface GameProps {
     gameMode: GameModes,
@@ -29,13 +31,19 @@ interface GameProps {
 
 export default function Game({gameMode}: Readonly<GameProps>) {
     const {t} = useTranslation()
-    const {isAuthenticated, token, cleanToken} = useAuth()
+    const {isAuthenticated, token, cleanToken, user, loadingUser} = useAuth()
     const [state, dispatch] = useReducer(gameReducer, {
         questions: [],
         currentIndex: 0,
         currentQuestion: "",
         score: 0,
     })
+    const {
+        shouldShowTutorial,
+        isLoading: tutorialLoading,
+        markTutorialAsShown
+    } = useGameTutorial(user, loadingUser, gameMode)
+    const [showTutorial, setShowTutorial] = useState(false)
     const [answerStatus, setAnswerStatus] = useState<AnswerStatusTypes | null>(null)
     const [correctAnswer, setCorrectAnswer] = useState<CorrectAnswer[] | null>(null)
     const [isSkipping, setIsSkipping] = useState(false)
@@ -99,7 +107,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 payload = response.payload as AcceptUser
                 // If we have an authenticated user but the backend has not
                 // This is a problem: redirect to login
-                if (!payload.is_user_authenticated && isAuthenticated) {
+                if (!payload.isUserAuthenticated && isAuthenticated) {
                     cleanToken();
                     window.location.href = "/login";
                 }
@@ -192,6 +200,22 @@ export default function Game({gameMode}: Readonly<GameProps>) {
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [isSkipping, isLoading, state.currentIndex]);
+
+    useEffect(() => {
+        if (!tutorialLoading && shouldShowTutorial) {
+            setShowTutorial(true)
+        }
+
+    }, [tutorialLoading, shouldShowTutorial])
+
+    const handleTutorialClose = () => {
+        setShowTutorial(false)
+    }
+
+    const handleNeverShowAgain = () => {
+        markTutorialAsShown()
+        setShowTutorial(false)
+    }
 
     return (
         <div className="flex flex-col items-center justify-center p-2 md:p-6">
@@ -290,6 +314,15 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                     </Tooltip>
                 </Card>
             </div>
+
+            {/* Tutorial Popup */}
+            {showTutorial && (
+                <GameTutorialPopup
+                    gameMode={gameMode}
+                    onClose={handleTutorialClose}
+                    onNeverShowAgain={handleNeverShowAgain}
+                />
+            )}
         </div>
     )
 }

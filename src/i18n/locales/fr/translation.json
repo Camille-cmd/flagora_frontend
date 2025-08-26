@@ -148,17 +148,19 @@
       "message": {
         "part1": "Vous jouez en tant qu'invité.",
         "link": "Créez un compte",
-        "part2": "pour sauvegarder votre progression."
+        "part2": "pour sauvegarder votre progression et avoir accès au mode entrainement."
       }
     },
     "cards": {
       "flag": {
         "title": "Drapeau",
-        "description": "Devinez les drapeaux avec précision."
+        "description": "Apprenez les drapeaux en mode infini.",
+        "descriptionChallenge": "Devinez les drapeaux avec précision."
       },
       "cities": {
         "title": "Villes",
-        "description": "Testez vos connaissances sur les capitales."
+        "description": "Apprenez les capitales en mode infini.",
+        "descriptionChallenge": "Testez vos connaissances sur les capitales."
       },
       "training": "Mode entrainement",
       "challenge": "Mode challenge"
@@ -283,6 +285,41 @@
       "share": "Partager",
       "copied": "Copié !",
       "bestStreak": "Meilleur combo :"
+    }
+  },
+  "tutorial": {
+    "title": "Comment jouer ?",
+    "neverShowAgain": "Compris !",
+    "flags": {
+      "training_infinite": {
+        "title": "Mode entraînement : les drapeaux vont s'afficher sans fin.",
+        "description": "Les drapeaux sur lesquels vous vous trompez reviennent plus souvent. Ceux que vous réussissez apparaissent plus rarement."
+      },
+      "challenge": {
+        "title": "Mode challenge : devinez les drapeaux",
+        "description": "Le but est de deviner le plus grand nombre de drapeaux à la suite. Essayez de battre votre meilleur score de combos !"
+      }
+    },
+    "capitals": {
+      "training_infinite": {
+        "title": "Mode entraînement : les pays vont s'afficher sans fin.",
+        "description": "Les capitales sur lesquels vous vous trompez reviennent plus souvent. Celles que vous réussissez apparaissent plus rarement."
+      },
+      "challenge": {
+        "title": "Mode challenge : Devinez les capitales.",
+        "description": "Le but est de deviner le plus grand nombre de capitales à la suite. Essayez de battre votre meilleur score !"
+      }
+    },
+    "note": {
+      "title": "Notes",
+      "note1": "Utilisez les suggestions de recherche pour vous aider.",
+      "note2": "Il suffit d’appuyer sur Entrée : la première réponse sera validée.",
+      "flags": {
+        "note1": "Les drapeaux sont à l'échelle de leur taille officielle. Par conséquent, la taille du drapeau à l'écran n'est pas toujours la même."
+      },
+      "capitals": {
+        "note1": "Attention, certains pays ont plusieurs capitales officielles. Vous devez toutes les saisir."
+      }
     }
   }
 }

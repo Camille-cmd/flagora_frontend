@@ -148,17 +148,19 @@
       "message": {
         "part1": "You are playing as a guest.",
         "link": "Create an account",
-        "part2": "to save your progress."
+        "part2": "to save your progress and having access to the training mode."
       }
     },
     "cards": {
       "flag": {
         "title": "Flag",
-        "description": "Guess the flags accurately."
+        "description": "Learn the flags in the infinite mode.",
+        "descriptionChallenge": "Guess the flags accurately."
       },
       "cities": {
         "title": "Cities",
-        "description": "Test your knowledge about capital cities."
+        "description": "Learn capital cities in the infinite mode.",
+        "descriptionChallenge": "Test your knowledge about capital cities."
       },
       "training": "Training mode",
       "challenge": "Challenge mode"
@@ -288,6 +290,44 @@
       "share": "Share result",
       "copied": "Copied!",
       "bestStreak": "Best streak:"
+    }
+  },
+  "tutorial": {
+    "title": "How to Play",
+    "neverShowAgain": "Got it!",
+    "flags": {
+      "training_infinite": {
+        "title": "Training mode: The flags will be displayed in an infinite loop.",
+        "description": "Flags you get wrong will come back more often. Flags you get right will appear less frequently."
+      },
+      "challenge": {
+        "title": "Challenge mode: Guess the flags accurately",
+        "description": "The goal is to guess the most flags in a row. Try to beat your best score!",
+        "subDescription": "The game will stop on first failure."
+      }
+    },
+    "capitals": {
+      "training_infinite": {
+        "title": "Training mode: The countries will be displayed in an infinite loop.",
+        "description": "The goal is for you to learn the capital cities: each mistake is a chance to improve!",
+        "subDescription": "Cities you get wrong will come back more often. Cities you get right will appear less frequently."
+      },
+      "challenge": {
+        "title": "Challenge mode: Guess the capital city accurately",
+        "description": "The goal is to guess the most cities in a row. Try to beat your best score!",
+        "subDescription": "The game will stop on first failure."
+      }
+    },
+    "note": {
+      "title": "Notes",
+      "note1": "Use the search suggestions to help you",
+      "note2": "Pressing Enter will select the first suggestion in the list and submit it.",
+      "flags": {
+        "note1": "Flags are on scale with their official size. Therefore, the size of the flag on the screen is not always the same."
+      },
+      "capitals": {
+        "note1": "Be careful, some countries have several accepted capitals. You need to enter all of them."
+      }
     }
   }
 }

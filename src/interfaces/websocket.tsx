@@ -17,7 +17,7 @@ export interface WebsocketMessage {
 }
 
 export interface AcceptUser {
-    is_user_authenticated: boolean;
+    isUserAuthenticated: boolean;
 }
 
 export interface CorrectAnswer {

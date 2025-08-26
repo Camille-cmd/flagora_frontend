@@ -32,7 +32,6 @@ api.interceptors.response.use(
             // The 401 error is normal on the login page, when the user enters invalid credentials
             // In this case; we don't want to redirect
             const isLoginPage = currentPath.includes("/login");
-            console.log(isLoginPage)
             if (!isLoginPage) {
                 // Session probably expired — force redirect and clear token
                 AuthService.cleanToken();

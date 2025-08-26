@@ -7,6 +7,7 @@ import {useAuth} from "../../services/auth/useAuth.tsx";
 import LanguageDropdown from "./LanguageDropdown.tsx";
 import {useTranslation} from "react-i18next";
 import FlagoraIcon from '../../assets/flagora_logo.svg';
+import FlagoraIconWhite from '../../assets/flagora_logo_white.svg';
 
 export function Header() {
     const {t} = useTranslation();
@@ -65,7 +66,8 @@ export function Header() {
                     <Link to="/" className="text-slate-800 dark:text-white no-underline transition-colors duration-300">
                         <h1 className="text-lg sm:text-2xl font-bold text-slate-800 dark:text-white transition-colors duration-300">Flagora</h1>
                     </Link>
-                    <img src={FlagoraIcon} alt="Flagora" className="ml-2 w-7 h-7 sm:w-9 sm:h-9"/>
+                    <img src={FlagoraIcon} alt="Flagora" className="ml-2 w-7 h-7 sm:w-9 sm:h-9 dark:hidden"/>
+                    <img src={FlagoraIconWhite} alt="Flagora" className="ml-2 w-7 h-7 sm:w-9 sm:h-9 hidden dark:block"/>
                 </div>
 
                 {/* Right side - Controls */}
