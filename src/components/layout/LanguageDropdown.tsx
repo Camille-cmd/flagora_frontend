@@ -47,20 +47,21 @@ export default function LanguageDropdown() {
         * Changes the language of the application using i18n and updates the language via the api
      */
     const switchLanguage = (lang: string) => {
-        i18n.changeLanguage(lang)
-            .then(() => {
-                // set the current language handled by useEffect
-                setIsOpen(false);
-                if (AuthService.isAuthenticated) {
-                    // Update the language in the backend
-                    // Do nothing with the response
-                    UserService.setLanguage(lang)
-                }
+        if (AuthService.isAuthenticated) {
+            // If the user is authenticated, update the language in the database and the client
+            UserService.setLanguage(lang).then(_ => {
+                i18n.changeLanguage(lang)
+                    .catch((error) => {
+                        console.error("Error changing language:", error);
+                    });
             })
-            .catch((error) => {
-                console.error("Error changing language:", error);
-            });
-
+        } else {
+            // Update the language in the client only
+            i18n.changeLanguage(lang)
+                .catch((error) => {
+                    console.error("Error changing language:", error);
+                });
+        }
     };
 
     useEffect(() => {

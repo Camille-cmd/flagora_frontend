@@ -25,7 +25,7 @@ export default function GuessCountryForm(
         correctAnswer,
         setCorrectAnswer,
     }: Readonly<GuessCountryFormProps>) {
-    const {t} = useTranslation()
+    const {t, i18n} = useTranslation()
 
     const [countries, setCountries] = useState<Country[]>([])
 
@@ -42,12 +42,12 @@ export default function GuessCountryForm(
         actions.resetForm()
     }
 
-    // on mount
+    // on mount and when language changes
     useEffect(() => {
         GameService.getCountries().then((countries) => {
             setCountries(countries)
         })
-    }, [])
+    }, [i18n.language])
 
     return (
         <>

@@ -16,6 +16,8 @@ api.interceptors.request.use(async (request) => {
     if (sessionId) {
         request.headers["Authorization"] = `Bearer ${sessionId}`;
     }
+    // To trigger the language translations in the backend
+    request.headers["Accept-Language"] = i18n.language;
     return request;
 
 });
