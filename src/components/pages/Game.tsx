@@ -25,6 +25,7 @@ import {Tooltip} from "../common/Tooltip.tsx";
 import {useGameTutorial} from "../../hooks/useGameTutorial.tsx";
 import GameTutorialPopup from "../layout/useGameTutorialPopup.tsx";
 import {countryCodeEmoji} from "../../utils/common.tsx";
+import i18n from "i18next";
 
 interface GameProps {
     gameMode: GameModes,
@@ -57,7 +58,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
     const acceptUser = () => {
         // Send the user we have in storage for the backend auth
-        sendJsonMessage({type: "user_accept", token: token, gameMode: gameMode})
+        sendJsonMessage({type: "user_accept", token: token, gameMode: gameMode, language: i18n.language})
     }
 
     const {sendJsonMessage, lastJsonMessage} = useWebSocket(`${import.meta.env.VITE_WS_URL}/`, {
@@ -93,6 +94,15 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         dispatch({type: "next_question"});
         setCorrectAnswer(null);
         setAnswerStatus(null);
+    }
+
+    const handleTutorialClose = () => {
+        setShowTutorial(false)
+    }
+
+    const handleNeverShowAgain = () => {
+        markTutorialAsShown()
+        setShowTutorial(false)
     }
 
     // Handle incoming messages from the backend
@@ -211,14 +221,11 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
     }, [tutorialLoading, shouldShowTutorial])
 
-    const handleTutorialClose = () => {
-        setShowTutorial(false)
-    }
+    useEffect(() => {
+        // In case the user changes language while the game is running, send the new language to the backend
+        sendJsonMessage({type: "user_change_language", language: i18n.language})
+    }, [i18n.language]);
 
-    const handleNeverShowAgain = () => {
-        markTutorialAsShown()
-        setShowTutorial(false)
-    }
 
     return (
         <div className="flex flex-col items-center justify-center p-2 md:p-6">
