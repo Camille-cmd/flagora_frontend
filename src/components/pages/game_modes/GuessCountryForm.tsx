@@ -3,11 +3,11 @@ import {Form, Formik, type FormikHelpers} from "formik";
 import SearchBar from "../../common/SearchBar.tsx";
 import Button from "../../common/Button.tsx";
 import {useEffect, useState} from "react";
-import type {Country} from "../../../interfaces/country.tsx";
 import GameService from "../../../services/GameService.tsx";
 import type {GameState} from "../../../reducers/gameReducer.tsx"
 import {AnswerStatusTypes, CorrectAnswer} from "../../../interfaces/websocket.tsx";
 import {useTranslation} from "react-i18next";
+import {CountriesType} from "../../../interfaces/country.tsx";
 
 export interface GuessCountryFormProps {
     sendJsonMessage: (message: any) => void,
@@ -16,6 +16,7 @@ export interface GuessCountryFormProps {
     correctAnswer: CorrectAnswer[] | null,
     setCorrectAnswer: (correctAnswer: CorrectAnswer[] | null) => void,
 }
+
 
 export default function GuessCountryForm(
     {
@@ -27,7 +28,7 @@ export default function GuessCountryForm(
     }: Readonly<GuessCountryFormProps>) {
     const {t, i18n} = useTranslation()
 
-    const [countries, setCountries] = useState<Country[]>([])
+    const [countries, setCountries] = useState<CountriesType>({})
 
     const handleSubmit = (
         values: { answer: string }, actions: FormikHelpers<{ answer: string }>
@@ -36,7 +37,7 @@ export default function GuessCountryForm(
         sendJsonMessage({
             type: "answer_submission",
             id: questionId,
-            answer: values.answer,
+            answer: countries[values.answer],
         })
 
         actions.resetForm()
@@ -71,14 +72,13 @@ export default function GuessCountryForm(
             <Formik initialValues={{answer: ""}} onSubmit={handleSubmit}>
                 {({values, setFieldValue, submitForm}) => (
                     <Form className="space-y-4 lg:mt-10 md:px-8 pb-4 md:pb-0">
-                        {countries.length === 0 ? (
+                        {Object.keys(countries).length === 0 ? (
                             <div className="flex justify-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
                             </div>
                         ) : (
                             <SearchBar
                                 value={values.answer}
-                                answerFieldName={"name"}
                                 onChange={(value) => {
                                     setFieldValue("answer", value)
                                     // Clear correct answer message when user starts typing
@@ -105,7 +105,7 @@ export default function GuessCountryForm(
                                 buttonType="primary"
                                 className="w-full py-3"
                                 text={t("game.submit")}
-                                disabled={countries.length === 0}
+                                disabled={Object.keys(countries).length === 0}
                             >
                                 <Send className="w-5 h-5"/>
                             </Button>

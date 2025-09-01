@@ -1,4 +1,3 @@
-export interface Country {
-    name: string;
-    iso2Code: string;
-}
+export type CountriesType = {
+    [key: string]: string;
+};

@@ -1,8 +1,6 @@
 import type React from "react"
 import {useEffect, useRef, useState} from "react"
 import Input from "./Input.tsx"
-import {Country} from "../../interfaces/country.tsx";
-import {City} from "../../interfaces/city.tsx";
 
 interface SearchBarProps {
     value: string
@@ -10,8 +8,7 @@ interface SearchBarProps {
     onSubmit: () => void
     placeholder?: string
     className?: string
-    options: Country[] | City[]
-    answerFieldName: keyof Country | keyof City
+    options: Object
 }
 
 interface AutoCompleteData {
@@ -27,10 +24,9 @@ export default function SearchBar(
         placeholder,
         className = "",
         options,
-        answerFieldName
     }: SearchBarProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const [filteredOptions, setFilteredOptions] = useState<Country[] | City[]>([])
+    const [filteredOptions, setFilteredOptions] = useState<Array<string>>([])
     const [autoCompleteData, setAutoCompleteData] = useState<AutoCompleteData | null>(null)
     const searchRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -43,7 +39,8 @@ export default function SearchBar(
         str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
     useEffect(() => {
-        if (!Array.isArray(options) || options.length === 0) {
+        let optionsArray = Object.keys(options)
+        if (optionsArray.length === 0) {
             setAutoCompleteData(null)
             return;
         }
@@ -52,7 +49,7 @@ export default function SearchBar(
         const lowerValue = normalize(value.toLowerCase().trim());
 
         if (lowerValue === "") {
-            setFilteredOptions(options.slice(0, maxDisplayOptions));
+            setFilteredOptions(optionsArray.slice(0, maxDisplayOptions));
             setAutoCompleteData(null)
             return
         }
@@ -62,21 +59,21 @@ export default function SearchBar(
             normalize(text.toLowerCase()).split(/[\s\-_/]+/)
 
         // first match words strictly starting with the input
-        const filtered = options
-            .filter(option => normalize(option.name.toLowerCase()).startsWith(lowerValue))
+        const filtered = optionsArray
+            .filter(option => normalize(option.toLowerCase()).startsWith(lowerValue))
             .slice(0, maxDisplayOptions)
 
         // Then: match where any word starts with the input (but not already matched)
-        const wordStartsWithMatches = options.filter(option =>
+        const wordStartsWithMatches = optionsArray.filter(option =>
             !filtered.includes(option) &&
-            splitWords(option.name).some(word => word.startsWith(lowerValue))
+            splitWords(option).some(word => word.startsWith(lowerValue))
         )
 
         // Then: match where input is included anywhere (but not already matched)
-        const includesMatches = options.filter(option =>
+        const includesMatches = optionsArray.filter(option =>
             !filtered.includes(option) &&
             !wordStartsWithMatches.includes(option) &&
-            normalize(option.name.toLowerCase()).includes(lowerValue)
+            normalize(option.toLowerCase()).includes(lowerValue)
         )
 
         const combined = [...filtered, ...wordStartsWithMatches, ...includesMatches].slice(0, maxDisplayOptions)
@@ -85,18 +82,18 @@ export default function SearchBar(
 
         // Autocomplete: find first result starting with input
         const firstMatch = combined.find(option =>
-            normalize(option.name.toLowerCase()).startsWith(lowerValue)
+            normalize(option.toLowerCase()).startsWith(lowerValue)
         )
 
         if (firstMatch && lowerValue.length > 0) {
             // Get the remaining part of the first match after the typed text
             const matchedLength = value.length
-            const matchedPart = firstMatch.name.slice(0, matchedLength)
-            const remainingPart = firstMatch.name.slice(matchedLength)
+            const matchedPart = firstMatch.slice(0, matchedLength)
+            const remainingPart = firstMatch.slice(matchedLength)
 
             // Only show autocomplete if the case matches or we're doing case-insensitive matching
             if (normalize(matchedPart.toLowerCase()) === lowerValue) {
-                setAutoCompleteData({text: value + remainingPart, value: firstMatch[answerFieldName]})
+                setAutoCompleteData({text: value + remainingPart, value: firstMatch})
             } else {
                 setAutoCompleteData(null)
             }
@@ -128,10 +125,9 @@ export default function SearchBar(
         }
     }
 
-    const handleOptionSelect = (option: Country | City) => {
+    const handleOptionSelect = (option: string) => {
         // Get the value dynamically from the target fieldName and trigger OnChange
-        const selectedValue = option[answerFieldName];
-        onChange(selectedValue);
+        onChange(option);
         setIsOpen(false)
         setAutoCompleteData(null)
         inputRef.current?.blur()
@@ -246,7 +242,7 @@ export default function SearchBar(
                             }`}
                             onClick={() => handleOptionSelect(option)}
                         >
-                            {option.name}
+                            {option}
                         </div>
                     ))}
                 </div>

@@ -1,4 +1,3 @@
-export interface City {
-    name: string;
-    iso2Code: string;
-}
+export type City = {
+    [key: string]: number;  // city name : id of the city
+};

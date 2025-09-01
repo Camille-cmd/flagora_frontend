@@ -121,7 +121,7 @@ export default function Score({score, gameMode}: ScoreProps) {
 
         // Update previous score reference
         previousScoreRef.current = score
-    }, [score, isFirstRender, scoreMilestones])
+    }, [score, isFirstRender])
 
     const createSparkles = () => {
         const newSparkles = Array.from({length: 5}, (_, i) => ({

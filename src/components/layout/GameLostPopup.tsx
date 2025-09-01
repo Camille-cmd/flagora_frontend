@@ -4,6 +4,7 @@ import {CorrectAnswer} from "../../interfaces/websocket.tsx";
 import {Dialog, DialogPanel, DialogTitle} from "@headlessui/react";
 import {useTranslation} from "react-i18next";
 import {countryCodeEmoji} from "../../utils/common.tsx";
+import {Link} from "react-router-dom";
 
 interface GameLostPopupProps {
     score: number;
@@ -59,8 +60,9 @@ export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQues
                         <p className="text-lg mb-6">
                             {t("popup.gameOver.correctAnswer")}{" "}
                             {correctAnswer.map((correctAnswer, i) => (
-                                <span key={i}
-                                      className="font-semibold">{correctAnswer.name} {countryCodeEmoji(correctAnswer.code)}</span>
+                                <Link to={correctAnswer.wikipediaLink}
+                                      key={i}
+                                      className="font-semibold text-secondary dark:text-primary">{correctAnswer.name} {countryCodeEmoji(correctAnswer.code)}</Link>
                             ))}
                         </p>
                     )}

@@ -308,19 +308,35 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                         />
                     ) : null}
 
-                    <Tooltip message={t("game.skipTooltip")}>
-                        <Button
-                            data-tooltip-target="tooltip-default"
-                            type="button"
-                            buttonType="custom"
-                            className="py-2.5 w-full text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
-                            onClick={handleSkip}
-                            disabled={isSkipping || isLoading}
-                            text={t("game.skip")}
-                        >
-                            <SkipForward className="w-5 h-5"/>
-                        </Button>
-                    </Tooltip>
+                    {/* On mobile, no tooltip for skip button */}
+                    {isMobile ? (
+                            <Button
+                                data-tooltip-target="tooltip-default"
+                                type="button"
+                                buttonType="custom"
+                                className="py-2.5 w-full text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
+                                onClick={handleSkip}
+                                disabled={isSkipping || isLoading}
+                                text={t("game.skip")}
+                            >
+                                <SkipForward className="w-5 h-5"/>
+                            </Button>
+                        ) :
+                        <Tooltip message={t("game.skipTooltip")}>
+                            <Button
+                                data-tooltip-target="tooltip-default"
+                                type="button"
+                                buttonType="custom"
+                                className="py-2.5 w-full text-secondary dark:text-primary bg-neutral-50 dark:bg-darkblue-700 hover:shadow-none focus:outline-none"
+                                onClick={handleSkip}
+                                disabled={isSkipping || isLoading}
+                                text={t("game.skip")}
+                            >
+                                <SkipForward className="w-5 h-5"/>
+                            </Button>
+                        </Tooltip>
+                    }
+
                 </Card>
             </div>
 
