@@ -38,6 +38,7 @@ export default function SearchBar(
     const normalize = (str: string) =>
         str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
+    // Update filteredOptions and autoCompleteData whenever the options or value changes
     useEffect(() => {
         let optionsArray = Object.keys(options)
         if (optionsArray.length === 0) {
@@ -104,6 +105,7 @@ export default function SearchBar(
         setHighlightedIndex(-1)
     }, [value, options])
 
+    // Close dropdown when clicking outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -117,6 +119,17 @@ export default function SearchBar(
         }
     }, [])
 
+    // Allow the dropdown to scroll with the highlighted option when the user uses the arrow keys
+    useEffect(() => {
+        if (dropdownRef.current && highlightedIndex >= 0) {
+            const optionEl = dropdownRef.current.children[highlightedIndex] as HTMLElement
+            if (optionEl) {
+                optionEl.scrollIntoView({block: "nearest"})
+            }
+        }
+    }, [highlightedIndex])
+
+    // INPUT HANDLERS
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
         onChange(newValue)
@@ -139,18 +152,28 @@ export default function SearchBar(
         }
     }
 
+    // keyboard navigation
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (!isOpen) return
 
         switch (e.key) {
-            case "ArrowDown":
+            case "ArrowDown": {
                 e.preventDefault()
-                setHighlightedIndex((prev) => Math.min(prev + 1, filteredOptions.length - 1))
+                setHighlightedIndex((prev) => {
+                    if (filteredOptions.length === 0) return -1
+                    return (prev + 1) % Math.min(filteredOptions.length, maxDisplayOptions)
+                })
                 break
-            case "ArrowUp":
+            }
+            case "ArrowUp": {
                 e.preventDefault()
-                setHighlightedIndex((prev) => Math.max(prev - 1, 0))
+                setHighlightedIndex((prev) => {
+                    if (filteredOptions.length === 0) return -1
+                    const max = Math.min(filteredOptions.length, maxDisplayOptions)
+                    return (prev - 1 + max) % max
+                })
                 break
+            }
             case "Tab":
             case "ArrowRight":
                 // Accept autocomplete suggestion

@@ -1,4 +1,4 @@
-import {SkipForward, XCircle} from "lucide-react"
+import {SkipForward, XCircle, HelpCircle} from "lucide-react"
 import Button from "../common/Button.tsx"
 import Card from "../common/Card/Card.tsx"
 import useWebSocket from "react-use-websocket"
@@ -58,7 +58,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
     const acceptUser = () => {
         // Send the user we have in storage for the backend auth
-        sendJsonMessage({type: "user_accept", token: token, gameMode: gameMode, language: i18n.language})
+        sendJsonMessage({type: "user_accept", token: token, gameMode: gameMode, language: i18n.resolvedLanguage})
     }
 
     const {sendJsonMessage, lastJsonMessage} = useWebSocket(`${import.meta.env.VITE_WS_URL}/`, {
@@ -214,17 +214,18 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         };
     }, [isSkipping, isLoading, state.currentIndex]);
 
+    // Show "tutorial" popup if user has not seen it before
     useEffect(() => {
         if (!tutorialLoading && shouldShowTutorial) {
             setShowTutorial(true)
         }
-
     }, [tutorialLoading, shouldShowTutorial])
 
+    // Change the language with the backend as well
     useEffect(() => {
         // In case the user changes language while the game is running, send the new language to the backend
-        sendJsonMessage({type: "user_change_language", language: i18n.language})
-    }, [i18n.language]);
+        sendJsonMessage({type: "user_change_language", language: i18n.resolvedLanguage})
+    }, [i18n.resolvedLanguage]);
 
 
     return (
@@ -241,6 +242,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                     <div className="text-center text-gray-500 dark:text-gray-300 mb-4 text-xl">{t("modeSelection.cards.training")}</div>
                 )}
 
+                {/* Game Over Popup */}
                 {gameIsLost && (
                     <GameLostPopup
                         score={state.score}
@@ -254,6 +256,11 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
                     <div ref={flagTopElement} className="flex items-center justify-between mb-8">
                         <Score score={state.score} gameMode={gameMode}/>
+                        <Button
+                            buttonType={"custom"}
+                            children={<HelpCircle className="w-5 h-5"/>}
+                            className={"text-secondary dark:text-primary bg-transparent hover:bg-transparent hover:text-gray-400 dark:hover:text-gray-600 focus:outline-none hover:shadow-none"}
+                            onClick={() => setShowTutorial(true)}/>
                     </div>
 
                     {/* Correct Answer Message */}
@@ -290,6 +297,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
 
                     {/* Formik Form */}
+                    {/* GCFF = Guess Country From Flag | GCFC = Guess Capital City From Country */}
                     {gameMode.includes("GCFF") ? (
                         <GuessCountryForm
                             sendJsonMessage={sendJsonMessage}

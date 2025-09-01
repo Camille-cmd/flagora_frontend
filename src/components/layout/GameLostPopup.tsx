@@ -5,6 +5,7 @@ import {Dialog, DialogPanel, DialogTitle} from "@headlessui/react";
 import {useTranslation} from "react-i18next";
 import {countryCodeEmoji} from "../../utils/common.tsx";
 import {Link} from "react-router-dom";
+import {useEffect} from "react";
 
 interface GameLostPopupProps {
     score: number;
@@ -23,6 +24,22 @@ export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQues
     const onRetry = () => {
         triggerNextQuestion();
     }
+
+    // Close popup and restart a game
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                triggerNextQuestion();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        // Remove event listener on unmount
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
 
     return (
         <Dialog open={true} onClose={onClose} className="relative z-50">
