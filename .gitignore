@@ -25,6 +25,5 @@ dist-ssr
 .env*
 
 .dockerignore
-Dockerfile.production
 nginx.conf
 .env.production
