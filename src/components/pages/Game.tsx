@@ -61,7 +61,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         sendJsonMessage({type: "user_accept", token: token, gameMode: gameMode, language: i18n.resolvedLanguage})
     }
 
-    const {sendJsonMessage, lastJsonMessage} = useWebSocket(`${import.meta.env.VITE_WS_URL}/`, {
+    const {sendJsonMessage, lastJsonMessage, getWebSocket} = useWebSocket(`${import.meta.env.VITE_WS_URL}/`, {
         onOpen: acceptUser,
         shouldReconnect: () => true,
         reconnectAttempts: 10,
@@ -226,6 +226,30 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         // In case the user changes language while the game is running, send the new language to the backend
         sendJsonMessage({type: "user_change_language", language: i18n.resolvedLanguage})
     }, [i18n.resolvedLanguage]);
+
+    // Page Lifecycle API - reconnect WebSocket when device wakes from sleep/lock
+    useEffect(() => {
+        const handleFreeze = () => {
+            // Device is going to sleep/lock - nothing to do here
+        };
+
+        const handleResume = () => {
+            // Device woke up - check if WebSocket needs reconnection
+            const ws = getWebSocket();
+            if (ws && ws.readyState === WebSocket.CLOSED) {
+                // Reconnect by calling acceptUser again
+                acceptUser();
+            }
+        };
+
+        document.addEventListener('freeze', handleFreeze);
+        document.addEventListener('resume', handleResume);
+
+        return () => {
+            document.removeEventListener('freeze', handleFreeze);
+            document.removeEventListener('resume', handleResume);
+        };
+    }, [getWebSocket, acceptUser]);
 
 
     return (
