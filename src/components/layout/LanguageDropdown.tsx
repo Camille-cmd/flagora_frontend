@@ -33,7 +33,7 @@ const getLanguageFlag = (language: string | undefined) => {
  * Renders a dropdown menu for selecting the language of the application.
  */
 export default function LanguageDropdown() {
-    const [currentLanguage, setCurrentLanguage] = useState<string>(getLanguageFlag(i18n.language))
+    const [currentLanguage, setCurrentLanguage] = useState<string>(getLanguageFlag(i18n.resolvedLanguage))
     const [isOpen, setIsOpen] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -77,7 +77,7 @@ export default function LanguageDropdown() {
 
     // Update current flag if i18n.language changes
     useEffect(() => {
-        const updateFlag = () => setCurrentLanguage(getLanguageFlag(i18n.language));
+        const updateFlag = () => setCurrentLanguage(getLanguageFlag(i18n.resolvedLanguage));
         i18n.on("languageChanged", updateFlag);
         return () => {
             i18n.off("languageChanged", updateFlag);

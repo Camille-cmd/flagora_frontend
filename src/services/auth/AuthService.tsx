@@ -71,7 +71,7 @@ export default class AuthService {
 
     static async register(email: string, username: string, password: string): Promise<User> {
         try {
-            const language = i18n.language;
+            const language = i18n.resolvedLanguage;
             const response = await api.post<User>('auth/register', {
                 username,
                 email,
