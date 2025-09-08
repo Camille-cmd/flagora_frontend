@@ -27,6 +27,12 @@ export default function GuessCapitalCityForm(
         values: { answer: string }, actions: FormikHelpers<{ answer: string }>
     ) => {
         const questionId = Object.keys(state.questions)[state.currentIndex]
+        // Check if the city exists
+        if (!cities[values.answer]) {
+            actions.setFieldError('answer', t('game.error.invalidCity'))
+            return
+        }
+
         sendJsonMessage({
             type: "answer_submission",
             id: questionId,
@@ -64,35 +70,43 @@ export default function GuessCapitalCityForm(
             </div>
 
             <Formik initialValues={{answer: ""}} onSubmit={handleSubmit}>
-                {({values, setFieldValue, submitForm}) => (
+                {({values, setFieldValue, submitForm, errors, touched}) => (
                     <Form className="space-y-4 lg:mt-10 md:px-8 pb-4 md:pb-0">
                         {Object.keys(cities).length === 0 ? (
                             <div className="flex justify-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
                             </div>
                         ) : (
-                            <SearchBar
-                                value={values.answer}
-                                onChange={(value) => {
-                                    setFieldValue("answer", value)
-                                    // Clear correct answer message when user starts typing
-                                    if (correctAnswer && value.length > 0) {
-                                        setCorrectAnswer(null)
-                                    }
-                                }}
-                                onSubmit={submitForm}
-                                placeholder={t("game.answer.city_placeholder")}
-                                options={cities}
-                                className={`w-full p-4 pl-5 pr-12 ${
-                                    answerStatus === "correct"
-                                        ? "bg-green-400 dark:bg-green-900/90"
-                                        : answerStatus === "wrong"
-                                            ? "bg-red-700 dark:bg-red-900/90 shake"
-                                            : answerStatus === "partiallyCorrect"
-                                                ? "bg-amber-700 decoration-amber-900/90"
-                                                : ""
-                                }`}
-                            />
+                            <div>
+                                <SearchBar
+                                    value={values.answer}
+                                    onChange={(value) => {
+                                        setFieldValue("answer", value)
+                                        // Clear correct answer message when user starts typing
+                                        if (correctAnswer && value.length > 0) {
+                                            setCorrectAnswer(null)
+                                        }
+                                    }}
+                                    onSubmit={submitForm}
+                                    placeholder={t("game.answer.city_placeholder")}
+                                    options={cities}
+                                    className={`w-full p-4 pl-5 pr-12 ${
+                                        answerStatus === "correct"
+                                            ? "bg-green-400 dark:bg-green-900/90"
+                                            : answerStatus === "wrong"
+                                                ? "bg-red-700 dark:bg-red-900/90 shake"
+                                                : answerStatus === "partiallyCorrect"
+                                                    ? "bg-amber-700 decoration-amber-900/90"
+                                                    : ""
+                                    }`}
+                                />
+                                {/* Error message display*/}
+                                {errors.answer && touched.answer && (
+                                    <div className="text-red-500 text-sm mt-1 px-1">
+                                        {errors.answer}
+                                    </div>
+                                )}
+                            </div>
                         )}
 
                         <div className="space-y-3">

@@ -263,7 +263,11 @@
     "submit": "Submit",
     "skip": "skip",
     "loadingQuestions": "Loading…",
-    "skipTooltip": "Use shiftKey + Enter shortcut to skip"
+    "skipTooltip": "Use shiftKey + Enter shortcut to skip",
+    "error": {
+      "invalidCountry": "Please select a valid country",
+      "invalidCity": "Please select a valid city"
+    }
   },
   "stats": {
     "pageTitle": "Your detailed stats",

@@ -258,7 +258,11 @@
     "submit": "Valider",
     "skip": "Passer",
     "loadingQuestions": "Chargement…",
-    "skipTooltip": "Utilisez le raccourci Shift + Entrer pour passer"
+    "skipTooltip": "Utilisez le raccourci Shift + Entrer pour passer",
+    "error": {
+      "invalidCountry": "Veuillez sélectionner un pays valide",
+      "invalidCity": "Veuillez sélectionner une ville valide"
+    }
   },
   "stats": {
     "pageTitle": "Vos statistiques détaillées",
