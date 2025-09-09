@@ -66,7 +66,7 @@ export default function GuessCountryForm(
                         <img
                             src={`data:image/svg+xml;utf8,${encodeURIComponent(state.currentQuestion)}`}
                             alt="Flag"
-                            className="max-w-[120%] md:max-w-full max-h-full"
+                            className="max-h-full object-contain w-[100%]"
                         />
                     ) : (
                         <div className="flex items-center justify-center w-full h-full text-gray-400 dark:text-gray-500">
