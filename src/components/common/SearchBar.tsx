@@ -9,6 +9,8 @@ interface SearchBarProps {
     placeholder?: string
     className?: string
     options: Object
+    autoFocus?: boolean
+    questionId?: number
 }
 
 interface AutoCompleteData {
@@ -24,6 +26,8 @@ export default function SearchBar(
         placeholder,
         className = "",
         options,
+        autoFocus = true,
+        questionId,
     }: SearchBarProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [filteredOptions, setFilteredOptions] = useState<Array<string>>([])
@@ -104,6 +108,16 @@ export default function SearchBar(
 
         setHighlightedIndex(-1)
     }, [value, options])
+
+    // Auto-focus logic
+    useEffect(() => {
+        if (!autoFocus || Object.keys(options).length === 0) return
+
+        // Focus when options first load or when value is cleared (after submit/skip)
+        if (value === "") {
+            setTimeout(() => inputRef.current?.focus(), 100)
+        }
+    }, [value, options, autoFocus, questionId])
 
     // Close dropdown when clicking outside
     useEffect(() => {

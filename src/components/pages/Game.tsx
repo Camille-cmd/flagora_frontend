@@ -15,8 +15,8 @@ import {
 import {useTranslation} from "react-i18next"
 import {useAuth} from "../../services/auth/useAuth.tsx";
 import {Link} from "react-router-dom";
-import GuessCountryForm from "./game_modes/GuessCountryForm.tsx";
-import GuessCapitalCityForm from "./game_modes/GuessCapitalCityForm.tsx";
+import GuessCountryMode from "./game_modes/GuessCountryMode.tsx";
+import GuessCapitalCityMode from "./game_modes/GuessCapitalCityMode.tsx";
 import {GameModes} from "../../interfaces/gameModes.tsx";
 import Score from "../layout/Score.tsx";
 import {GameLostPopup} from "../layout/GameLostPopup.tsx";
@@ -323,7 +323,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                     {/* Formik Form */}
                     {/* GCFF = Guess Country From Flag | GCFC = Guess Capital City From Country */}
                     {gameMode.includes("GCFF") ? (
-                        <GuessCountryForm
+                        <GuessCountryMode
                             sendJsonMessage={sendJsonMessage}
                             state={state}
                             answerStatus={answerStatus}
@@ -331,7 +331,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                             setCorrectAnswer={setCorrectAnswer}
                         />
                     ) : gameMode.includes("GCFC") ? (
-                        <GuessCapitalCityForm
+                        <GuessCapitalCityMode
                             sendJsonMessage={sendJsonMessage}
                             state={state}
                             answerStatus={answerStatus}

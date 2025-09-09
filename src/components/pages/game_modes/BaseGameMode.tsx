@@ -1,69 +1,93 @@
-import {Globe, Send} from "lucide-react";
+import {Send} from "lucide-react";
 import {Form, Formik, type FormikHelpers} from "formik";
 import SearchBar from "../../common/SearchBar.tsx";
 import Button from "../../common/Button.tsx";
 import {useEffect, useState} from "react";
-import type {City} from "../../../interfaces/city.tsx";
-import GameService from "../../../services/GameService.tsx";
+import type {GameState} from "../../../reducers/gameReducer.tsx"
+import {AnswerStatusTypes, CorrectAnswer} from "../../../interfaces/websocket.tsx";
 import {useTranslation} from "react-i18next";
-import {GuessCountryFormProps} from "./GuessCountryForm.tsx";
-import {CountriesType} from "../../../interfaces/country.tsx";
 
+export interface GameModeConfig<T = Record<string, any>> {
+    // Data loading
+    loadOptions: () => Promise<T>
+    
+    // Extract searchable options for SearchBar
+    getSearchOptions: (options: T) => Record<string, any>
+    
+    // Question display
+    renderQuestion: (currentQuestion: string, options: T) => React.ReactNode
+    
+    // Validation
+    validateAnswer: (answer: string, options: T) => string | null
+    
+    // UI customization
+    placeholder: string
+    errorKey: string
+    fallbackIcon: React.ReactNode
+    
+    // Answer processing
+    getAnswerValue: (answer: string, options: T) => any
+}
 
-export default function GuessCapitalCityForm(
-    {
-        sendJsonMessage,
-        state,
-        answerStatus,
-        correctAnswer,
-        setCorrectAnswer,
-    }: Readonly<GuessCountryFormProps>) {
+export interface BaseGameModeProps<T = Record<string, any>> {
+    sendJsonMessage: (message: any) => void,
+    state: GameState,
+    answerStatus: AnswerStatusTypes | null,
+    correctAnswer: CorrectAnswer[] | null,
+    setCorrectAnswer: (correctAnswer: CorrectAnswer[] | null) => void,
+    config: GameModeConfig<T>
+}
+
+export default function BaseGameMode<T = Record<string, any>>({
+    sendJsonMessage,
+    state,
+    answerStatus,
+    correctAnswer,
+    setCorrectAnswer,
+    config
+}: Readonly<BaseGameModeProps<T>>) {
     const {t, i18n} = useTranslation()
-
-    const [cities, setCities] = useState<City>({})
-    const [countries, setCountries] = useState<CountriesType>({})
+    const [options, setOptions] = useState<T>({} as T)
 
     const handleSubmit = (
-        values: { answer: string }, actions: FormikHelpers<{ answer: string }>
+        values: { answer: string }, 
+        actions: FormikHelpers<{ answer: string }>
     ) => {
         const questionId = Object.keys(state.questions)[state.currentIndex]
-        // Check if the city exists
-        if (!cities[values.answer]) {
-            actions.setFieldError('answer', t('game.error.invalidCity'))
+
+        // Validate answer using config
+        const errorMessage = config.validateAnswer(values.answer, options)
+        if (errorMessage) {
+            actions.setFieldError('answer', t(errorMessage))
             return
         }
 
         sendJsonMessage({
             type: "answer_submission",
             id: questionId,
-            answer: cities[values.answer],
+            answer: config.getAnswerValue(values.answer, options),
         })
 
         actions.resetForm()
     }
 
-    // on mount
+    // Load options on mount and language change
     useEffect(() => {
-        GameService.getCities().then((cities) => {
-            setCities(cities)
+        config.loadOptions().then((loadedOptions) => {
+            setOptions(loadedOptions)
         })
-        GameService.getCountries().then((countries) => {
-            setCountries(countries)
-        })
-    }, [i18n.language])
+    }, [i18n.language, config])
 
     return (
         <>
-            {/* Country Name Display */}
+            {/* Question Display */}
             <div className="relative">
-                <div className="mb-6 relative w-full h-32 flex items-center justify-center">
+                <div className="mb-6 relative w-full h-56 flex items-center justify-center">
                     {state.currentQuestion ? (
-                        <div className="text-3xl md:text-4xl font-bold text-center text-gray-800 dark:text-gray-200">
-                            {Object.keys(countries).find(key => countries[key] === state.currentQuestion)}
-                        </div>
+                        config.renderQuestion(state.currentQuestion, options)
                     ) : (
                         <div className="flex items-center justify-center w-full h-full text-gray-400 dark:text-gray-500">
-                            <Globe className="w-12 h-12"/>
+                            {config.fallbackIcon}
                         </div>
                     )}
                 </div>
@@ -72,7 +96,7 @@ export default function GuessCapitalCityForm(
             <Formik initialValues={{answer: ""}} onSubmit={handleSubmit}>
                 {({values, setFieldValue, submitForm, errors, touched}) => (
                     <Form className="space-y-4 lg:mt-10 md:px-8 pb-4 md:pb-0">
-                        {Object.keys(cities).length === 0 ? (
+                        {!options || Object.keys(options as Record<string, any>).length === 0 ? (
                             <div className="flex justify-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
                             </div>
@@ -88,13 +112,14 @@ export default function GuessCapitalCityForm(
                                         }
                                     }}
                                     onSubmit={submitForm}
-                                    placeholder={t("game.answer.city_placeholder")}
-                                    options={cities}
+                                    placeholder={t(config.placeholder)}
+                                    options={config.getSearchOptions(options)}
+                                    questionId={state.currentIndex}
                                     className={`w-full p-4 pl-5 pr-12 ${
                                         answerStatus === "correct"
-                                            ? "bg-green-400 dark:bg-green-900/90"
+                                            ? "bg-green-300 dark:bg-green-900/90"
                                             : answerStatus === "wrong"
-                                                ? "bg-red-700 dark:bg-red-900/90 shake"
+                                                ? "bg-red-600 dark:bg-red-900/90 shake"
                                                 : answerStatus === "partiallyCorrect"
                                                     ? "bg-amber-700 decoration-amber-900/90"
                                                     : ""
@@ -115,7 +140,7 @@ export default function GuessCapitalCityForm(
                                 buttonType="primary"
                                 className="w-full py-3"
                                 text={t("game.submit")}
-                                disabled={Object.keys(cities).length === 0}
+                                disabled={!options || Object.keys(options as Record<string, any>).length === 0}
                             >
                                 <Send className="w-5 h-5"/>
                             </Button>
