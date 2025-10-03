@@ -313,6 +313,16 @@
       "share": "Share result",
       "copied": "Copied!",
       "bestStreak": "Best streak:"
+    },
+    "gameCompleted": {
+      "title": "Congratulations!",
+      "congratulations": "You've guessed all available countries!",
+      "questionsCompleted": "Questions completed: {{current}}/{{total}}",
+      "yourScore": "Your score:",
+      "bestStreak": "Best streak:",
+      "encouragement": "Amazing job! Ready for another round?",
+      "restart": "Restart Challenge",
+      "exit": "Exit to Menu"
     }
   },
   "tutorial": {

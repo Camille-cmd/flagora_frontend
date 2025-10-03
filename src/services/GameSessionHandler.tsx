@@ -44,6 +44,8 @@ export class GameSessionHandler {
         window.removeEventListener('beforeunload', this.handleTokenClear);
         window.removeEventListener('pagehide', this.handleTokenClear);
         this.isSetup = false;
+
+        this.handleTokenClear();
     }
 
     /**

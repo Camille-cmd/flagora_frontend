@@ -308,6 +308,16 @@
       "share": "Partager",
       "copied": "Copié !",
       "bestStreak": "Meilleur combo :"
+    },
+    "gameCompleted": {
+      "title": "Félicitations !",
+      "congratulations": "Tu as deviné tous les pays disponibles !",
+      "questionsCompleted": "Questions complétées : {{current}}/{{total}}",
+      "yourScore": "Ton score :",
+      "bestStreak": "Meilleur combo :",
+      "encouragement": "Incroyable ! Prêt pour un autre tour ?",
+      "restart": "Recommencer le Challenge",
+      "exit": "Retour au Menu"
     }
   },
   "tutorial": {

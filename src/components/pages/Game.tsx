@@ -20,6 +20,7 @@ import GuessCapitalCityMode from "./game_modes/GuessCapitalCityMode.tsx";
 import {GameModes} from "../../interfaces/gameModes.tsx";
 import Score from "../layout/Score.tsx";
 import {GameLostPopup} from "../layout/GameLostPopup.tsx";
+import {GameCompletedPopup} from "../layout/GameCompletedPopup.tsx";
 import useMobileScreen from "../../utils/useMobileScreen.tsx";
 import {Tooltip} from "../common/Tooltip.tsx";
 import {useGameTutorial} from "../../hooks/useGameTutorial.tsx";
@@ -52,6 +53,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         currentIndex: 0,
         currentQuestion: "",
         score: 0,
+        totalQuestions: 0,
     })
     const {
         shouldShowTutorial,
@@ -64,6 +66,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
     const [isSkipping, setIsSkipping] = useState(false)
     const [isLoading, setIsLoading] = useState(true);
     const [gameIsLost, setGameIsLost] = useState(false);
+    const [gameIsCompleted, setGameIsCompleted] = useState(false);
     const [bestStreak, setBestStreak] = useState<number | null>(null);
     const [remainingToGuess, setRemainingToGuess] = useState(0);
     const [resetKey, setResetKey] = useState(0);
@@ -131,6 +134,39 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         setAnswerStatus(null);
     }
 
+    const handleRestart = () => {
+        // Generate new session and reset all state
+        const newGameToken = tokenManager.startNewGame(gameMode);
+
+        // Reset all game state
+        setGameIsCompleted(false);
+        setGameIsLost(false);
+        setCorrectAnswer(null);
+        setAnswerStatus(null);
+        setIsLoading(true);
+        setBestStreak(null);
+        setResetKey(prev => prev + 1);
+
+        // Reset reducer state by dispatching an empty questions update
+        // The new questions will come from the backend via new user_accept
+        dispatch({type: "new_questions", questions: {}});
+
+        // Re-establish game session with new token
+        sendJsonMessage({
+            type: "user_accept",
+            token: token,
+            gameToken: newGameToken,
+            gameMode: gameMode,
+            language: i18n.resolvedLanguage,
+            continents: selectedContinents
+        });
+    }
+
+    const handleExit = () => {
+        sessionHandler.cleanup();
+        navigate("/mode-selection");
+    }
+
     const handleTutorialClose = () => {
         setShowTutorial(false)
     }
@@ -174,6 +210,14 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
                     // Move to the next question if all answers have been guessed
                     if (payload.remainingToGuess == 0) {
+                        const nextIndex = state.currentIndex + 1;
+
+                        // Check if this was the last question in challenge mode
+                        if (gameMode.includes("CHALLENGE") && nextIndex >= state.totalQuestions) {
+                            setGameIsCompleted(true);
+                            setBestStreak(payload.bestStreak);
+                        }
+
                         dispatch({type: "next_question"})
                         setAnswerStatus("correct")
                         dispatch({type: "update_score", new_streak: payload.currentStreak})
@@ -204,12 +248,14 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
                 }
 
-                // Request more questions if only 2 remaining
-                const remainingQuestions = Object.keys(state.questions).length - state.currentIndex - 1
-                if (remainingQuestions <= 2) {
-                    sendJsonMessage({
-                        type: "request_questions"
-                    })
+                // Request more questions if only 2 remaining (only for training mode)
+                if (gameMode.includes("TRAINING")) {
+                    const remainingQuestions = Object.keys(state.questions).length - state.currentIndex - 1
+                    if (remainingQuestions <= 2) {
+                        sendJsonMessage({
+                            type: "request_questions"
+                        })
+                    }
                 }
 
                 // Reset answer status after short delay to allow UI to reflect color
@@ -291,6 +337,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 <Button
                     buttonType="link"
                     onClick={() => {
+                        sessionHandler.cleanup();
                         navigate("/mode-selection");
                     }}
                     text={t("game.changeGameMode")}
@@ -304,6 +351,17 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                         correctAnswer={correctAnswer}
                         bestStreak={bestStreak}
                         triggerNextQuestion={handleGameOverRetry}
+                    />
+                )}
+
+                {/* Game Completed Popup */}
+                {gameIsCompleted && (
+                    <GameCompletedPopup
+                        score={state.score}
+                        totalQuestions={state.totalQuestions}
+                        bestStreak={bestStreak}
+                        onRestart={handleRestart}
+                        onExit={handleExit}
                     />
                 )}
 
