@@ -1,54 +1,32 @@
-# React + TypeScript + Vite
+# Flagora App Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Installation
 
-Currently, two official plugins are available:
+TODO
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Application Overview
 
-## Expanding the ESLint configuration
+### Game Session Management
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The application implements a session management to handle various user scenarios:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Session Behavior
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Multi-tab support: Each browser tab creates an independent game session with a unique
+  token
+- Screen lock persistence: Game sessions survive screen locks and brief interruptions
+- Automatic cleanup: Sessions are cleared when users close tabs or navigate away from
+  the game
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Technical Implementation
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- Uses sessionStorage for tab-specific token storage
+- Generates unique tokens per tab: crypto.randomUUID()
+- Handles browser events (beforeunload, pagehide) for reliable cleanup
+- Backend creates/retrieves sessions based on the provided gameToken
+
+This ensures users can:
+
+- Play multiple games simultaneously in different tabs
+- Resume games after screen locks or brief network interruptions
+- Always start fresh after intentionally closing tabs or navigating away
