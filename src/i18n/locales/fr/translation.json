@@ -151,6 +151,21 @@
         "part2": "pour sauvegarder votre progression et avoir accès au mode entrainement."
       }
     },
+    "continents": {
+      "title": "Sélectionnez les continents",
+      "all": "Tous les continents",
+      "AF": "Afrique",
+      "AS": "Asie",
+      "EU": "Europe",
+      "NA": "Amérique du Nord",
+      "SA": "Amérique du Sud",
+      "OC": "Océanie",
+      "AN": "Antarctique"
+    },
+    "mode": {
+      "title": "Sélectionnez un mode de jeu"
+    },
+    "start": "Commencer",
     "cards": {
       "flag": {
         "title": "Drapeau",
@@ -158,7 +173,7 @@
         "descriptionChallenge": "Devinez les drapeaux avec précision."
       },
       "cities": {
-        "title": "Villes",
+        "title": "Capitales",
         "description": "Apprenez les capitales en mode infini.",
         "descriptionChallenge": "Testez vos connaissances sur les capitales."
       },
@@ -242,6 +257,10 @@
     }
   },
   "game": {
+    "changeGameMode": "Changer de mode de jeu",
+    "continents": {
+      "all": "Tous les continents"
+    },
     "alerts": {
       "success": "Bonne réponse !",
       "wrong": "Mauvaise réponse, réessaie.",

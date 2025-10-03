@@ -14,7 +14,7 @@ import {
 } from "../../interfaces/websocket.tsx"
 import {useTranslation} from "react-i18next"
 import {useAuth} from "../../services/auth/useAuth.tsx";
-import {Link} from "react-router-dom";
+import {Link, useSearchParams, useNavigate} from "react-router-dom";
 import GuessCountryMode from "./game_modes/GuessCountryMode.tsx";
 import GuessCapitalCityMode from "./game_modes/GuessCapitalCityMode.tsx";
 import {GameModes} from "../../interfaces/gameModes.tsx";
@@ -28,14 +28,25 @@ import {countryCodeEmoji} from "../../utils/common.tsx";
 import i18n from "i18next";
 import {GameTokenManager} from "../../services/GameTokenManager.tsx";
 import {GameSessionHandler} from "../../services/GameSessionHandler.tsx";
+import {ContinentCode} from "../../interfaces/continents.tsx";
 
 interface GameProps {
     gameMode: GameModes,
 }
 
 export default function Game({gameMode}: Readonly<GameProps>) {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const {t} = useTranslation()
     const {isAuthenticated, token, cleanToken, user, loadingUser} = useAuth()
+
+    // Get continent from URL params
+    const continentParam = searchParams.get("continent");
+    const selectedContinents: ContinentCode[] | null = (() => {
+        if (!continentParam || continentParam === "all") return null;
+        return continentParam.split(",") as ContinentCode[];
+    })();
+
     const [state, dispatch] = useReducer(gameReducer, {
         questions: [],
         currentIndex: 0,
@@ -77,7 +88,8 @@ export default function Game({gameMode}: Readonly<GameProps>) {
             token: token,
             gameToken: gameToken,
             gameMode: gameMode,
-            language: i18n.resolvedLanguage
+            language: i18n.resolvedLanguage,
+            continents: selectedContinents
         })
     }
 
@@ -275,6 +287,15 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 {gameMode.includes("TRAINING") && (
                     <div className="text-center text-gray-500 dark:text-gray-300 mb-4 text-xl">{t("modeSelection.cards.training")}</div>
                 )}
+
+                <Button
+                    buttonType="link"
+                    onClick={() => {
+                        navigate("/mode-selection");
+                    }}
+                    text={t("game.changeGameMode")}
+                    className="text-xs mb-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                />
 
                 {/* Game Over Popup */}
                 {gameIsLost && (

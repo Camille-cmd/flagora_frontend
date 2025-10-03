@@ -151,6 +151,21 @@
         "part2": "to save your progress and having access to the training mode."
       }
     },
+    "continents": {
+      "title": "Select continents",
+      "all": "All continents",
+      "AF": "Africa",
+      "AS": "Asia",
+      "EU": "Europe",
+      "NA": "North America",
+      "SA": "South America",
+      "OC": "Oceania",
+      "AN": "Antarctica"
+    },
+    "mode": {
+      "title": "Select a game mode"
+    },
+    "start": "Start game",
     "cards": {
       "flag": {
         "title": "Flag",
@@ -158,7 +173,7 @@
         "descriptionChallenge": "Guess the flags accurately."
       },
       "cities": {
-        "title": "Cities",
+        "title": "Capital cities",
         "description": "Learn capital cities in the infinite mode.",
         "descriptionChallenge": "Test your knowledge about capital cities."
       },
@@ -247,6 +262,10 @@
     }
   },
   "game": {
+    "changeGameMode": "Change game mode",
+    "continents": {
+      "all": "All continents"
+    },
     "alerts": {
       "success": "Correct!",
       "wrong": "That's not it, try again",
