@@ -9,7 +9,8 @@ export type GameState = {
 type GameAction =
     | { type: "new_questions"; questions: Record<number, string> }
     | { type: "next_question" }
-    | { type: "update_score", new_streak: number, }
+    | { type: "update_score", new_streak: number }
+    | { type: "reset_game" };
 
 export default function gameReducer(state: GameState, action: GameAction): GameState {
     switch (action.type) {
@@ -37,6 +38,14 @@ export default function gameReducer(state: GameState, action: GameAction): GameS
                 ...state,
                 score: newScore,
             }
+        case "reset_game":
+            return {
+                questions: {},
+                currentIndex: 0,
+                currentQuestion: "",
+                score: 0,
+                totalQuestions: 0
+            };
         default:
             return state;
     }

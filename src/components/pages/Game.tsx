@@ -147,9 +147,9 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         setBestStreak(null);
         setResetKey(prev => prev + 1);
 
-        // Reset reducer state by dispatching an empty questions update
+        // Reset reducer state
         // The new questions will come from the backend via new user_accept
-        dispatch({type: "new_questions", questions: {}});
+        dispatch({type: "reset_game"});
 
         // Re-establish game session with new token
         sendJsonMessage({
@@ -357,9 +357,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                 {/* Game Completed Popup */}
                 {gameIsCompleted && (
                     <GameCompletedPopup
-                        score={state.score}
                         totalQuestions={state.totalQuestions}
-                        bestStreak={bestStreak}
                         onRestart={handleRestart}
                         onExit={handleExit}
                     />

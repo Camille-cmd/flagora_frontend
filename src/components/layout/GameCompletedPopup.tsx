@@ -6,12 +6,11 @@ import {useTranslation} from "react-i18next";
 interface GameCompletedPopupProps {
     score: number;
     totalQuestions: number;
-    bestStreak: number | null;
     onRestart: () => void;
     onExit: () => void;
 }
 
-export function GameCompletedPopup({score, totalQuestions, bestStreak, onRestart, onExit}: Readonly<GameCompletedPopupProps>) {
+export function GameCompletedPopup({totalQuestions, onRestart, onExit}: Readonly<GameCompletedPopupProps>) {
     const {t} = useTranslation();
 
     return (
@@ -38,20 +37,8 @@ export function GameCompletedPopup({score, totalQuestions, bestStreak, onRestart
                     </p>
 
                     <p className="text-lg mb-4">
-                        {t("popup.gameCompleted.questionsCompleted", {current: totalQuestions, total: totalQuestions})}
+                        {t("popup.gameCompleted.questionsCompleted", {total: totalQuestions})}
                     </p>
-
-                    <p className="text-xl mb-4">
-                        {t("popup.gameCompleted.yourScore")}{" "}
-                        <span className="font-bold text-1xl">{score}</span>
-                    </p>
-
-                    {bestStreak && (
-                        <p className="text-lg mb-6">
-                            {t("popup.gameCompleted.bestStreak")}{" "}
-                            <span className="font-semibold">{bestStreak}</span>
-                        </p>
-                    )}
 
                     <p className="text-lg mb-8 text-gray-600 dark:text-gray-300">
                         {t("popup.gameCompleted.encouragement")}

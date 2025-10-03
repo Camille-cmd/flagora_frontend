@@ -312,7 +312,7 @@
     "gameCompleted": {
       "title": "Félicitations !",
       "congratulations": "Tu as deviné tous les pays disponibles !",
-      "questionsCompleted": "Questions complétées : {{current}}/{{total}}",
+      "questionsCompleted": "Questions complétées : {{total}}",
       "yourScore": "Ton score :",
       "bestStreak": "Meilleur combo :",
       "encouragement": "Incroyable ! Prêt pour un autre tour ?",
