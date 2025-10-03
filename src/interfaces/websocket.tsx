@@ -18,6 +18,7 @@ export interface WebsocketMessage {
 
 export interface AcceptUser {
     isUserAuthenticated: boolean;
+    gameToken: string;
 }
 
 export interface CorrectAnswer {

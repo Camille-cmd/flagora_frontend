@@ -79,6 +79,7 @@ export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQues
                             {correctAnswer.map((correctAnswer, i) => (
                                 <Link to={correctAnswer.wikipediaLink}
                                       key={i}
+                                      target={"_blank"}
                                       className="font-semibold text-secondary dark:text-primary">{correctAnswer.name} {countryCodeEmoji(correctAnswer.code)}</Link>
                             ))}
                         </p>

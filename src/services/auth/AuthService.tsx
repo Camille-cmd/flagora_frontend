@@ -46,9 +46,9 @@ export default class AuthService {
             const response = await api.get<User>('user/me');
 
             // Set the correct language if it is different from the one detected by i18n
-            const current_lang = i18n.language
+            const currentLang = i18n.language
             const lang = response.data.language;
-            if (response.data.language !== current_lang) {
+            if (response.data.language !== currentLang) {
                 i18n.changeLanguage(response.data.language)
                     .then(() => {
                         i18n.changeLanguage(lang)

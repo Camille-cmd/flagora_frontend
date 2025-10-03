@@ -10,21 +10,21 @@ import {useTranslation} from "react-i18next";
 export interface GameModeConfig<T = Record<string, any>> {
     // Data loading
     loadOptions: () => Promise<T>
-    
+
     // Extract searchable options for SearchBar
     getSearchOptions: (options: T) => Record<string, any>
-    
+
     // Question display
     renderQuestion: (currentQuestion: string, options: T) => React.ReactNode
-    
+
     // Validation
     validateAnswer: (answer: string, options: T) => string | null
-    
+
     // UI customization
     placeholder: string
     errorKey: string
     fallbackIcon: React.ReactNode
-    
+
     // Answer processing
     getAnswerValue: (answer: string, options: T) => any
 }
@@ -38,23 +38,23 @@ export interface BaseGameModeProps<T = Record<string, any>> {
     config: GameModeConfig<T>
 }
 
-export default function BaseGameMode<T = Record<string, any>>({
-    sendJsonMessage,
-    state,
-    answerStatus,
-    correctAnswer,
-    setCorrectAnswer,
-    config
-}: Readonly<BaseGameModeProps<T>>) {
+export default function BaseGameMode<T = Record<string, any>>(
+    {
+        sendJsonMessage,
+        state,
+        answerStatus,
+        correctAnswer,
+        setCorrectAnswer,
+        config
+    }: Readonly<BaseGameModeProps<T>>) {
     const {t, i18n} = useTranslation()
     const [options, setOptions] = useState<T>({} as T)
 
     const handleSubmit = (
-        values: { answer: string }, 
+        values: { answer: string },
         actions: FormikHelpers<{ answer: string }>
     ) => {
         const questionId = Object.keys(state.questions)[state.currentIndex]
-
         // Validate answer using config
         const errorMessage = config.validateAnswer(values.answer, options)
         if (errorMessage) {
