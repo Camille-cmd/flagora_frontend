@@ -3,6 +3,7 @@ export type GameState = {
     currentIndex: number;
     currentQuestion: string;
     score: number;  // Score keep track of strikes
+    totalQuestions: number;
 };
 
 type GameAction =
@@ -20,6 +21,7 @@ export default function gameReducer(state: GameState, action: GameAction): GameS
                 currentIndex: state.currentIndex || 0,
                 currentQuestion: state.currentQuestion || firstQuestion,
                 score: state.score || 0,
+                totalQuestions: Object.keys(action.questions).length
             };
         case "next_question": {
             const nextIndex = state.currentIndex + 1;
