@@ -35,7 +35,8 @@ export interface BaseGameModeProps<T = Record<string, any>> {
     answerStatus: AnswerStatusTypes | null,
     correctAnswer: CorrectAnswer[] | null,
     setCorrectAnswer: (correctAnswer: CorrectAnswer[] | null) => void,
-    config: GameModeConfig<T>
+    config: GameModeConfig<T>,
+    resetKey?: number
 }
 
 export default function BaseGameMode<T = Record<string, any>>(
@@ -45,7 +46,8 @@ export default function BaseGameMode<T = Record<string, any>>(
         answerStatus,
         correctAnswer,
         setCorrectAnswer,
-        config
+        config,
+        resetKey
     }: Readonly<BaseGameModeProps<T>>) {
     const {t, i18n} = useTranslation()
     const [options, setOptions] = useState<T>({} as T)
@@ -93,7 +95,7 @@ export default function BaseGameMode<T = Record<string, any>>(
                 </div>
             </div>
 
-            <Formik initialValues={{answer: ""}} onSubmit={handleSubmit}>
+            <Formik key={resetKey} initialValues={{answer: ""}} onSubmit={handleSubmit}>
                 {({values, setFieldValue, submitForm, errors, touched}) => (
                     <Form className="space-y-4 lg:mt-10 md:px-8 pb-4 md:pb-0">
                         {!options || Object.keys(options as Record<string, any>).length === 0 ? (

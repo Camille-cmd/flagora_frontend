@@ -55,6 +55,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
     const [gameIsLost, setGameIsLost] = useState(false);
     const [bestStreak, setBestStreak] = useState<number | null>(null);
     const [remainingToGuess, setRemainingToGuess] = useState(0);
+    const [resetKey, setResetKey] = useState(0);
     const flagTopElement = useRef<HTMLDivElement | null>(null);
     const isMobile = useMobileScreen();
 
@@ -101,6 +102,9 @@ export default function Game({gameMode}: Readonly<GameProps>) {
             answer: "", // Empty answer to indicate a false answer
         })
 
+        // Clear the searchbar input: resetKey is used as a key prop for the searchbar formik form.
+        // Incrementing it forces to remount and reset the form
+        setResetKey(prev => prev + 1)
 
         // Reset skipping state after a short delay
         setTimeout(() => {
@@ -335,6 +339,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                             answerStatus={answerStatus}
                             correctAnswer={correctAnswer}
                             setCorrectAnswer={setCorrectAnswer}
+                            resetKey={resetKey}
                         />
                     ) : gameMode.includes("GCFC") ? (
                         <GuessCapitalCityMode
@@ -343,6 +348,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                             answerStatus={answerStatus}
                             correctAnswer={correctAnswer}
                             setCorrectAnswer={setCorrectAnswer}
+                            resetKey={resetKey}
                         />
                     ) : null}
 
