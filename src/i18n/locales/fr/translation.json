@@ -316,8 +316,8 @@
       "yourScore": "Ton score :",
       "bestStreak": "Meilleur combo :",
       "encouragement": "Incroyable ! Prêt pour un autre tour ?",
-      "restart": "Recommencer le Challenge",
-      "exit": "Retour au Menu"
+      "restart": "Recommencer le challenge",
+      "exit": "Retour au menu"
     }
   },
   "tutorial": {

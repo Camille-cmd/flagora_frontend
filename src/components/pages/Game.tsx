@@ -127,13 +127,6 @@ export default function Game({gameMode}: Readonly<GameProps>) {
         }, 500)
     }
 
-    const handleGameOverRetry = () => {
-        setGameIsLost(false);
-        dispatch({type: "next_question"});
-        setCorrectAnswer(null);
-        setAnswerStatus(null);
-    }
-
     const handleRestart = () => {
         // Generate new session and reset all state
         const newGameToken = tokenManager.startNewGame(gameMode);
@@ -285,7 +278,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
 
             if (e.key === "Enter" && gameIsLost) {
                 e.preventDefault();
-                handleGameOverRetry();
+                handleRestart();
             }
         };
 
@@ -350,7 +343,7 @@ export default function Game({gameMode}: Readonly<GameProps>) {
                         score={state.score}
                         correctAnswer={correctAnswer}
                         bestStreak={bestStreak}
-                        triggerNextQuestion={handleGameOverRetry}
+                        triggerNextQuestion={handleRestart}
                     />
                 )}
 

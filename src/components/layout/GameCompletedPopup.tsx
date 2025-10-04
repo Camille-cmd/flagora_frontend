@@ -4,7 +4,6 @@ import {Dialog, DialogPanel, DialogTitle} from "@headlessui/react";
 import {useTranslation} from "react-i18next";
 
 interface GameCompletedPopupProps {
-    score: number;
     totalQuestions: number;
     onRestart: () => void;
     onExit: () => void;
