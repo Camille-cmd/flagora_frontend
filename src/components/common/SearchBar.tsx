@@ -112,7 +112,8 @@ export default function SearchBar({
 
 		// Focus when options first load or when value is cleared (after submit/skip)
 		if (value === "") {
-			setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 100);
+			const timeOut = isSkipping ? 3000 : 100;
+			setTimeout(() => inputRef.current?.focus({ preventScroll: true }), timeOut);
 		}
 	}, [value, options, autoFocus, questionId]);
 

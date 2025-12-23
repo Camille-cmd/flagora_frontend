@@ -403,56 +403,6 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 						/>
 					</div>
 
-					{/* Correct Answer Message */}
-					{correctAnswer && correctAnswer.length > 0 && (
-						<div className="mb-4 p-2 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 rounded-r-lg animate-in slide-in-from-top-2 duration-300">
-							<div className="flex items-center space-x-2">
-								<XCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-								<p className="text-sm text-blue-800 dark:text-blue-200">
-									<span className="font-medium">{t("game.alerts.oops")}</span>{" "}
-									{t("game.alerts.correctAnswer")}{" "}
-									{correctAnswer.map((answer, i) => (
-										<Link
-											key={i}
-											to={answer.wikipediaLink}
-											target="_blank"
-											className={
-												"text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"
-											}
-										>
-											<span className="font-semibold text-blue-900 dark:text-blue-100">
-												{answer.name}
-											</span>
-											<span className="ml-1">{countryCodeEmoji(answer.code)}</span>
-											{i < correctAnswer.length - 1 && ", "}
-										</Link>
-									))}
-								</p>
-							</div>
-						</div>
-					)}
-
-					{/* Progress bar until auto skip to the next question */}
-					{autoSkipProgress !== null && gameMode.includes("TRAINING") && (
-						<div className="my-3">
-							<div className="w-full h-2 bg-blue-100 dark:bg-blue-900/40 rounded-full overflow-hidden">
-								<div
-									className="h-full bg-blue-500 transition-[width] duration-30 ease-linear"
-									style={{ width: `${autoSkipProgress}%` }}
-								/>
-							</div>
-						</div>
-					)}
-
-					{answerStatus === "partiallyCorrect" && (
-						<div className="mb-4 p-2 text-center bg-amber-50 dark:bg-orange-600/60 border-l-4 border-amber-400 rounded-lg animate-in slide-in-from-top-2 duration-300">
-							<div className="flex flex-col space-y-2">
-								<span>{t("game.alerts.capitalsMessage")}</span>
-								<span>{t("game.alerts.remainingCapitals", { count: remainingToGuess })}</span>
-							</div>
-						</div>
-					)}
-
 					{/* Formik Form */}
 					{/* GCFF = Guess Country From Flag | GCFC = Guess Capital City From Country */}
 					{gameMode.includes("GCFF") ? (
@@ -505,6 +455,56 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 								<SkipForward className="w-5 h-5" />
 							</Button>
 						</Tooltip>
+					)}
+
+					{/* Correct Answer Message */}
+					{correctAnswer && correctAnswer.length > 0 && (
+						<div className="mb-4 p-2 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 rounded-r-lg animate-in slide-in-from-top-2 duration-300">
+							<div className="flex items-center space-x-2">
+								<XCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+								<p className="text-sm text-blue-800 dark:text-blue-200">
+									<span className="font-medium">{t("game.alerts.oops")}</span>{" "}
+									{t("game.alerts.correctAnswer")}{" "}
+									{correctAnswer.map((answer, i) => (
+										<Link
+											key={i}
+											to={answer.wikipediaLink}
+											target="_blank"
+											className={
+												"text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-300"
+											}
+										>
+											<span className="font-semibold text-blue-900 dark:text-blue-100">
+												{answer.name}
+											</span>
+											<span className="ml-1">{countryCodeEmoji(answer.code)}</span>
+											{i < correctAnswer.length - 1 && ", "}
+										</Link>
+									))}
+								</p>
+							</div>
+						</div>
+					)}
+
+					{/* Progress bar until auto skip to the next question */}
+					{autoSkipProgress !== null && gameMode.includes("TRAINING") && (
+						<div className="my-3">
+							<div className="w-full h-2 bg-blue-100 dark:bg-blue-900/40 rounded-full overflow-hidden">
+								<div
+									className="h-full bg-blue-500 transition-[width] duration-30 ease-linear"
+									style={{ width: `${autoSkipProgress}%` }}
+								/>
+							</div>
+						</div>
+					)}
+
+					{answerStatus === "partiallyCorrect" && (
+						<div className="mb-4 p-2 text-center bg-amber-50 dark:bg-orange-600/60 border-l-4 border-amber-400 rounded-lg animate-in slide-in-from-top-2 duration-300">
+							<div className="flex flex-col space-y-2">
+								<span>{t("game.alerts.capitalsMessage")}</span>
+								<span>{t("game.alerts.remainingCapitals", { count: remainingToGuess })}</span>
+							</div>
+						</div>
 					)}
 				</Card>
 			</div>
