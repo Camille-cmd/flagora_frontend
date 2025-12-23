@@ -11,6 +11,7 @@ interface SearchBarProps {
 	options: Object;
 	autoFocus?: boolean;
 	questionId?: number;
+	isSkipping: boolean;
 }
 
 interface AutoCompleteData {
@@ -27,6 +28,7 @@ export default function SearchBar({
 	options,
 	autoFocus,
 	questionId,
+	isSkipping,
 }: SearchBarProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [filteredOptions, setFilteredOptions] = useState<Array<string>>([]);
@@ -110,7 +112,7 @@ export default function SearchBar({
 
 		// Focus when options first load or when value is cleared (after submit/skip)
 		if (value === "") {
-			setTimeout(() => inputRef.current?.focus(), 100);
+			setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 100);
 		}
 	}, [value, options, autoFocus, questionId]);
 
@@ -228,6 +230,7 @@ export default function SearchBar({
 					onFocus={handleInputFocus}
 					onKeyDown={handleKeyDown}
 					placeholder={placeholder}
+					readOnly={isSkipping}
 					className={`w-full pl-10 pr-10 ${className}`}
 					autoComplete="off"
 					spellCheck="false"

@@ -38,6 +38,7 @@ export interface BaseGameModeProps<T = Record<string, any>> {
 	config: GameModeConfig<T>;
 	shouldAutoFocus: boolean;
 	resetKey?: number;
+	isSkipping: boolean;
 }
 
 export default function BaseGameMode<T = Record<string, any>>({
@@ -49,6 +50,7 @@ export default function BaseGameMode<T = Record<string, any>>({
 	config,
 	shouldAutoFocus,
 	resetKey,
+	isSkipping,
 }: Readonly<BaseGameModeProps<T>>) {
 	const { t, i18n } = useTranslation();
 	const [options, setOptions] = useState<T>({} as T);
@@ -115,6 +117,7 @@ export default function BaseGameMode<T = Record<string, any>>({
 									placeholder={t(config.placeholder)}
 									options={config.getSearchOptions(options)}
 									autoFocus={shouldAutoFocus}
+									isSkipping={isSkipping}
 									questionId={state.currentIndex}
 									className={`w-full p-4 pl-5 pr-12 ${
 										answerStatus === "correct"

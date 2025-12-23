@@ -464,6 +464,7 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 							setCorrectAnswer={setCorrectAnswer}
 							shouldAutoFocus={!isMobile || autoSkipProgress === null}
 							resetKey={resetKey}
+							isSkipping={isSkipping}
 						/>
 					) : gameMode.includes("GCFC") ? (
 						<GuessCapitalCityMode
@@ -474,6 +475,7 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 							setCorrectAnswer={setCorrectAnswer}
 							shouldAutoFocus={!isMobile || autoSkipProgress === null}
 							resetKey={resetKey}
+							isSkipping={isSkipping}
 						/>
 					) : null}
 
