@@ -277,7 +277,7 @@
     },
     "answer": {
       "placeholder": "Type in the country name",
-      "cityPlaceholder": "Typ in the city name"
+      "cityPlaceholder": "Type in the city name"
     },
     "submit": "Submit",
     "skip": "skip",
