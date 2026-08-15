@@ -162,8 +162,11 @@
       "OC": "Océanie",
       "AN": "Antarctique"
     },
+    "category": {
+      "title": "Choisissez une catégorie"
+    },
     "mode": {
-      "title": "Sélectionnez un mode de jeu"
+      "title": "Sélectionnez une difficulté"
     },
     "start": "Commencer",
     "cards": {
