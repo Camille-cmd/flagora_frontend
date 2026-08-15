@@ -97,25 +97,21 @@ export default function ModeSelection() {
     code: Category;
     icon: typeof Flag;
     title: string;
-    description: string;
   }[] = [
     {
       code: "GCFF",
       icon: Flag,
       title: t("modeSelection.cards.flag.title"),
-      description: t("modeSelection.cards.flag.description"),
     },
     {
       code: "GCFC",
       icon: MapPin,
       title: t("modeSelection.cards.cities.title"),
-      description: t("modeSelection.cards.cities.description"),
     },
     {
       code: "GDFN",
       icon: Hash,
       title: t("modeSelection.cards.departments.title"),
-      description: t("modeSelection.cards.departments.description"),
     },
   ];
 
@@ -152,11 +148,11 @@ export default function ModeSelection() {
           {/* Step 1: Category Selection */}
           <div className="mb-8">
             <h2 className="text-lg sm:text-xl font-bold text-secondary dark:text-primary mb-4 sm:mb-6 text-center">
-              🗂️ {t("modeSelection.category.title")}
+              {t("modeSelection.category.title")}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {categories.map(({ code, icon: Icon, title, description }) => (
+              {categories.map(({ code, icon: Icon, title }) => (
                 <button
                   key={code}
                   onClick={() => setSelectedCategory(code)}
@@ -169,9 +165,6 @@ export default function ModeSelection() {
                   <Icon className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-3 text-blue-600 dark:text-blue-400" />
                   <div className="text-base sm:text-lg font-bold text-secondary dark:text-primary text-center">
                     {title}
-                  </div>
-                  <div className="mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300 text-center">
-                    {description}
                   </div>
                 </button>
               ))}
@@ -248,6 +241,9 @@ export default function ModeSelection() {
                       {t("modeSelection.cards.training")}
                     </span>
                   </div>
+                  <div className="mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300 text-center">
+                    {t("modeSelection.cards.trainingDescription")}
+                  </div>
                 </button>
 
                 <button
@@ -263,6 +259,9 @@ export default function ModeSelection() {
                     <span className="text-sm sm:text-base font-semibold text-secondary dark:text-primary">
                       {t("modeSelection.cards.challenge")}
                     </span>
+                  </div>
+                  <div className="mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300 text-center">
+                    {t("modeSelection.cards.challengeDescription")}
                   </div>
                 </button>
               </div>

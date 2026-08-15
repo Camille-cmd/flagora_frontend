@@ -171,22 +171,18 @@
     "start": "Start game",
     "cards": {
       "flag": {
-        "title": "Flag",
-        "description": "Learn the flags in the infinite mode.",
-        "descriptionChallenge": "Guess the flags accurately."
+        "title": "Flag"
       },
       "cities": {
-        "title": "Capital cities",
-        "description": "Learn capital cities in the infinite mode.",
-        "descriptionChallenge": "Test your knowledge about capital cities."
+        "title": "Capital cities"
       },
       "departments": {
-        "title": "Departments",
-        "description": "Learn the French departments in the infinite mode.",
-        "descriptionChallenge": "Guess the French departments accurately."
+        "title": "Departments"
       },
       "training": "Training mode",
-      "challenge": "Challenge mode"
+      "trainingDescription": "Learn endlessly in infinite mode.",
+      "challenge": "Challenge mode",
+      "challengeDescription": "One mistake and it's over."
     }
   },
   "emailConfirm": {

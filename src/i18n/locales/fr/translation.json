@@ -163,30 +163,26 @@
       "AN": "Antarctique"
     },
     "category": {
-      "title": "Choisissez une catégorie"
+      "title": "Sélectionnez une catégorie"
     },
     "mode": {
-      "title": "Sélectionnez une difficulté"
+      "title": "Sélectionnez un mode"
     },
     "start": "Commencer",
     "cards": {
       "flag": {
-        "title": "Drapeau",
-        "description": "Apprenez les drapeaux en mode infini.",
-        "descriptionChallenge": "Devinez les drapeaux avec précision."
+        "title": "Drapeau"
       },
       "cities": {
-        "title": "Capitales",
-        "description": "Apprenez les capitales en mode infini.",
-        "descriptionChallenge": "Testez vos connaissances sur les capitales."
+        "title": "Capitales"
       },
       "departments": {
-        "title": "Départements",
-        "description": "Apprenez les départements français en mode infini.",
-        "descriptionChallenge": "Devinez les départements français avec précision."
+        "title": "Départements"
       },
       "training": "Mode entrainement",
-      "challenge": "Mode challenge"
+      "trainingDescription": "Apprenez sans limite, en boucle infinie.",
+      "challenge": "Mode challenge",
+      "challengeDescription": "Une seule erreur et c'est terminé."
     }
   },
   "emailConfirm": {
