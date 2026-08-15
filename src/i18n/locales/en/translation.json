@@ -180,6 +180,11 @@
         "description": "Learn capital cities in the infinite mode.",
         "descriptionChallenge": "Test your knowledge about capital cities."
       },
+      "departments": {
+        "title": "Departments",
+        "description": "Learn the French departments in the infinite mode.",
+        "descriptionChallenge": "Guess the French departments accurately."
+      },
       "training": "Training mode",
       "challenge": "Challenge mode"
     }
@@ -280,7 +285,8 @@
     },
     "answer": {
       "placeholder": "Type in the country name",
-      "cityPlaceholder": "Type in the city name"
+      "cityPlaceholder": "Type in the city name",
+      "departmentPlaceholder": "Type in the department name"
     },
     "submit": "Submit",
     "skip": "skip",
@@ -288,7 +294,8 @@
     "skipTooltip": "Use shiftKey + Enter shortcut to skip",
     "error": {
       "invalidCountry": "Please select a valid country",
-      "invalidCity": "Please select a valid city"
+      "invalidCity": "Please select a valid city",
+      "invalidDepartment": "Please select a valid department"
     }
   },
   "stats": {
@@ -320,6 +327,7 @@
     "gameCompleted": {
       "title": "Congratulations!",
       "congratulations": "You've guessed all available countries!",
+      "congratulationsDepartments": "You've guessed all available departments!",
       "questionsCompleted": "Questions completed: {{total}}",
       "yourScore": "Your score:",
       "bestStreak": "Best streak:",
@@ -354,6 +362,16 @@
         "subDescription": "The game will stop on first failure."
       }
     },
+    "departments": {
+      "training_infinite": {
+        "title": "Training mode: The department numbers will be displayed in an infinite loop.",
+        "description": "The goal is for you to learn the French departments: each mistake is a chance to improve!"
+      },
+      "challenge": {
+        "title": "Challenge mode: Guess the department accurately",
+        "description": "The goal is to guess the most departments in a row. Try to beat your best score!"
+      }
+    },
     "note": {
       "title": "Notes",
       "note1": "Use the search suggestions to help you",
@@ -363,6 +381,9 @@
       },
       "capitals": {
         "note1": "Be careful, some countries have several accepted capitals. You need to enter all of them."
+      },
+      "departments": {
+        "note1": "Only the French name of the department is accepted."
       }
     }
   },
@@ -370,6 +391,8 @@
     "GCFF_TRAINING_INFINITE": "Flag mode - training",
     "GCFF_CHALLENGE_COMBO": "Flag mode - challenge",
     "GCFC_TRAINING_INFINITE": "Capital cities mode - training",
-    "GCFC_CHALLENGE_COMBO": "Capital cities mode - challenge"
+    "GCFC_CHALLENGE_COMBO": "Capital cities mode - challenge",
+    "GDFN_TRAINING_INFINITE": "Departments mode - training",
+    "GDFN_CHALLENGE_COMBO": "Departments mode - challenge"
   }
 }

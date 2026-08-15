@@ -1,3 +1,5 @@
+import {GameModes} from "./gameModes.tsx";
+
 // Types based on your schema
 export interface CountryOut {
     iso2Code: string
@@ -12,14 +14,20 @@ export interface CityOut {
     successRate: number
 }
 
+export interface DepartmentOut {
+    name: string
+    number: string
+    successRate: number
+}
+
 interface UserStats {
     mostStrikes: number
-    mostFailed: CountryOut | CityOut
-    mostCorrectlyGuessed: CountryOut | CityOut
+    mostFailed: CountryOut | CityOut | DepartmentOut
+    mostCorrectlyGuessed: CountryOut | CityOut | DepartmentOut
     successRate: number
 }
 
 export interface UserStatsByGameMode {
-    gameMode: "GUESS_CAPITAL_FROM_COUNTRY" | "GUESS_COUNTRY_FROM_FLAG"
+    gameMode: GameModes
     stats: UserStats
 }

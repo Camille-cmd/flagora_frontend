@@ -42,6 +42,14 @@ export default function GameTutorialPopup({gameMode, onClose, onNeverShowAgain}:
             title: t("tutorial.capitals.challenge.title"),
             description: t("tutorial.capitals.challenge.description"),
         },
+        "GDFN_TRAINING_INFINITE": {
+            title: t("tutorial.departments.training_infinite.title"),
+            description: t("tutorial.departments.training_infinite.description"),
+        },
+        "GDFN_CHALLENGE_COMBO": {
+            title: t("tutorial.departments.challenge.title"),
+            description: t("tutorial.departments.challenge.description"),
+        },
     }
 
 
@@ -103,7 +111,9 @@ export default function GameTutorialPopup({gameMode, onClose, onNeverShowAgain}:
                         <li> {t("tutorial.note.note2")}</li>
                         {gameMode.includes("GCFF")
                             ? <li> {t("tutorial.note.flags.note1")}</li>
-                            : <li> {t("tutorial.note.capitals.note1")}</li>
+                            : gameMode.includes("GDFN")
+                                ? <li> {t("tutorial.note.departments.note1")}</li>
+                                : <li> {t("tutorial.note.capitals.note1")}</li>
                         }
                     </ul>
                 </div>

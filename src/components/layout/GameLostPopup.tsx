@@ -6,15 +6,17 @@ import {useTranslation} from "react-i18next";
 import {countryCodeEmoji} from "../../utils/common.tsx";
 import {Link} from "react-router-dom";
 import {useEffect} from "react";
+import {GameModes} from "../../interfaces/gameModes.tsx";
 
 interface GameLostPopupProps {
     score: number;
     correctAnswer: Array<CorrectAnswer> | null;
     bestStreak: number | null;
+    gameMode: GameModes;
     triggerNextQuestion: () => void;
 }
 
-export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQuestion}: Readonly<GameLostPopupProps>) {
+export function GameLostPopup({score, correctAnswer, bestStreak, gameMode, triggerNextQuestion}: Readonly<GameLostPopupProps>) {
     const {t} = useTranslation();
 
     const onClose = () => {
@@ -80,7 +82,7 @@ export function GameLostPopup({score, correctAnswer, bestStreak, triggerNextQues
                                 <Link to={correctAnswer.wikipediaLink}
                                       key={i}
                                       target={"_blank"}
-                                      className="font-semibold text-secondary dark:text-primary">{correctAnswer.name} {countryCodeEmoji(correctAnswer.code)}</Link>
+                                      className="font-semibold text-secondary dark:text-primary">{correctAnswer.name} {gameMode.includes("GDFN") ? `(${correctAnswer.code})` : countryCodeEmoji(correctAnswer.code)}</Link>
                             ))}
                         </p>
                     )}

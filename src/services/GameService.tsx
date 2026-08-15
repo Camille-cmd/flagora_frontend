@@ -3,6 +3,7 @@ import {extractErrorMessage} from "./utils/errorHandler.tsx";
 import i18n from "../i18n/i18n.tsx";
 import {City} from "../interfaces/city.tsx";
 import {CountriesType} from "../interfaces/country.tsx";
+import {DepartmentType} from "../interfaces/department.tsx";
 
 export default class GameService {
     static async getCountries(): Promise<CountriesType> {
@@ -18,6 +19,15 @@ export default class GameService {
         try {
             const response = await api.get('city/list')
             return response.data as City;
+        } catch (error: unknown) {
+            throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
+        }
+    }
+
+    static async getDepartments(): Promise<DepartmentType> {
+        try {
+            const response = await api.get('department/list')
+            return response.data as DepartmentType;
         } catch (error: unknown) {
             throw new Error(extractErrorMessage(error, i18n.t('errors.generic')));
         }

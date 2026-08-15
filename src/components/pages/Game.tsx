@@ -17,6 +17,7 @@ import { useAuth } from "../../services/auth/useAuth.tsx";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import GuessCountryMode from "./game_modes/GuessCountryMode.tsx";
 import GuessCapitalCityMode from "./game_modes/GuessCapitalCityMode.tsx";
+import GuessDepartmentMode from "./game_modes/GuessDepartmentMode.tsx";
 import { GameModes } from "../../interfaces/gameModes.tsx";
 import Score from "../layout/Score.tsx";
 import { GameLostPopup } from "../layout/GameLostPopup.tsx";
@@ -239,9 +240,11 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 					// Move to the next question if all answers have been guessed
 					if (payload.remainingToGuess == 0) {
 						const nextIndex = state.currentIndex + 1;
+						// Number of questions received so far (state may lag a queued new_questions pack)
+						const totalReceived = Object.keys(state.questions).length;
 
 						// Check if this was the last question in challenge mode
-						if (gameMode.includes("CHALLENGE") && nextIndex >= state.totalQuestions) {
+						if (gameMode.includes("CHALLENGE") && nextIndex >= totalReceived) {
 							setGameIsCompleted(true);
 							setBestStreak(payload.bestStreak);
 						}
@@ -275,7 +278,8 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 					}
 				}
 
-				// Request more questions if only 2 remaining (only for training mode)
+				// Request more questions if only 2 remaining (training only: the pack is endless and
+				// must be refilled. Challenge delivers its whole finite pack up front, so never refill.)
 				if (gameMode.includes("TRAINING")) {
 					const remainingQuestions = Object.keys(state.questions).length - state.currentIndex - 1;
 					if (remainingQuestions <= 2) {
@@ -377,6 +381,7 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 						score={state.score}
 						correctAnswer={correctAnswer}
 						bestStreak={bestStreak}
+						gameMode={gameMode}
 						triggerNextQuestion={handleRestart}
 					/>
 				)}
@@ -385,6 +390,7 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 				{gameIsCompleted && (
 					<GameCompletedPopup
 						totalQuestions={state.totalQuestions}
+						gameMode={gameMode}
 						onRestart={handleRestart}
 						onExit={handleExit}
 					/>
@@ -403,31 +409,42 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 						/>
 					</div>
 
-					{/* Formik Form */}
-					{/* GCFF = Guess Country From Flag | GCFC = Guess Capital City From Country */}
-					{gameMode.includes("GCFF") ? (
-						<GuessCountryMode
-							sendJsonMessage={sendJsonMessage}
-							state={state}
-							answerStatus={answerStatus}
-							correctAnswer={correctAnswer}
-							setCorrectAnswer={setCorrectAnswer}
-							shouldAutoFocus={!isMobile || autoSkipProgress === null}
-							resetKey={resetKey}
-							isSkipping={isSkipping}
-						/>
-					) : gameMode.includes("GCFC") ? (
-						<GuessCapitalCityMode
-							sendJsonMessage={sendJsonMessage}
-							state={state}
-							answerStatus={answerStatus}
-							correctAnswer={correctAnswer}
-							setCorrectAnswer={setCorrectAnswer}
-							shouldAutoFocus={!isMobile || autoSkipProgress === null}
-							resetKey={resetKey}
-							isSkipping={isSkipping}
-						/>
-					) : null}
+				{/* Formik Form */}
+				{/* GCFF = Guess Country From Flag | GCFC = Guess Capital City From Country | GDFN = Guess Department From Number */}
+				{gameMode.includes("GCFF") ? (
+					<GuessCountryMode
+						sendJsonMessage={sendJsonMessage}
+						state={state}
+						answerStatus={answerStatus}
+						correctAnswer={correctAnswer}
+						setCorrectAnswer={setCorrectAnswer}
+						shouldAutoFocus={!isMobile || autoSkipProgress === null}
+						resetKey={resetKey}
+						isSkipping={isSkipping}
+					/>
+				) : gameMode.includes("GCFC") ? (
+					<GuessCapitalCityMode
+						sendJsonMessage={sendJsonMessage}
+						state={state}
+						answerStatus={answerStatus}
+						correctAnswer={correctAnswer}
+						setCorrectAnswer={setCorrectAnswer}
+						shouldAutoFocus={!isMobile || autoSkipProgress === null}
+						resetKey={resetKey}
+						isSkipping={isSkipping}
+					/>
+				) : gameMode.includes("GDFN") ? (
+					<GuessDepartmentMode
+						sendJsonMessage={sendJsonMessage}
+						state={state}
+						answerStatus={answerStatus}
+						correctAnswer={correctAnswer}
+						setCorrectAnswer={setCorrectAnswer}
+						shouldAutoFocus={!isMobile || autoSkipProgress === null}
+						resetKey={resetKey}
+						isSkipping={isSkipping}
+					/>
+				) : null}
 
 					{/* On mobile, no tooltip for skip button */}
 					{isMobile ? (
@@ -477,7 +494,7 @@ export default function Game({ gameMode }: Readonly<GameProps>) {
 											<span className="font-semibold text-blue-900 dark:text-blue-100">
 												{answer.name}
 											</span>
-											<span className="ml-1">{countryCodeEmoji(answer.code)}</span>
+											<span className="ml-1">{gameMode.includes("GDFN") ? `(${answer.code})` : countryCodeEmoji(answer.code)}</span>
 											{i < correctAnswer.length - 1 && ", "}
 										</Link>
 									))}

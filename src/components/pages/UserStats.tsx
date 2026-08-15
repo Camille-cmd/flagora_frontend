@@ -1,5 +1,5 @@
 import {AlertCircle, Crown, Trophy, Zap} from "lucide-react"
-import {CityOut, CountryOut, UserStatsByGameMode} from "../../interfaces/userStats.tsx";
+import {CityOut, CountryOut, DepartmentOut, UserStatsByGameMode} from "../../interfaces/userStats.tsx";
 import UserService from "../../services/UserService.tsx";
 import {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
@@ -18,8 +18,15 @@ export default function UserStats() {
     }, []);
 
 
-    const renderItem = (item: CountryOut | CityOut) => {
-        if ("iso2Code" in item && item.flag) {
+    const renderItem = (item: CountryOut | CityOut | DepartmentOut) => {
+        if ("number" in item) {
+            return (
+                <div className="flex items-center">
+                    <span className="text-secondary dark:text-primary font-medium">{item.name}</span>
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">({item.number})</span>
+                </div>
+            )
+        } else if ("iso2Code" in item && item.flag) {
             return (
                 <div className="flex items-center">
                     <div className="relative h-6 mr-3 border border-gray-300 dark:border-gray-600 overflow-hidden">
@@ -72,6 +79,8 @@ export default function UserStats() {
                                         <div className="w-8 h-8 bg-raspberry-600 rounded-full flex items-center justify-center">
                                             {gameModeStats.gameMode.includes("GCFF") ? (
                                                 <span className="text-white text-sm">🏳️</span>
+                                            ) : gameModeStats.gameMode.includes("GDFN") ? (
+                                                <span className="text-white text-sm">🗺️</span>
                                             ) : (
                                                 <span className="text-white text-sm">📍</span>
                                             )}
