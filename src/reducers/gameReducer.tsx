@@ -17,12 +17,13 @@ export default function gameReducer(state: GameState, action: GameAction): GameS
         case "new_questions":
             const firstKey = Number(Object.keys(action.questions)[0]);
             const firstQuestion = action.questions[firstKey];
+            const mergedQuestions = {...state.questions, ...action.questions};
             return {
-                questions: {...state.questions, ...action.questions},
+                questions: mergedQuestions,
                 currentIndex: state.currentIndex || 0,
                 currentQuestion: state.currentQuestion || firstQuestion,
                 score: state.score || 0,
-                totalQuestions: Object.keys(action.questions).length
+                totalQuestions: Object.keys(mergedQuestions).length
             };
         case "next_question": {
             const nextIndex = state.currentIndex + 1;

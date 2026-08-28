@@ -2,15 +2,21 @@ import Button from "../common/Button.tsx";
 import {X} from "lucide-react";
 import {Dialog, DialogPanel, DialogTitle} from "@headlessui/react";
 import {useTranslation} from "react-i18next";
+import {GameModes} from "../../interfaces/gameModes.tsx";
 
 interface GameCompletedPopupProps {
     totalQuestions: number;
+    gameMode: GameModes;
     onRestart: () => void;
     onExit: () => void;
 }
 
-export function GameCompletedPopup({totalQuestions, onRestart, onExit}: Readonly<GameCompletedPopupProps>) {
+export function GameCompletedPopup({totalQuestions, gameMode, onRestart, onExit}: Readonly<GameCompletedPopupProps>) {
     const {t} = useTranslation();
+
+    const congratulationsKey = gameMode.includes("GDFN")
+        ? "popup.gameCompleted.congratulationsDepartments"
+        : "popup.gameCompleted.congratulations";
 
     return (
         <Dialog open={true} onClose={onExit} className="relative z-50">
@@ -32,7 +38,7 @@ export function GameCompletedPopup({totalQuestions, onRestart, onExit}: Readonly
                     </DialogTitle>
 
                     <p className="text-xl mb-4">
-                        {t("popup.gameCompleted.congratulations")}
+                        {t(congratulationsKey)}
                     </p>
 
                     <p className="text-lg mb-4">

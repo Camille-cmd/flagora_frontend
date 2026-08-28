@@ -162,23 +162,27 @@
       "OC": "Océanie",
       "AN": "Antarctique"
     },
+    "category": {
+      "title": "Sélectionnez une catégorie"
+    },
     "mode": {
-      "title": "Sélectionnez un mode de jeu"
+      "title": "Sélectionnez un mode"
     },
     "start": "Commencer",
     "cards": {
       "flag": {
-        "title": "Drapeau",
-        "description": "Apprenez les drapeaux en mode infini.",
-        "descriptionChallenge": "Devinez les drapeaux avec précision."
+        "title": "Drapeau"
       },
       "cities": {
-        "title": "Capitales",
-        "description": "Apprenez les capitales en mode infini.",
-        "descriptionChallenge": "Testez vos connaissances sur les capitales."
+        "title": "Capitales"
+      },
+      "departments": {
+        "title": "Départements"
       },
       "training": "Mode entrainement",
-      "challenge": "Mode challenge"
+      "trainingDescription": "Apprenez sans limite, en boucle infinie.",
+      "challenge": "Mode challenge",
+      "challengeDescription": "Une seule erreur et c'est terminé."
     }
   },
   "emailConfirm": {
@@ -272,7 +276,8 @@
     },
     "answer": {
       "placeholder": "Entrez le nom du pays",
-      "cityPlaceholder": "Entrez le nom de la capitale"
+      "cityPlaceholder": "Entrez le nom de la capitale",
+      "departmentPlaceholder": "Entrez le nom du département"
     },
     "submit": "Valider",
     "skip": "Passer",
@@ -280,7 +285,8 @@
     "skipTooltip": "Utilisez le raccourci Shift + Entrer pour passer",
     "error": {
       "invalidCountry": "Veuillez sélectionner un pays valide",
-      "invalidCity": "Veuillez sélectionner une ville valide"
+      "invalidCity": "Veuillez sélectionner une ville valide",
+      "invalidDepartment": "Veuillez sélectionner un département valide"
     }
   },
   "stats": {
@@ -312,6 +318,7 @@
     "gameCompleted": {
       "title": "Félicitations !",
       "congratulations": "Tu as deviné tous les pays disponibles !",
+      "congratulationsDepartments": "Tu as deviné tous les départements disponibles !",
       "questionsCompleted": "Questions complétées : {{total}}",
       "yourScore": "Ton score :",
       "bestStreak": "Meilleur combo :",
@@ -343,6 +350,16 @@
         "description": "Le but est de deviner le plus grand nombre de capitales à la suite. Essayez de battre votre meilleur score !"
       }
     },
+    "departments": {
+      "training_infinite": {
+        "title": "Mode entrainement : Les numéros de département seront affichés en boucle infinie.",
+        "description": "L'objectif est d'apprendre les départements français : chaque erreur est une chance de progresser !"
+      },
+      "challenge": {
+        "title": "Mode challenge : Devinez le département avec précision",
+        "description": "L'objectif est de deviner le plus de départements d'affilée. Essayez de battre votre meilleur score !"
+      }
+    },
     "note": {
       "title": "Notes",
       "note1": "Utilisez les suggestions de recherche pour vous aider.",
@@ -352,6 +369,9 @@
       },
       "capitals": {
         "note1": "Attention, certains pays ont plusieurs capitales officielles. Vous devez toutes les saisir."
+      },
+      "departments": {
+        "note1": "Seul le nom français du département est accepté."
       }
     }
   },
@@ -359,6 +379,8 @@
     "GCFF_TRAINING_INFINITE": "Mode Drapeau - entrainement",
     "GCFF_CHALLENGE_COMBO": "Mode Drapeau - challenge",
     "GCFC_TRAINING_INFINITE": "Mode Capitale - entrainement",
-    "GCFC_CHALLENGE_COMBO": "Mode Capitale - challenge"
+    "GCFC_CHALLENGE_COMBO": "Mode Capitale - challenge",
+    "GDFN_TRAINING_INFINITE": "Mode départements - entrainement",
+    "GDFN_CHALLENGE_COMBO": "Mode départements - challenge"
   }
 }
